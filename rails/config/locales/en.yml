@@ -1,5 +1,7 @@
 en:
   cancel: "Cancel"
+  login_to_access: "You must be logged in to access this page"
+  logout_to_access: "You must be logged out to access this page"
 
   user_session:
     login:
