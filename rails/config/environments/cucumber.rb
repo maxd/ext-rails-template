@@ -30,3 +30,5 @@ config.gem 'rspec-rails',      :lib => false, :version => '>=1.2.9' unless File.
 config.gem 'spork',            :lib => false, :version => '>=0.7.4' unless File.directory?(File.join(Rails.root, 'vendor/plugins/spork'))
 
 config.gem 'email_spec',       :lib => false, :version => '>=0.4.0'  unless File.directory?(File.join(Rails.root, 'vendor/plugins/email_spec'))
+
+config.action_mailer.default_url_options = { :host => "localhost:3000" }

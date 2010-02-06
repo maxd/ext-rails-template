@@ -1,0 +1,59 @@
+# Remove unused files
+run "rm public/index.html"
+
+# Add used gems
+gem "russian", :version => ">=0.2.5", :source => "http://gemcutter.org"
+gem "haml", :source => "http://gemcutter.org"
+gem "authlogic", :source => "http://gemcutter.org"
+gem "acl9", :source => "http://gemcutter.org"
+gem "validation_reflection", :source => "http://gemcutter.org"
+gem "formtastic", :source => "http://gemcutter.org"
+
+# Update database.yml file (add section for cucumber)
+gsub_file "config/database.yml", /test:/mi do
+  "test: &TEST"
+end
+
+File.open("config/database.yml", "a") do |f|
+  f.write "\n"
+  f.write "cucumber:\n"
+  f.write "  <<: *TEST\n"
+end
+
+# Additional application files
+
+<%= add_file "app/**/*.*" %>
+
+
+<%= add_file "config/environments/cucumber.rb" %>
+<%= add_file "config/initializers/formtastic.rb" %>
+<%= add_file "config/initializers/i18n.rb" %>
+<%= add_file "config/locales/en.yml" %>
+<%= add_file "config/cucumber.yml" %>
+<%= add_file "config/routes.rb" %>
+
+
+<%= add_file "db/migrate/**/*.*" %>
+<%= add_file "db/seeds.rb" %>
+
+<%= add_file "features/**/*.*" %>
+
+<%= add_file "lib/**/*.*" %>
+
+<%= add_file "spec/**/*.*" %>
+
+<%= add_file "public/stylesheets/sass/**/*.*" %>
+<%= add_file "public/stylesheets/clearfix.css" %>
+<%= add_file "public/stylesheets/formtastic.css" %>
+<%= add_file "public/stylesheets/formtastic_changes.css" %>
+<%= add_file "public/stylesheets/reset.css" %>
+
+# Execute rake tasks
+# rake "gems:install", :sudo => true
+rake "secret"
+
+# Initialize git repository
+git :init
+git :add => "."
+git :commit => "-a -m 'Initial commit'"
+
