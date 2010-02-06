@@ -1,0 +1,33 @@
+- content_for :style do
+  h1 { font-size: 2em; margin-bottom: 1em; }
+  table { width: 600px; margin: 0 auto; padding: 0 5px; }
+
+%h1 User Profile
+
+%table
+  %tbody
+    %tr
+      %td Login
+      %td= @user.login
+    %tr
+      %td Email
+      %td= @user.email
+    %tr
+      %td Login count
+      %td= @user.login_count
+    %tr
+      %td Last login at
+      %td= l(@user.last_login_at.localtime, :format => :short)
+    %tr
+      %td Current login at
+      %td= l(@user.current_login_at.localtime, :format => :short)
+    %tr
+      %td Last login ip
+      %td= @user.last_login_ip
+    %tr
+      %td Current login ip
+      %td= @user.current_login_ip
+  %tfoot
+    %tr
+      %td &nbsp;
+      %td= link_to 'Edit', edit_profile_path

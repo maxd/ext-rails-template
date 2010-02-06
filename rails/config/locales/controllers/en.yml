@@ -1,0 +1,22 @@
+en:
+  user_session:
+    login:
+      success_login: "Login successful!"
+
+    logout:
+      success_logout: "Logout successful!"
+
+    register:
+      account_registred: "Account registered!"
+
+    request_reset_password:
+      email_notification: "Instructions to reset your password have been emailed to you. Please check your email."
+      nonexistent_email: "No user was found with that email address"
+
+    reset_password:
+      password_updated: "Password successfully updated"
+
+    load_user_using_perishable_token:
+      wrong_perishable_token: "We're sorry, but we could not locate your account. If you are having issues try
+                               copying and pasting the URL from your email into your browser or restarting the 
+                               reset password process."

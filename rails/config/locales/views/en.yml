@@ -1,0 +1,24 @@
+en:
+  user_session:
+    login:
+      title: "Login"
+      login: "Login"
+      reset_password: "Reset password"
+
+    logout:
+
+    register:
+      title: "Register"
+      register: "Register"
+
+    request_reset_password:
+      send_request: "Send request"
+
+    reset_password:
+      title: "Change password"
+      reset: "Reset Password"
+
+    edit_profile:
+      title: "Change Profile"
+      change: "Change"
+

@@ -1,0 +1,39 @@
+/* User navigation */
+
+=main-navigation-link
+  display: block
+  padding: 3px 10px
+  text-decoration: none
+
+.app-main-navigation
+  width: 100%
+
+  & ul
+    list-style-type: none
+
+    & li
+      background-color: #445566
+      color: #EEEEEE
+      border-top: 1px solid #5C738A
+      margin-right: 5px
+      float: left
+
+      &:hover
+        background-color: #576C82
+        border-top: 1px solid #7593B0
+
+      & a
+        +main-navigation-link
+
+        &:visited, &:link
+          color: #FFFFFF
+
+    & li.active
+      background-color: #EEEEEE
+      border-top: 1px solid #FFFFFF
+      color: #364B69
+
+      & a
+      
+        &:visited, &:link
+          color: #364B69

@@ -1,0 +1,17 @@
+form.formtastic input[type="text"], form.formtastic input[type="password"], form.formtastic textarea, form.formtastic select {
+  background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0;
+  border: 1px solid #E5E3D8;
+  padding: 3px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+form.formtastic input[type="submit"], form.formtastic input[type="button"] {
+  background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0;
+  border: 1px solid #AAA;
+  padding: 3px; }
+form.formtastic abbr {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: red; }
+  form.formtastic abbr:before {
+    content: " "; }

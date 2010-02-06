@@ -1,0 +1,6 @@
+.idea
+rerun.txt
+log/*.*
+tmp/*
+coverage/
+db/schema.rb

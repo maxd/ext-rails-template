@@ -1,0 +1,165 @@
+html, body {
+  height: 100%;
+  color: #333;
+  font-family: "Lucida Grande","Helvetica Neue",Arial,sans-serif;
+  font-size: 0.9em;
+  line-height: 1.1em; }
+
+.app-container {
+  background-color: #EBEBEB;
+  min-height: 100%;
+  margin-bottom: -52px; }
+
+.app-header {
+  padding: 5px 20px;
+  background-color: #232C30; }
+
+.app-header {
+  position: relative; }
+
+.app-header h1 {
+  font-size: 2.3em;
+  font-weight: normal;
+  padding: 5px 0;
+  margin: 5px 0; }
+
+.app-header h1 a, .app-header h1 a:link, .app-header h1 a:active, .app-header h1 a:hover, .app-header h1 a:visited {
+  color: #EAEAEA;
+  text-decoration: none; }
+
+.app-wrapper {
+  padding: 20px 20px 0 20px; }
+
+.app-main.app-has-sidebar {
+  float: left;
+  width: 73%; }
+
+.app-sidebar {
+  float: right;
+  width: 25%; }
+
+.app-footer {
+  height: 50px;
+  background-color: #DDD;
+  border-top: 1px solid #BBB;
+  padding: 0 10px; }
+  .app-footer p {
+    text-align: right;
+    line-height: 20px;
+    margin: 15px 0; }
+
+/* User navigation */
+.app-user-navigation {
+  position: absolute;
+  right: 20px;
+  top: 0; }
+  .app-user-navigation ul {
+    list-style-type: none; }
+    .app-user-navigation ul li {
+      padding: 5px 10px;
+      float: left; }
+      .app-user-navigation ul li a {
+        text-decoration: none; }
+        .app-user-navigation ul li a:visited, .app-user-navigation ul li a:link {
+          color: #CDE;
+          border-bottom: 1px dotted #345; }
+        .app-user-navigation ul li a:hover {
+          border-bottom: 1px dotted #CDE;
+          color: #FFF; }
+
+/* User navigation */
+.app-main-navigation {
+  width: 100%; }
+  .app-main-navigation ul {
+    list-style-type: none; }
+    .app-main-navigation ul li {
+      background-color: #445566;
+      color: #EEEEEE;
+      border-top: 1px solid #5C738A;
+      margin-right: 5px;
+      float: left; }
+      .app-main-navigation ul li:hover {
+        background-color: #576C82;
+        border-top: 1px solid #7593B0; }
+      .app-main-navigation ul li a {
+        display: block;
+        padding: 3px 10px;
+        text-decoration: none; }
+        .app-main-navigation ul li a:visited, .app-main-navigation ul li a:link {
+          color: #FFFFFF; }
+    .app-main-navigation ul li.active {
+      background-color: #EEEEEE;
+      border-top: 1px solid #FFFFFF;
+      color: #364B69; }
+      .app-main-navigation ul li.active a:visited, .app-main-navigation ul li.active a:link {
+        color: #364B69; }
+
+.app-flash .flash-message {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  text-align: center;
+  margin: 0 auto 5px;
+  width: 80%; }
+  .app-flash .flash-message p {
+    margin: 8px; }
+.app-flash .error {
+  border: 1px solid #fbb;
+  background-color: #fdd; }
+.app-flash .warning {
+  border: 1px solid #fffaaa;
+  background-color: #ffffcc; }
+.app-flash .notice {
+  border: 1px solid #ddf;
+  background-color: #eef; }
+
+.app-sidebar .app-block {
+  margin-bottom: 20px; }
+  .app-sidebar .app-block h3 {
+    background: #FFF;
+    border-bottom: 1px solid #CCC;
+    border-right: 1px solid #CCC;
+    border-left: 1px solid #DDD;
+    border-top: 1px solid #DDD;
+    padding: 5px 10px;
+    font-weight: bold; }
+  .app-sidebar .app-block ul.app-navigation {
+    list-style-type: none; }
+    .app-sidebar .app-block ul.app-navigation li a {
+      display: block;
+      padding: 5px 10px;
+      color: #6A6A6A;
+      text-decoration: none; }
+      .app-sidebar .app-block ul.app-navigation li a:hover {
+        text-decoration: underline; }
+  .app-sidebar .app-block .app-content {
+    padding: 0 10px; }
+    .app-sidebar .app-block .app-content p {
+      margin: 15px 0;
+      color: #6A6A6A; }
+
+.app-table {
+  width: 100%; }
+  .app-table thead tr th {
+    text-align: left;
+    white-space: nowrap;
+    color: #FFF;
+    background-color: #576C82;
+    font-weight: normal;
+    padding: 4px; }
+  .app-table tbody tr td {
+    border-bottom: 1px solid #AAA;
+    padding: 2px; }
+    .app-table tbody tr td a {
+      color: #07B;
+      text-decoration: none; }
+    .app-table tbody tr td.text {
+      text-align: left; }
+    .app-table tbody tr td.number {
+      text-align: right;
+      padding-right: 1em; }
+    .app-table tbody tr td.data {
+      text-align: left; }
+    .app-table tbody tr td.buttons {
+      text-align: center; }
+  .app-table tbody tr:hover {
+    background-color: #FBFBFB; }

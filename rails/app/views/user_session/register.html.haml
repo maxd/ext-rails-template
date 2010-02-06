@@ -1,0 +1,21 @@
+- content_for :style do
+  div.register-form { width: 500px; margin: 0 auto; }
+  div.register-form h1 { font-size: 2em; margin-bottom: 1em; }
+  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
+  form.formtastic .buttons li.cancel { padding-top: 4px; }
+
+.register-form
+  %h1= t(".title")
+
+  - semantic_form_for @user, :url => register_path do |form|
+    - form.inputs do
+      = form.input :login, :input_html => { :autocomplete => "off" }
+      = form.input :password, :input_html => { :autocomplete => "off" }
+      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
+      = form.input :email, :input_html => { :autocomplete => "off" }
+    - form.buttons do
+      = form.commit_button t(".register")
+      %li.cancel
+        %span
+          or
+          = link_to t("cancel"), :back
