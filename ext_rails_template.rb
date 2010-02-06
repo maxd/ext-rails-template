@@ -1,3 +1,18 @@
+require "base64"
+
+# Helper functions
+
+def binary_file(file_name, base64content, log_action = true)
+  log 'binary_file', file_name if log_action
+  dir, file = [File.dirname(file_name), File.basename(file_name)]
+
+  inside(dir) do
+    File.open(file, "wb") do |f|
+      f.write Base64.decode64(base64content)
+    end
+  end
+end
+
 # Remove unused files
 run "rm public/index.html"
 
@@ -14,11 +29,12 @@ gsub_file "config/database.yml", /test:/mi do
   "test: &TEST"
 end
 
-File.open("config/database.yml", "a") do |f|
-  f.write "\n"
-  f.write "cucumber:\n"
-  f.write "  <<: *TEST\n"
-end
+append_file "config/database.yml", <<-FILE_CONTENT
+
+cucumber:
+  <<: *TEST
+
+FILE_CONTENT
 
 # Additional application files
 
@@ -478,11 +494,11 @@ private
   def access_denied
     if current_user
       store_location
-      flash[:notice] = "You must be logged out to access this page"
+      flash[:notice] = t("logout_to_access")
       redirect_to root_url
     else
       store_location
-      flash[:notice] = "You must be logged in to access this page"
+      flash[:notice] = t("login_to_access") 
       redirect_to login_url
     end
   end
@@ -690,6 +706,8 @@ I18n.default_locale = :en
 file "config/locales/en.yml", %q{
 en:
   cancel: "Cancel"
+  login_to_access: "You must be logged in to access this page"
+  logout_to_access: "You must be logged out to access this page"
 
   user_session:
     login:
@@ -2633,6 +2651,14 @@ table {
 }
 
 }
+
+
+
+binary_file "public/stylesheets/images/input.gif", <<-FILE_CONTENT
+R0lGODlhAgAcAKIAAPf38/7+/fb28fr6+Pn49fz8+////wAAACH5BAAAAAAA
+LAAAAAACABwAAAMOaCYCQGSMUkJQOOvNO08AOw==
+
+FILE_CONTENT
 
 
 

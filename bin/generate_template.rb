@@ -3,6 +3,7 @@
 require "rubygems"
 require "erb"
 require "pathname"
+require "base64"
 
 class Application
 
@@ -44,6 +45,19 @@ class Application
 file "#{rails_file_name}", %q{
 #{content}
 }
+
+    EOF
+  end
+
+  def add_binary_file(rails_file_name)
+    file_name = File.join(@rails_directory, rails_file_name)
+    content = File.open(file_name, "rb").read
+    content = Base64.encode64(content)
+
+    <<-EOF
+binary_file "#{rails_file_name}", <<-FILE_CONTENT
+#{content}
+FILE_CONTENT
 
     EOF
   end
