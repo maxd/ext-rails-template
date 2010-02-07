@@ -23,6 +23,7 @@ gem "authlogic", :source => "http://gemcutter.org"
 gem "acl9", :source => "http://gemcutter.org"
 gem "validation_reflection", :source => "http://gemcutter.org"
 gem "formtastic", :source => "http://gemcutter.org"
+gem "simple-navigation", :source => "http://gemcutter.org"
 
 # Update database.yml file (add section for cucumber)
 gsub_file "config/database.yml", /test:/mi do
@@ -103,12 +104,7 @@ file "app/views/layouts/admin/_user_navigation.html.haml", %q{
 }
 
 file "app/views/layouts/_main_navigation.html.haml", %q{
-.app-main-navigation.clearfix
-  %ul
-    %li{ :class => "active" }
-      %a{ :href => "#" } General
-    %li
-      %a{ :href => "#"} Ideas
+.app-main-navigation.clearfix= render_navigation :context => :main
 }
 
 file "app/views/layouts/application.html.haml", %q{
@@ -149,22 +145,7 @@ file "app/views/layouts/application.html.haml", %q{
 }
 
 file "app/views/layouts/_user_navigation.html.haml", %q{
-.app-user-navigation.clearfix
-  %ul
-    - if !current_user
-      - if ENABLE_USER_REGISTRATION
-        %li
-          %a{ :href => register_path } Register
-      %li
-        %a{ :href => login_path } Login
-    - else
-      %li
-        %a{ :href => profile_path } Profile
-      %li
-        %a{ :href => logout_path } Logout
-
-
-
+.app-user-navigation.clearfix= render_navigation :context => :user
 }
 
 file "app/views/dashboard/index.html.haml", %q{
@@ -195,11 +176,7 @@ file "app/views/dashboard/index.html.haml", %q{
 file "app/views/dashboard/_sidebar.html.haml", %q{
 .app-block
   %h3 Actions
-  %ul.app-navigation
-    %li
-      %a{ :href => "#" } Create...
-    %li
-      %a{ :href => "#" } Edit...
+  .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .app-block
   %h3 Information
@@ -716,11 +693,37 @@ I18n.default_locale = :en
 }
 
 
+file "config/initializers/global_settings.rb", %q{
+# Enable/disable user registration
+ENABLE_USER_REGISTRATION = true
+
+# Enable/disable user to request reset password
+ENABLE_REQUEST_RESET_PASSWORD = true
+}
+
+
+file "config/initializers/simple_navigation.rb", %q{
+config_file_path = File.join(RAILS_ROOT, 'config', 'navigation')
+
+SimpleNavigation.config_file_path = config_file_path
+}
+
+
 file "config/locales/en.yml", %q{
 en:
   cancel: "Cancel"
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
+
+  layouts:
+    main_navigation:
+      dashboard: "Dashboard"
+
+    user_navigation:
+      login: "Login"
+      logout: "Logout"
+      register: "Register"
+      Profile: "Profile"
 
   user_session:
     login:
@@ -761,6 +764,50 @@ en:
       change: "Change"
 
 
+}
+
+
+file "config/navigation/user_navigation.rb", %q{
+# Configures user navigation menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :register, t(".register"), register_path, :if => lambda { current_user.nil? and ENABLE_USER_REGISTRATION }
+    primary.item :login, t(".login"), login_path,          :if => lambda { current_user.nil? }
+    primary.item :profile, t(".profile"), profile_path,    :if => lambda { current_user.present? }
+    primary.item :logout, t(".logout"), logout_path,       :if => lambda { current_user.present? }
+
+  end
+end
+}
+
+file "config/navigation/dashboard_navigation.rb", %q{
+# Configures dashboard sidebar menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :action1, "Action1", "#"
+    primary.item :action2, "Action2", "#"
+
+  end
+end
+}
+
+file "config/navigation/main_navigation.rb", %q{
+# Configures main navigation menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :dashboard, t(".dashboard"), dashboard_path
+
+  end
+end
 }
 
 
@@ -2240,17 +2287,18 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{
     padding: 5px 10px
     font-weight: bold
 
-  ul.app-navigation
-    list-style-type: none
+  .app-sidebar-navigation
+    ul
+      list-style-type: none
 
-    li a
-      display: block
-      padding: 5px 10px
-      color: #6A6A6A
-      text-decoration: none
+      li a
+        display: block
+        padding: 5px 10px
+        color: #6A6A6A
+        text-decoration: none
 
-      &:hover
-        text-decoration: underline
+        &:hover
+          text-decoration: underline
 
   .app-content
     padding: 0 10px
@@ -2293,7 +2341,7 @@ file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
         &:visited, &:link
           color: #FFFFFF
 
-    & li.active
+    & li.app-active-item
       background-color: #EEEEEE
       border-top: 1px solid #FFFFFF
       color: #364B69

@@ -1,10 +1,6 @@
 .app-block
   %h3 Actions
-  %ul.app-navigation
-    %li
-      %a{ :href => "#" } Create...
-    %li
-      %a{ :href => "#" } Edit...
+  .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .app-block
   %h3 Information

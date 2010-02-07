@@ -3,6 +3,16 @@ en:
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
 
+  layouts:
+    main_navigation:
+      dashboard: "Dashboard"
+
+    user_navigation:
+      login: "Login"
+      logout: "Logout"
+      register: "Register"
+      Profile: "Profile"
+
   user_session:
     login:
       title: "Login"

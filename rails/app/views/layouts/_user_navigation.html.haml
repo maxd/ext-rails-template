@@ -1,15 +1,1 @@
-.app-user-navigation.clearfix
-  %ul
-    - if !current_user
-      - if ENABLE_USER_REGISTRATION
-        %li
-          %a{ :href => register_path } Register
-      %li
-        %a{ :href => login_path } Login
-    - else
-      %li
-        %a{ :href => profile_path } Profile
-      %li
-        %a{ :href => logout_path } Logout
-
-
+.app-user-navigation.clearfix= render_navigation :context => :user

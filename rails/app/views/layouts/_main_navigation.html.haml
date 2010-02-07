@@ -1,6 +1,1 @@
-.app-main-navigation.clearfix
-  %ul
-    %li{ :class => "active" }
-      %a{ :href => "#" } General
-    %li
-      %a{ :href => "#"} Ideas
+.app-main-navigation.clearfix= render_navigation :context => :main

@@ -23,6 +23,7 @@ gem "authlogic", :source => "http://gemcutter.org"
 gem "acl9", :source => "http://gemcutter.org"
 gem "validation_reflection", :source => "http://gemcutter.org"
 gem "formtastic", :source => "http://gemcutter.org"
+gem "simple-navigation", :source => "http://gemcutter.org"
 
 # Update database.yml file (add section for cucumber)
 gsub_file "config/database.yml", /test:/mi do
@@ -44,7 +45,10 @@ FILE_CONTENT
 <%= add_file "config/environments/cucumber.rb" %>
 <%= add_file "config/initializers/formtastic.rb" %>
 <%= add_file "config/initializers/i18n.rb" %>
-<%= add_file "config/locales/en.yml" %>
+<%= add_file "config/initializers/global_settings.rb" %>
+<%= add_file "config/initializers/simple_navigation.rb" %>
+<%= add_file "config/locales/*.yml" %>
+<%= add_file "config/navigation/*.rb" %>
 <%= add_file "config/cucumber.yml" %>
 <%= add_file "config/routes.rb" %>
 
