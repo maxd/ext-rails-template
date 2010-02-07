@@ -17,6 +17,11 @@ Spork.prefork do
   require 'cucumber/rails/active_record'
   require 'cucumber/web/tableish'
 
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_enabled") unless ENABLE_USER_REGISTRATION
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_disabled") if ENABLE_USER_REGISTRATION
+
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_enabled") unless ENABLE_REQUEST_RESET_PASSWORD
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_disabled") if ENABLE_REQUEST_RESET_PASSWORD
 
   require 'webrat'
   require 'webrat/core/matchers'

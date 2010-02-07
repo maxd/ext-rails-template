@@ -12,7 +12,8 @@
 .login-form
   .header
     %h1= t(".title")
-    = link_to t(".reset_password"), request_reset_password_path
+    - if ENABLE_REQUEST_RESET_PASSWORD
+      = link_to t(".reset_password"), request_reset_password_path
 
   - semantic_form_for @user_session, :url => login_path do |form|
     - form.inputs do

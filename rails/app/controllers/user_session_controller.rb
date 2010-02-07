@@ -6,7 +6,10 @@ class UserSessionController < ApplicationController
     default :deny
 
     allow logged_in, :to => [ :logout, :profile, :edit_profile ]
-    allow anonymous, :to => [ :login, :register, :request_reset_password, :reset_password ]
+
+    allow anonymous, :to => [ :login ]
+    allow anonymous, :to => [ :request_reset_password, :reset_password ], :if => :enable_request_reset_password?
+    allow anonymous, :to => [ :register ], :if => :enable_user_registration?
   end
 
   def login
@@ -75,6 +78,14 @@ private
       flash[:notice] = t("user_session.load_user_using_perishable_token.wrong_perishable_token")
       redirect_back_or_default root_url
     end
+  end
+
+  def enable_user_registration?
+    ENABLE_USER_REGISTRATION
+  end
+
+  def enable_request_reset_password?
+    ENABLE_REQUEST_RESET_PASSWORD
   end
 
 end

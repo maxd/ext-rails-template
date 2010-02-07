@@ -1,8 +1,9 @@
 .app-user-navigation.clearfix
   %ul
     - if !current_user
-      %li
-        %a{ :href => register_path } Register
+      - if ENABLE_USER_REGISTRATION
+        %li
+          %a{ :href => register_path } Register
       %li
         %a{ :href => login_path } Login
     - else

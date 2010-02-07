@@ -1,7 +1,7 @@
 en:
   cancel: "Cancel"
-  login_to_access: "You must be logged in to access this page"
-  logout_to_access: "You must be logged out to access this page"
+  access_denied: "Access denied."
+  access_denied_try_to_login: "Access denied. Try to log in first."
 
   user_session:
     login:

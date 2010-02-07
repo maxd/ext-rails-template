@@ -25,11 +25,11 @@ private
   def access_denied
     if current_user
       store_location
-      flash[:notice] = t("logout_to_access")
+      flash[:notice] = t("access_denied")
       redirect_to root_url
     else
       store_location
-      flash[:notice] = t("login_to_access") 
+      flash[:notice] = t("access_denied_try_to_login") 
       redirect_to login_url
     end
   end

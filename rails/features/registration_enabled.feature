@@ -1,4 +1,5 @@
-Feature: Registration in application
+@registration_enabled
+Feature: Registration in application feature enabled
   In order to work with advanced features of application
   As anonymous user
   I want to register in application

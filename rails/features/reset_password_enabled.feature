@@ -1,4 +1,5 @@
-Feature: Reset password
+@reset_password_enabled
+Feature: Reset password feature enabled
   In order to restore forgotten password
   A registered user
   Should reset password

@@ -13,15 +13,29 @@ Feature: Anonymous user shouldn't have access for some application resources
     When I go to the login page
     Then I should be on the login page
 
+  @registration_enabled  
   Scenario: Anonymous user should have access to register page
     Given I am a not logined to application
     When I go to the registration page
     Then I should be on the registration page
 
+  @registration_disabled @allow-rescue
+  Scenario: Anonymous user should not have access to register page
+    Given I am a not logined to application
+    When I go to the registration page
+    Then I should be on the login page
+
+  @reset_password_enabled
   Scenario: Anonymous user should have access to request reset password page
     Given I am a not logined to application
     When I go to the request reset password page
     Then I should be on the request reset password page
+
+  @reset_password_disabled @allow-rescue
+  Scenario: Anonymous user should have access to request reset password page
+    Given I am a not logined to application
+    When I go to the request reset password page
+    Then I should be on the login page
 
   @allow-rescue
   Scenario: Anonymous user shouldn't have access to logout page
@@ -46,18 +60,18 @@ Feature: Anonymous user shouldn't have access for some application resources
     Given I am logined to application
     When I go to the login page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."
 
   @allow-rescue
   Scenario: Authenticated user shouldn't have access to register page
     Given I am logined to application
     When I go to the registration page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."
 
   @allow-rescue
   Scenario: Authenticated user shouldn't have access to request reset password page
     Given I am logined to application
     When I go to the request reset password page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."

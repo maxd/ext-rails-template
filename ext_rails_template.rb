@@ -382,7 +382,10 @@ class UserSessionController < ApplicationController
     default :deny
 
     allow logged_in, :to => [ :logout, :profile, :edit_profile ]
-    allow anonymous, :to => [ :login, :register, :request_reset_password, :reset_password ]
+
+    allow anonymous, :to => [ :login ]
+    allow anonymous, :to => [ :request_reset_password, :reset_password ], :if => :enable_request_reset_password?
+    allow anonymous, :to => [ :register ], :if => :enable_user_registration?
   end
 
   def login
@@ -453,6 +456,14 @@ private
     end
   end
 
+  def enable_user_registration?
+    ENABLE_USER_REGISTRATION
+  end
+
+  def enable_request_reset_password?
+    ENABLE_REQUEST_RESET_PASSWORD
+  end
+
 end
 
 }
@@ -496,11 +507,11 @@ private
   def access_denied
     if current_user
       store_location
-      flash[:notice] = t("logout_to_access")
+      flash[:notice] = t("access_denied")
       redirect_to root_url
     else
       store_location
-      flash[:notice] = t("login_to_access") 
+      flash[:notice] = t("access_denied_try_to_login") 
       redirect_to login_url
     end
   end
@@ -708,8 +719,8 @@ I18n.default_locale = :en
 file "config/locales/en.yml", %q{
 en:
   cancel: "Cancel"
-  login_to_access: "You must be logged in to access this page"
-  logout_to_access: "You must be logged out to access this page"
+  access_denied: "Access denied."
+  access_denied_try_to_login: "Access denied. Try to log in first."
 
   user_session:
     login:
@@ -930,49 +941,9 @@ file "db/seeds.rb", %q{
 
 
 
-file "features/reset_password.feature", %q{
-Feature: Reset password
-  In order to restore forgotten password
-  A registered user
-  Should reset password
-
-  Scenario: User select incorrect e-mail
-    Given I am a not logined to application
-    When I go to the request reset password page
-    And fill in "Email" with "unknown@example.com"
-    And press "Send request"
-    Then I should see flash with "No user was found with that email address"
-
-  Scenario: User select correct email and reset password
-    Given I am request reset password for "admin@example.com" email
-    And open reset password page from "admin@example.com" email
-    When I fill in "Password" with "newpass"
-    And fill in "Password confirmation" with "newpass"
-    And press "Reset Password"
-    Then I should see flash with "Password successfully updated"
-    And should be logined to application
-    And I should be able to log in with login "admin" and password "newpass"
-
-  Scenario: User select correct email and enter incorrect reset password
-    Given I am request reset password for "admin@example.com" email
-    And open reset password page from "admin@example.com" email
-    When I fill in "Password" with "newpass"
-    And fill in "Password confirmation" with "newpass2"
-    And press "Reset Password"
-    Then I should see form validation for "Password"
-    Then should not be logined to application
-    And I should be able to log in with login "admin" and password "admin"
-
-  Scenario: User open reset password with nonexistent perishable token
-    When I go to the reset password page with Id "unknown"
-    Then I should see flash with "we could not locate your account"
-    And should not be logined to application
-
-
-}
-
-file "features/registration.feature", %q{
-Feature: Registration in application
+file "features/registration_enabled.feature", %q{
+@registration_enabled
+Feature: Registration in application feature enabled
   In order to work with advanced features of application
   As anonymous user
   I want to register in application
@@ -1154,6 +1125,11 @@ Spork.prefork do
   require 'cucumber/rails/active_record'
   require 'cucumber/web/tableish'
 
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_enabled") unless ENABLE_USER_REGISTRATION
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_disabled") if ENABLE_USER_REGISTRATION
+
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_enabled") unless ENABLE_REQUEST_RESET_PASSWORD
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_disabled") if ENABLE_REQUEST_RESET_PASSWORD
 
   require 'webrat'
   require 'webrat/core/matchers'
@@ -1221,15 +1197,29 @@ Feature: Anonymous user shouldn't have access for some application resources
     When I go to the login page
     Then I should be on the login page
 
+  @registration_enabled  
   Scenario: Anonymous user should have access to register page
     Given I am a not logined to application
     When I go to the registration page
     Then I should be on the registration page
 
+  @registration_disabled @allow-rescue
+  Scenario: Anonymous user should not have access to register page
+    Given I am a not logined to application
+    When I go to the registration page
+    Then I should be on the login page
+
+  @reset_password_enabled
   Scenario: Anonymous user should have access to request reset password page
     Given I am a not logined to application
     When I go to the request reset password page
     Then I should be on the request reset password page
+
+  @reset_password_disabled @allow-rescue
+  Scenario: Anonymous user should have access to request reset password page
+    Given I am a not logined to application
+    When I go to the request reset password page
+    Then I should be on the login page
 
   @allow-rescue
   Scenario: Anonymous user shouldn't have access to logout page
@@ -1254,21 +1244,21 @@ Feature: Anonymous user shouldn't have access for some application resources
     Given I am logined to application
     When I go to the login page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."
 
   @allow-rescue
   Scenario: Authenticated user shouldn't have access to register page
     Given I am logined to application
     When I go to the registration page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."
 
   @allow-rescue
   Scenario: Authenticated user shouldn't have access to request reset password page
     Given I am logined to application
     When I go to the request reset password page
     Then I should be on the dashboard page
-    And should see flash with "You must be logged out to access this page"
+    And should see flash with "Access denied."
 
 }
 
@@ -1334,6 +1324,48 @@ Feature: Show dashboard page
     Given I am sing up user
     When I go to the dashboard page
     Then I should see dashboard page
+}
+
+file "features/reset_password_enabled.feature", %q{
+@reset_password_enabled
+Feature: Reset password feature enabled
+  In order to restore forgotten password
+  A registered user
+  Should reset password
+
+  Scenario: User select incorrect e-mail
+    Given I am a not logined to application
+    When I go to the request reset password page
+    And fill in "Email" with "unknown@example.com"
+    And press "Send request"
+    Then I should see flash with "No user was found with that email address"
+
+  Scenario: User select correct email and reset password
+    Given I am request reset password for "admin@example.com" email
+    And open reset password page from "admin@example.com" email
+    When I fill in "Password" with "newpass"
+    And fill in "Password confirmation" with "newpass"
+    And press "Reset Password"
+    Then I should see flash with "Password successfully updated"
+    And should be logined to application
+    And I should be able to log in with login "admin" and password "newpass"
+
+  Scenario: User select correct email and enter incorrect reset password
+    Given I am request reset password for "admin@example.com" email
+    And open reset password page from "admin@example.com" email
+    When I fill in "Password" with "newpass"
+    And fill in "Password confirmation" with "newpass2"
+    And press "Reset Password"
+    Then I should see form validation for "Password"
+    Then should not be logined to application
+    And I should be able to log in with login "admin" and password "admin"
+
+  Scenario: User open reset password with nonexistent perishable token
+    When I go to the reset password page with Id "unknown"
+    Then I should see flash with "we could not locate your account"
+    And should not be logined to application
+
+
 }
 
 file "features/step_definitions/email_steps.rb", %q{
