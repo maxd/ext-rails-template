@@ -67,7 +67,7 @@ file "app/views/layouts/admin/application.html.haml", %q{
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= Admin::Application::TITLE
     = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "formtastic", "formtastic_changes", "application"
+    = stylesheet_link_tag "reset", "clearfix", "formtastic", "application"
     = yield :head
   %body
     .app-container
@@ -119,7 +119,7 @@ file "app/views/layouts/application.html.haml", %q{
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= ApplicationController::TITLE
     = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "formtastic", "formtastic_changes", "application"
+    = stylesheet_link_tag "reset", "clearfix", "formtastic", "application"
     = yield :head
     - if yield :style
       %style{ :type => "text/css" }
@@ -227,7 +227,7 @@ file "app/views/user_session/register.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), :back
+          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
 
 }
 
@@ -254,7 +254,7 @@ file "app/views/user_session/reset_password.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), :back
+          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
 
 }
 
@@ -278,7 +278,7 @@ file "app/views/user_session/edit_profile.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), :back
+          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
 
 }
 
@@ -309,7 +309,7 @@ file "app/views/user_session/login.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), :back
+          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
       
 
 }
@@ -368,7 +368,7 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), :back
+          = link_to t("cancel"), login_path, :class => "app-active-link"
 }
 
 file "app/controllers/user_session_controller.rb", %q{
@@ -2143,7 +2143,7 @@ file "spec/rcov.opts", %q{
 
 
 
-file "public/stylesheets/sass/_user-navigation.sass", %q{
+file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
 /* User navigation */
 
 .app-user-navigation
@@ -2169,7 +2169,31 @@ file "public/stylesheets/sass/_user-navigation.sass", %q{
 
 }
 
-file "public/stylesheets/sass/_sidebar.sass", %q{
+file "public/stylesheets/sass/theme/_formtastic.sass", %q{
+form.formtastic
+  input[type="text"], input[type="password"], textarea, select
+    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
+    border: 1px solid #E5E3D8
+    padding: 3px
+    -moz-box-sizing: border-box
+    -webkit-box-sizing: border-box
+    box-sizing: border-box
+
+  input[type="submit"], input[type="button"]
+    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
+    border: 1px solid #AAA
+    padding: 3px
+
+  abbr
+    font-weight: bold
+    font-size: 1.1em
+    color: red
+
+    &:before
+      content: " "
+}
+
+file "public/stylesheets/sass/theme/_sidebar.sass", %q{
 .app-sidebar .app-block
   margin-bottom: 20px
 
@@ -2201,6 +2225,128 @@ file "public/stylesheets/sass/_sidebar.sass", %q{
       margin: 15px 0
       color: #6A6A6A
         
+
+}
+
+file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
+/* Main navigation */
+
+=main-navigation-link
+  display: block
+  padding: 3px 10px
+  text-decoration: none
+
+.app-main-navigation
+  width: 100%
+
+  & ul
+    list-style-type: none
+
+    & li
+      background-color: #445566
+      color: #EEEEEE
+      border-top: 1px solid #5C738A
+      margin-right: 5px
+      float: left
+
+      &:hover
+        background-color: #576C82
+        border-top: 1px solid #7593B0
+
+      & a
+        +main-navigation-link
+
+        &:visited, &:link
+          color: #FFFFFF
+
+    & li.active
+      background-color: #EEEEEE
+      border-top: 1px solid #FFFFFF
+      color: #364B69
+
+      & a
+      
+        &:visited, &:link
+          color: #364B69
+
+}
+
+file "public/stylesheets/sass/theme/_application.sass", %q{
+a.app-active-link
+  &:visited, &:link
+    color: #07B
+
+}
+
+file "public/stylesheets/sass/theme/_table.sass", %q{
+.app-table
+  width: 100%
+
+  thead tr
+
+    th
+      text-align: left
+      white-space: nowrap
+      color: #FFF
+      background-color: #576C82
+      font-weight: normal
+      padding: 4px
+
+  tbody
+
+    tr
+
+      td
+        border-bottom: 1px solid #AAA
+        padding: 2px
+
+        a
+          color: #07B
+          text-decoration: none
+
+        &.text
+          text-align: left
+
+        &.number
+          text-align: right
+          padding-right: 1em
+
+        &.data
+          text-align: left
+
+        &.buttons
+          text-align: center
+
+      &:hover
+        background-color: #FBFBFB
+
+        
+}
+
+file "public/stylesheets/sass/theme/_flash.sass", %q{
+.app-flash
+  .flash-message
+    -moz-border-radius: 3px
+    -webkit-border-radius: 3px
+    text-align: center
+    margin: 0 auto 5px
+    width: 80%
+
+    p
+      margin: 8px
+
+  .error
+    border: 1px solid #fbb
+    background-color: #fdd
+
+  .warning
+    border: 1px solid #fffaaa
+    background-color: #ffffcc
+
+  .notice
+    border: 1px solid #ddf
+    background-color: #eef
+
 
 }
 
@@ -2261,150 +2407,14 @@ html, body
 
 file "public/stylesheets/sass/application.sass", %q{
 @import layout
-@import user-navigation
-@import main-navigation
-@import flash
-@import sidebar
-@import table
 
-}
-
-file "public/stylesheets/sass/_main-navigation.sass", %q{
-/* User navigation */
-
-=main-navigation-link
-  display: block
-  padding: 3px 10px
-  text-decoration: none
-
-.app-main-navigation
-  width: 100%
-
-  & ul
-    list-style-type: none
-
-    & li
-      background-color: #445566
-      color: #EEEEEE
-      border-top: 1px solid #5C738A
-      margin-right: 5px
-      float: left
-
-      &:hover
-        background-color: #576C82
-        border-top: 1px solid #7593B0
-
-      & a
-        +main-navigation-link
-
-        &:visited, &:link
-          color: #FFFFFF
-
-    & li.active
-      background-color: #EEEEEE
-      border-top: 1px solid #FFFFFF
-      color: #364B69
-
-      & a
-      
-        &:visited, &:link
-          color: #364B69
-
-}
-
-file "public/stylesheets/sass/_table.sass", %q{
-.app-table
-  width: 100%
-
-  thead tr
-
-    th
-      text-align: left
-      white-space: nowrap
-      color: #FFF
-      background-color: #576C82
-      font-weight: normal
-      padding: 4px
-
-  tbody
-
-    tr
-
-      td
-        border-bottom: 1px solid #AAA
-        padding: 2px
-
-        a
-          color: #07B
-          text-decoration: none
-
-        &.text
-          text-align: left
-
-        &.number
-          text-align: right
-          padding-right: 1em
-
-        &.data
-          text-align: left
-
-        &.buttons
-          text-align: center
-
-      &:hover
-        background-color: #FBFBFB
-
-        
-}
-
-file "public/stylesheets/sass/formtastic_changes.sass", %q{
-form.formtastic
-  input[type="text"], input[type="password"], textarea, select
-    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
-    border: 1px solid #E5E3D8
-    padding: 3px
-    -moz-box-sizing: border-box
-    -webkit-box-sizing: border-box
-    box-sizing: border-box
-
-  input[type="submit"], input[type="button"]
-    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
-    border: 1px solid #AAA
-    padding: 3px
-
-  abbr
-    font-weight: bold
-    font-size: 1.1em
-    color: red
-
-    &:before
-      content: " "
-}
-
-file "public/stylesheets/sass/_flash.sass", %q{
-.app-flash
-  .flash-message
-    -moz-border-radius: 3px
-    -webkit-border-radius: 3px
-    text-align: center
-    margin: 0 auto 5px
-    width: 80%
-
-    p
-      margin: 8px
-
-  .error
-    border: 1px solid #fbb
-    background-color: #fdd
-
-  .warning
-    border: 1px solid #fffaaa
-    background-color: #ffffcc
-
-  .notice
-    border: 1px solid #ddf
-    background-color: #eef
-
+@import theme/application
+@import theme/user-navigation
+@import theme/main-navigation
+@import theme/flash
+@import theme/sidebar
+@import theme/table
+@import theme/formtastic
 
 }
 
@@ -2572,27 +2582,6 @@ form.formtastic fieldset ol li.datetime fieldset ol li label input { display:inl
 
 }
 
-
-file "public/stylesheets/formtastic_changes.css", %q{
-form.formtastic input[type="text"], form.formtastic input[type="password"], form.formtastic textarea, form.formtastic select {
-  background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0;
-  border: 1px solid #E5E3D8;
-  padding: 3px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box; }
-form.formtastic input[type="submit"], form.formtastic input[type="button"] {
-  background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0;
-  border: 1px solid #AAA;
-  padding: 3px; }
-form.formtastic abbr {
-  font-weight: bold;
-  font-size: 1.1em;
-  color: red; }
-  form.formtastic abbr:before {
-    content: " "; }
-
-}
 
 
 file "public/stylesheets/reset.css", %q{

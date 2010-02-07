@@ -64,4 +64,10 @@ FILE_CONTENT
   
 end
 
-Application.new.main
+begin
+  Application.new.main
+rescue => ex
+  puts "Error: #{ex}"
+  puts ex.backtrace.join("\n")
+  exit 1
+end
