@@ -152,8 +152,9 @@ file "app/views/layouts/_user_navigation.html.haml", %q{
 .app-user-navigation.clearfix
   %ul
     - if !current_user
-      %li
-        %a{ :href => register_path } Register
+      - if ENABLE_USER_REGISTRATION
+        %li
+          %a{ :href => register_path } Register
       %li
         %a{ :href => login_path } Login
     - else
@@ -297,7 +298,8 @@ file "app/views/user_session/login.html.haml", %q{
 .login-form
   .header
     %h1= t(".title")
-    = link_to t(".reset_password"), request_reset_password_path
+    - if ENABLE_REQUEST_RESET_PASSWORD
+      = link_to t(".reset_password"), request_reset_password_path
 
   - semantic_form_for @user_session, :url => login_path do |form|
     - form.inputs do
@@ -379,8 +381,8 @@ class UserSessionController < ApplicationController
   access_control do
     default :deny
 
-    allow logged_in, :except => [ :login, :register, :request_reset_password ]
-    allow anonymous, :except => [ :logout, :profile, :edit_profile ] 
+    allow logged_in, :to => [ :logout, :profile, :edit_profile ]
+    allow anonymous, :to => [ :login, :register, :request_reset_password, :reset_password ]
   end
 
   def login

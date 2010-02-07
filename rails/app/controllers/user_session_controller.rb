@@ -5,8 +5,8 @@ class UserSessionController < ApplicationController
   access_control do
     default :deny
 
-    allow logged_in, :except => [ :login, :register, :request_reset_password ]
-    allow anonymous, :except => [ :logout, :profile, :edit_profile ] 
+    allow logged_in, :to => [ :logout, :profile, :edit_profile ]
+    allow anonymous, :to => [ :login, :register, :request_reset_password, :reset_password ]
   end
 
   def login
