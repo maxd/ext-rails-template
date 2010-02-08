@@ -70,6 +70,9 @@ file "app/views/layouts/admin/application.html.haml", %q{
     = javascript_include_tag :defaults
     = stylesheet_link_tag "reset", "clearfix", "formtastic", "application"
     = yield :head
+    - if yield :style
+      %style{ :type => "text/css" }
+        = yield :style
   %body
     .app-container
       .app-header
@@ -90,7 +93,7 @@ file "app/views/layouts/admin/application.html.haml", %q{
             = render :partial => "sidebar"
     .app-footer
       %p
-        = "Copyright &copy; 2010 #{Admin::Application::TITLE}"
+        = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 
 }
 
