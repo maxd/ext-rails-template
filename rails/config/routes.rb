@@ -31,6 +31,8 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
+
+  # User routes 
   map.root :controller => "dashboard"
   map.dashboard "", :controller => "dashboard", :action => "index" 
   map.login "/login", :controller => "user_session", :action => "login"
@@ -42,6 +44,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.request_reset_password "/reset_password/request", :controller => "user_session", :action => "request_reset_password"
   map.reset_password "/reset_password/:id", :controller => "user_session", :action => "reset_password"
+
+  # Administration panel routes
+  map.admin_dashboard "/admin", :controller => "admin/admin_dashboard", :action => "index"
+  map.admin_users "/admin/users", :controller => "admin/users", :action => "index"
 
   # See how all your routes lay out with "rake routes"
 

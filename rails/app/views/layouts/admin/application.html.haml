@@ -15,7 +15,7 @@
       .app-header
         %h1
           %a{ :href => "/" }= Admin::Application::TITLE
-        = render :partial => 'layouts/admin/user_navigation'
+        = render :partial => 'layouts/user_navigation'
         = render :partial => "layouts/admin/main_navigation"
       .app-wrapper.clearfix
         .app-main{ :class => ("app-has-sidebar" if has_partial? "sidebar" ) }

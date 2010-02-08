@@ -1,6 +1,3 @@
 .app-main-navigation.clearfix
-  %ul
-    %li{ :class => "active" }
-      %a{ :href => "#" } General
-    %li
-      %a{ :href => "#"} Ideas
+  %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
+  = render_navigation :context => :admin_main

@@ -51,13 +51,18 @@ file "app/views/notifier/password_reset_instructions.html.haml", %q{
 
 }
 
+file "app/views/admin/users/index.html.haml", %q{
+%h1 Users
+}
+
+file "app/views/admin/admin_dashboard/index.html.haml", %q{
+%h1 Dashboard
+}
+
 file "app/views/layouts/admin/_main_navigation.html.haml", %q{
 .app-main-navigation.clearfix
-  %ul
-    %li{ :class => "active" }
-      %a{ :href => "#" } General
-    %li
-      %a{ :href => "#"} Ideas
+  %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
+  = render_navigation :context => :admin_main
 }
 
 file "app/views/layouts/admin/application.html.haml", %q{
@@ -78,7 +83,7 @@ file "app/views/layouts/admin/application.html.haml", %q{
       .app-header
         %h1
           %a{ :href => "/" }= Admin::Application::TITLE
-        = render :partial => 'layouts/admin/user_navigation'
+        = render :partial => 'layouts/user_navigation'
         = render :partial => "layouts/admin/main_navigation"
       .app-wrapper.clearfix
         .app-main{ :class => ("app-has-sidebar" if has_partial? "sidebar" ) }
@@ -95,15 +100,6 @@ file "app/views/layouts/admin/application.html.haml", %q{
       %p
         = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 
-}
-
-file "app/views/layouts/admin/_user_navigation.html.haml", %q{
-.app-user-navigation.clearfix
-  %ul
-    %li
-      %a{ :href => "#" } Settings
-    %li
-      %a{ :href => "#"} Logout
 }
 
 file "app/views/layouts/_main_navigation.html.haml", %q{
@@ -448,12 +444,38 @@ end
 
 }
 
+file "app/controllers/admin/admin_dashboard_controller.rb", %q{
+class Admin::AdminDashboardController < Admin::Application
+
+  def index
+  end
+
+end
+
+}
+
+file "app/controllers/admin/users_controller.rb", %q{
+class Admin::UsersController < Admin::Application
+
+  def index
+  end
+
+end
+
+}
+
 file "app/controllers/admin/application.rb", %q{
 class Admin::Application < ApplicationController
 
   layout 'admin/application'
 
-  TITLE = "Application Title {Admin Panel}"
+  TITLE = ApplicationController::TITLE
+
+  access_control do
+    default :deny
+
+    allow :admin
+  end
 
 end
 
@@ -561,6 +583,12 @@ class User < ActiveRecord::Base
     Notifier.deliver_password_reset_instructions(self)  
   end
   
+end
+
+}
+
+file "app/helpers/admin/users_helper.rb", %q{
+module Admin::UsersHelper
 end
 
 }
@@ -726,7 +754,13 @@ en:
       login: "Login"
       logout: "Logout"
       register: "Register"
-      Profile: "Profile"
+      profile: "Profile"
+      administration: "Administration"
+
+    admin:
+      main_navigation:
+        dashboard: "Dashboard"
+        users: "Users"
 
   user_session:
     login:
@@ -777,6 +811,7 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
   navigation.items do |primary|
 
+    primary.item :administration, t(".administration"), admin_dashboard_path, :if => lambda { current_user.present? and current_user.has_role?(:admin) }
     primary.item :register, t(".register"), register_path, :if => lambda { current_user.nil? and ENABLE_USER_REGISTRATION }
     primary.item :login, t(".login"), login_path,          :if => lambda { current_user.nil? }
     primary.item :profile, t(".profile"), profile_path,    :if => lambda { current_user.present? }
@@ -808,6 +843,20 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |primary|
 
     primary.item :dashboard, t(".dashboard"), dashboard_path
+
+  end
+end
+}
+
+file "config/navigation/admin_main_navigation.rb", %q{
+# Configures main navigation menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :dashboard, t(".dashboard"), admin_dashboard_path
+    primary.item :users, t(".users"), admin_users_path
 
   end
 end
@@ -860,6 +909,8 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
+
+  # User routes 
   map.root :controller => "dashboard"
   map.dashboard "", :controller => "dashboard", :action => "index" 
   map.login "/login", :controller => "user_session", :action => "login"
@@ -871,6 +922,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.request_reset_password "/reset_password/request", :controller => "user_session", :action => "request_reset_password"
   map.reset_password "/reset_password/:id", :controller => "user_session", :action => "reset_password"
+
+  # Administration panel routes
+  map.admin_dashboard "/admin", :controller => "admin/admin_dashboard", :action => "index"
+  map.admin_users "/admin/users", :controller => "admin/users", :action => "index"
 
   # See how all your routes lay out with "rake routes"
 
@@ -900,6 +955,19 @@ class CreateRoles < ActiveRecord::Migration
 
   def self.down
     drop_table :roles
+  end
+end
+
+}
+
+file "db/migrate/20100208201733_assign_roles.rb", %q{
+class AssignRoles < ActiveRecord::Migration
+  def self.up
+    User.find_by_login("admin").has_role!(:admin)
+  end
+
+  def self.down
+    User.find_by_login("admin").has_no_roles!
   end
 end
 
@@ -2322,7 +2390,11 @@ file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
   text-decoration: none
 
 .app-main-navigation
-  width: 100%
+  .app-main-navigation-prefix
+    color: white
+    float: left
+    padding-top: 4px
+    margin-right: 5px
 
   & ul
     list-style-type: none

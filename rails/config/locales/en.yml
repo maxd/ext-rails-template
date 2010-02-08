@@ -11,7 +11,13 @@ en:
       login: "Login"
       logout: "Logout"
       register: "Register"
-      Profile: "Profile"
+      profile: "Profile"
+      administration: "Administration"
+
+    admin:
+      main_navigation:
+        dashboard: "Dashboard"
+        users: "Users"
 
   user_session:
     login:

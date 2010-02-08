@@ -2,6 +2,12 @@ class Admin::Application < ApplicationController
 
   layout 'admin/application'
 
-  TITLE = "Application Title {Admin Panel}"
+  TITLE = ApplicationController::TITLE
+
+  access_control do
+    default :deny
+
+    allow :admin
+  end
 
 end
