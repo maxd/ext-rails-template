@@ -1,5 +1,7 @@
 class UserSessionController < ApplicationController
 
+  ssl_required :login, :edit_profile
+
   before_filter :load_user_using_perishable_token, :only => [ :reset_password ]
 
   access_control do

@@ -10,4 +10,9 @@ class Admin::Application < ApplicationController
     allow :admin
   end
 
+  # Admin panel required SSL by default
+  def ssl_required?
+    true
+  end
+
 end

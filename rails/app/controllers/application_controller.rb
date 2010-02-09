@@ -2,8 +2,11 @@ class ApplicationController < ActionController::Base
 
   TITLE = "Application Title"
 
-  rescue_from Acl9::AccessDenied, :with => :access_denied
+  include SslRequirement
+  skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)
   
+  rescue_from Acl9::AccessDenied, :with => :access_denied
+
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user  
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
