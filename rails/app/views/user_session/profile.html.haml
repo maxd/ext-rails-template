@@ -15,15 +15,17 @@
     %tr
       %td Login count
       %td= @user.login_count
-    %tr
-      %td Last login at
-      %td= l(@user.last_login_at.localtime, :format => :short)
+    -if @user.last_login_at.present?
+      %tr
+        %td Last login at
+        %td= l(@user.last_login_at.localtime, :format => :short)
     %tr
       %td Current login at
       %td= l(@user.current_login_at.localtime, :format => :short)
-    %tr
-      %td Last login ip
-      %td= @user.last_login_ip
+    - if @user.last_login_ip.present?
+      %tr
+        %td Last login ip
+        %td= @user.last_login_ip
     %tr
       %td Current login ip
       %td= @user.current_login_ip

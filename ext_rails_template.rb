@@ -24,6 +24,7 @@ gem "acl9", :source => "http://gemcutter.org"
 gem "validation_reflection", :source => "http://gemcutter.org"
 gem "formtastic", :source => "http://gemcutter.org"
 gem "simple-navigation", :source => "http://gemcutter.org"
+gem "ssl_requirement", :source => "http://gemcutter.org"
 
 # Update database.yml file (add section for cucumber)
 gsub_file "config/database.yml", /test:/mi do
@@ -310,15 +311,17 @@ file "app/views/user_session/profile.html.haml", %q{
     %tr
       %td Login count
       %td= @user.login_count
-    %tr
-      %td Last login at
-      %td= l(@user.last_login_at.localtime, :format => :short)
+    -if @user.last_login_at.present?
+      %tr
+        %td Last login at
+        %td= l(@user.last_login_at.localtime, :format => :short)
     %tr
       %td Current login at
       %td= l(@user.current_login_at.localtime, :format => :short)
-    %tr
-      %td Last login ip
-      %td= @user.last_login_ip
+    - if @user.last_login_ip.present?
+      %tr
+        %td Last login ip
+        %td= @user.last_login_ip
     %tr
       %td Current login ip
       %td= @user.current_login_ip
@@ -351,6 +354,8 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
 
 file "app/controllers/user_session_controller.rb", %q{
 class UserSessionController < ApplicationController
+
+  ssl_required :login, :edit_profile
 
   before_filter :load_user_using_perishable_token, :only => [ :reset_password ]
 
@@ -477,6 +482,11 @@ class Admin::Application < ApplicationController
     allow :admin
   end
 
+  # Admin panel required SSL by default
+  def ssl_required?
+    true
+  end
+
 end
 
 }
@@ -486,8 +496,11 @@ class ApplicationController < ActionController::Base
 
   TITLE = "Application Title"
 
-  rescue_from Acl9::AccessDenied, :with => :access_denied
+  include SslRequirement
+  skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)
   
+  rescue_from Acl9::AccessDenied, :with => :access_denied
+
   helper :all # include all helpers, all the time
   helper_method :current_user_session, :current_user  
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
