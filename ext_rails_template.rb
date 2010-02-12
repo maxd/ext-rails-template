@@ -54,6 +54,19 @@ file "app/views/notifier/password_reset_instructions.html.haml", %q{
 
 file "app/views/admin/users/index.html.haml", %q{
 %h1 Users
+
+= user_table
+}
+
+file "app/views/admin/users/_sidebar.html.haml", %q{
+.app-block
+  %h3 Actions
+  .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
+
+.app-block
+  %h3 Information
+  .app-content
+    %p New information text for sidebar context                
 }
 
 file "app/views/admin/admin_dashboard/index.html.haml", %q{
@@ -463,6 +476,7 @@ file "app/controllers/admin/users_controller.rb", %q{
 class Admin::UsersController < Admin::Application
 
   def index
+    @users = User.all.paginate
   end
 
 end
@@ -481,6 +495,8 @@ class Admin::Application < ApplicationController
 
     allow :admin
   end
+
+private
 
   # Admin panel required SSL by default
   def ssl_required?
@@ -506,6 +522,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   filter_parameter_logging :password, :password_confirmation
+
+protected  
 
   def current_user
     return @current_user if defined?(@current_user)
@@ -602,6 +620,41 @@ end
 
 file "app/helpers/admin/users_helper.rb", %q{
 module Admin::UsersHelper
+
+  def user_table
+    collection_table(@users, :class => 'app-table') do |t|
+      t.header.hide_when_empty = false
+      t.header.column :login, t('.login')
+      t.header.column :email, t('.email')
+      t.header.column :last_login_ip, t('.last_login_ip')
+      t.header.column :last_login_at, t('.last_login_at')
+      t.header.column :created_at, t('.created_at')
+      t.header.column :actions, ''
+
+      t.rows.alternate = :odd
+      t.rows.empty_caption = "There are no users"
+      t.rows.each do |row, item, index|
+        row.login item.login
+        row.email item.email
+        row.last_login_ip item.last_login_ip
+        row.last_login_at I18n.l(item.last_login_at.localtime, :format => "%e %B %Y")
+        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y")
+        row.actions user_table_actions(item)
+      end
+    end
+  end
+
+  def user_table_actions(item)
+    edit_url = edit_admin_user_path(item)
+    delete_url = delete_admin_user_path(item)
+
+    parts = []
+    parts << link_to(image_tag("edit.png"), edit_url)
+    parts << "&nbsp;"
+    parts << link_to(image_tag("delete.png"), delete_url, :class => "delete")
+    parts.join("\n")
+  end
+  
 end
 
 }
@@ -813,6 +866,18 @@ en:
       title: "Change Profile"
       change: "Change"
 
+  admin:
+    users:
+      index:
+        login: "Login"
+        email: "Email"
+        created_at: "Created At"
+        last_login_at: "Last Login At"
+        last_login_ip: "Last Login IP"
+
+      sidebar:
+        new: "New User..."
+
 
 }
 
@@ -829,6 +894,19 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :login, t(".login"), login_path,          :if => lambda { current_user.nil? }
     primary.item :profile, t(".profile"), profile_path,    :if => lambda { current_user.present? }
     primary.item :logout, t(".logout"), logout_path,       :if => lambda { current_user.present? }
+
+  end
+end
+}
+
+file "config/navigation/admin_users_sidebar_navigation.rb", %q{
+# Configures main navigation menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :new, t(".new"), new_admin_user_path
 
   end
 end
@@ -938,7 +1016,11 @@ ActionController::Routing::Routes.draw do |map|
 
   # Administration panel routes
   map.admin_dashboard "/admin", :controller => "admin/admin_dashboard", :action => "index"
+
   map.admin_users "/admin/users", :controller => "admin/users", :action => "index"
+  map.new_admin_user "/admin/users/new", :controller => "admin/users", :action => "new"
+  map.edit_admin_user "/admin/users/edit/:id", :controller => "admin/users", :action => "edit"
+  map.delete_admin_user "/admin/users/delete/:id", :controller => "admin/users", :action => "delete"
 
   # See how all your routes lay out with "rake routes"
 
@@ -1964,7 +2046,7 @@ end
 file "features/step_definitions/authentication_steps.rb", %q{
 Given /^I am a not logined to application$/ do
   visit dashboard_path
-  controller.current_user.should be_nil
+  controller.send(:current_user).should be_nil
 end
 
 Given /^I am logined to application$/ do
@@ -1980,11 +2062,11 @@ Given /^I am logined to application$/ do
 end
 
 Then /^(?:|I )should be logined to application$/ do
-  controller.current_user.should_not be_nil
+  controller.send(:current_user).should_not be_nil
 end
 
 Then /^(?:|I )should not be logined to application$/ do
-  controller.current_user.should be_nil
+  controller.send(:current_user).should be_nil
 end
 
 
@@ -1992,13 +2074,13 @@ end
 
 file "features/step_definitions/registration_steps.rb", %q{
 Then /^I should be registered in application$/ do
-  controller.current_user.should_not be_nil
-  controller.current_user.login.should == "user"
-  controller.current_user.email.should == "user@example.com"
+  controller.send(:current_user).should_not be_nil
+  controller.send(:current_user).login.should == "user"
+  controller.send(:current_user).email.should == "user@example.com"
 end
 
 Then /^(?:|I )should not be registered in application$/ do
-  controller.current_user.should be_nil
+  controller.send(:current_user).should be_nil
 end
 
 }
