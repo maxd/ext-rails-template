@@ -1,3 +1,7 @@
 %h1 Users
 
 = user_table
+.pagination
+  = will_paginate(@users, :container => false)
+  &nbsp;&nbsp;
+  = page_entries_info(@users)

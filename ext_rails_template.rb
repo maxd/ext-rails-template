@@ -58,6 +58,11 @@ file "app/views/admin/users/index.html.haml", %q{
 %h1 Users
 
 = user_table
+.pagination
+  = will_paginate(@users, :container => false)
+  &nbsp;&nbsp;
+  = page_entries_info(@users)
+
 }
 
 file "app/views/admin/users/new.html.haml", %q{
@@ -487,7 +492,7 @@ class Admin::UsersController < Admin::Application
   navigation :users
 
   def index
-    @users = User.all(:order => "login ASC").paginate
+    @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)
   end
 
   def new
@@ -2499,6 +2504,41 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{
 
 }
 
+file "public/stylesheets/sass/theme/_pagination.sass", %q{
+.pagination
+  :text-align center
+  :padding .3em
+  :margin-top 7px
+  a, span
+    :padding .2em .5em
+  span.disabled
+    :border 1px solid #AAA
+    :color #AAA
+  span.current
+    :font-weight bold
+    :background-color #EEE
+    :color #364B69
+    :border 1px solid #AAA
+  a
+    :border-top 1px solid #5C738A
+    :background #456
+    :color #EEE
+    :text-decoration none
+    &:hover, &:focus
+      :border-top 1px solid #7593B0
+      :background #576C82
+      :color #EEE
+  .page_info
+    :color #aaa
+    :padding-top .8em
+  .prev_page, .next_page
+  .prev_page
+    :margin-right 1em
+  .next_page
+    :margin-left 1em
+
+}
+
 file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
 /* Main navigation */
 
@@ -2845,7 +2885,7 @@ file "public/stylesheets/sass/application.sass", %q{
 @import theme/table
 @import theme/skintastic
 @import theme/admin
-
+@import theme/pagination
 }
 
 file "public/stylesheets/sass/_formtastic_base.sass", %q{
