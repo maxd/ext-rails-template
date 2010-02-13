@@ -79,7 +79,11 @@ file "app/views/admin/users/_sidebar.html.haml", %q{
 .app-block
   %h3 Information
   .app-content
-    %p New information text for sidebar context                
+    %p This page contains information about all users registered in application. You can add,                          |
+    edit or delete users.                                                                                              |
+    %p NOTE: You can't delete general administrator account with login "admin".
+
+
 }
 
 file "app/views/admin/users/_form.html.haml", %q{
