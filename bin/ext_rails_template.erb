@@ -25,6 +25,8 @@ gem "validation_reflection", :source => "http://gemcutter.org"
 gem "formtastic", :source => "http://gemcutter.org"
 gem "simple-navigation", :source => "http://gemcutter.org"
 gem "ssl_requirement", :source => "http://gemcutter.org"
+gem "will_paginate", :source => "http://gemcutter.org"
+gem "table_helper", :source => "http://gemcutter.org"
 
 # Update database.yml file (add section for cucumber)
 gsub_file "config/database.yml", /test:/mi do
@@ -65,11 +67,11 @@ FILE_CONTENT
 
 <%= add_file "public/stylesheets/sass/**/*.*" %>
 <%= add_file "public/stylesheets/clearfix.css" %>
-<%= add_file "public/stylesheets/formtastic.css" %>
-<%= add_file "public/stylesheets/formtastic_changes.css" %>
 <%= add_file "public/stylesheets/reset.css" %>
 
 <%= add_binary_file "public/stylesheets/images/input.gif" %>
+<%= add_binary_file "public/images/edit.png" %>
+<%= add_binary_file "public/images/delete.png" %>
 
 # Execute rake tasks
 # rake "gems:install", :sudo => true

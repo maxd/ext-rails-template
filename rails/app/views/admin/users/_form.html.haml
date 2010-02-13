@@ -1,0 +1,12 @@
+- semantic_form_for [:admin, @user] do |form|
+  - form.inputs do
+    - if @user.new_record?
+      = form.input :login, :required => true
+    = form.input :email, :required => true
+    = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+    = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+  - form.buttons :class => "buttons" do
+    = form.commit_button
+    %li.cancel
+      = t("or")
+      = link_to t("cancel"), admin_users_path, :class => "app-active-link"

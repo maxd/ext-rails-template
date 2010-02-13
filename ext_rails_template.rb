@@ -25,6 +25,8 @@ gem "validation_reflection", :source => "http://gemcutter.org"
 gem "formtastic", :source => "http://gemcutter.org"
 gem "simple-navigation", :source => "http://gemcutter.org"
 gem "ssl_requirement", :source => "http://gemcutter.org"
+gem "will_paginate", :source => "http://gemcutter.org"
+gem "table_helper", :source => "http://gemcutter.org"
 
 # Update database.yml file (add section for cucumber)
 gsub_file "config/database.yml", /test:/mi do
@@ -58,6 +60,12 @@ file "app/views/admin/users/index.html.haml", %q{
 = user_table
 }
 
+file "app/views/admin/users/new.html.haml", %q{
+%h1 New User
+
+= render :partial => "form"
+}
+
 file "app/views/admin/users/_sidebar.html.haml", %q{
 .app-block
   %h3 Actions
@@ -67,6 +75,27 @@ file "app/views/admin/users/_sidebar.html.haml", %q{
   %h3 Information
   .app-content
     %p New information text for sidebar context                
+}
+
+file "app/views/admin/users/_form.html.haml", %q{
+- semantic_form_for [:admin, @user] do |form|
+  - form.inputs do
+    - if @user.new_record?
+      = form.input :login, :required => true
+    = form.input :email, :required => true
+    = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+    = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+  - form.buttons :class => "buttons" do
+    = form.commit_button
+    %li.cancel
+      = t("or")
+      = link_to t("cancel"), admin_users_path, :class => "app-active-link"
+}
+
+file "app/views/admin/users/edit.html.haml", %q{
+%h1 Edit User
+
+= render :partial => "form"
 }
 
 file "app/views/admin/admin_dashboard/index.html.haml", %q{
@@ -87,7 +116,7 @@ file "app/views/layouts/admin/application.html.haml", %q{
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= Admin::Application::TITLE
     = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "formtastic", "application"
+    = stylesheet_link_tag "reset", "clearfix", "application"
     = yield :head
     - if yield :style
       %style{ :type => "text/css" }
@@ -128,7 +157,7 @@ file "app/views/layouts/application.html.haml", %q{
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= ApplicationController::TITLE
     = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "formtastic", "application"
+    = stylesheet_link_tag "reset", "clearfix", "application"
     = yield :head
     - if yield :style
       %style{ :type => "text/css" }
@@ -201,18 +230,16 @@ file "app/views/user_session/register.html.haml", %q{
 - content_for :style do
   div.register-form { width: 500px; margin: 0 auto; }
   div.register-form h1 { font-size: 2em; margin-bottom: 1em; }
-  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
-  form.formtastic .buttons li.cancel { padding-top: 4px; }
 
 .register-form
   %h1= t(".title")
 
-  - semantic_form_for @user, :url => register_path do |form|
+  - semantic_form_for @user, :url => register_path, :html => {:class => "medium-form"} do |form|
     - form.inputs do
-      = form.input :login, :input_html => { :autocomplete => "off" }
-      = form.input :password, :input_html => { :autocomplete => "off" }
-      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
-      = form.input :email, :input_html => { :autocomplete => "off" }
+      = form.input :login, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :email, :required => true
+      = form.input :password, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }, :required => true
     - form.buttons do
       = form.commit_button t(".register")
       %li.cancel
@@ -224,28 +251,22 @@ file "app/views/user_session/register.html.haml", %q{
 
 file "app/views/user_session/reset_password.html.haml", %q{
 - content_for :style do
-  div.login-form { width: 400px; margin: 0 auto; }
+  div.login-form { width: 500px; margin: 0 auto; }
   div.login-form .header h1 { font-size: 2em; margin-bottom: 1em; }
-  form.formtastic { }
-  form.formtastic .inputs input { width: 73% !important; }
-  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
-  form.formtastic fieldset { display: block; }
-  form.formtastic .buttons li.cancel { padding-top: 4px; }
 
 .login-form
   .header
     %h1= t(".title")
 
-  - semantic_form_for @user, :url => reset_password_path(params[:id]) do |form|
+  - semantic_form_for @user, :url => reset_password_path(params[:id]), :html => {:class => "medium-form"} do |form|
     - form.inputs do
-      = form.input :password, :as => :password
-      = form.input :password_confirmation, :as => :password
+      = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
     - form.buttons do
       = form.commit_button t(".reset")
       %li.cancel
-        %span
-          or
-          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = t(:or)
+        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
 
 }
 
@@ -253,23 +274,19 @@ file "app/views/user_session/edit_profile.html.haml", %q{
 - content_for :style do
   div.profile-form { width: 500px; margin: 0 auto; }
   div.profile-form h1 { font-size: 2em; margin-bottom: 1em; }
-  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
-  form.formtastic .buttons li.cancel { padding-top: 4px; }
-
 .profile-form
   %h1= t(".title")
 
-  - semantic_form_for @user, :url => edit_profile_path do |form|
+  - semantic_form_for @user, :url => edit_profile_path, :html => {:class => "medium-form"} do |form|
     - form.inputs do
+      = form.input :email, :required => true
       = form.input :password, :input_html => { :autocomplete => "off" }
       = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
-      = form.input :email, :input_html => { :autocomplete => "off" }
     - form.buttons do
       = form.commit_button t(".change")
       %li.cancel
-        %span
-          or
-          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = t("or")
+        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
 
 }
 
@@ -279,29 +296,22 @@ file "app/views/user_session/login.html.haml", %q{
   div.login-form .header { position: relative; }
   div.login-form .header h1 { font-size: 2em; margin-bottom: 1em; }
   div.login-form .header a { position: absolute; top: 0px; right: 10px; }
-  form.formtastic { }
-  form.formtastic .inputs input { width: 73% !important; }
-  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
-  form.formtastic fieldset { display: block; }
-  form.formtastic .buttons li.cancel { padding-top: 4px; }
-
 .login-form
   .header
     %h1= t(".title")
     - if ENABLE_REQUEST_RESET_PASSWORD
       = link_to t(".reset_password"), request_reset_password_path
 
-  - semantic_form_for @user_session, :url => login_path do |form|
+  - semantic_form_for @user_session, :url => login_path, :html => {:class => "small-form"} do |form|
     - form.inputs do
       = form.input :login
       = form.input :password, :as => :password
-      = form.input :remember_me, :as => :boolean, :required => false
+      = form.input :remember_me, :as => :boolean, :label_html => { :style => "width: 300px; margin-left: 100px; text-align:left" }, :required => false
     - form.buttons do
       = form.commit_button t(".login")
       %li.cancel
-        %span
-          or
-          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = t("or")
+        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
       
 
 }
@@ -349,13 +359,12 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
   div.request-reset-password-form { width: 400px; margin: 0 auto; }
   div.request-reset-password-form h1 { font-size: 2em; margin-bottom: 1em; }
   div.request-reset-password-form p { margin: 7px 0; }
-  form.formtastic fieldset ol li { display: block; margin-bottom: 1em; }
 
 .request-reset-password-form
   %h1 Reset Password
   %p Fill out the form below and instructions to reset your password will be emailed to you:
 
-  - semantic_form_for :request_reset_password do |form|
+  - semantic_form_for :request_reset_password, :html => {:class => "small-form"} do |form|
     = form.inputs :email
     - form.buttons do
       = form.commit_button t(".send_request")
@@ -475,8 +484,44 @@ end
 file "app/controllers/admin/users_controller.rb", %q{
 class Admin::UsersController < Admin::Application
 
+  navigation :users
+
   def index
-    @users = User.all.paginate
+    @users = User.all(:order => "login ASC").paginate
+  end
+
+  def new
+    @user = User.new
+  end
+
+  def create
+    @user = User.new(params[:user])
+    if @user.save
+      redirect_to admin_users_path
+    else
+      render :action => "new"
+    end
+  end
+
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    @user = User.find(params[:id])
+
+    if @user.update_attributes(params[:user])
+      redirect_to admin_users_path
+    else
+      render :action => "edit"
+    end
+  end
+
+  def destroy
+    @idea = User.find(params[:id])
+    @idea.destroy if @idea.login != "admin"
+
+    redirect_to admin_users_path
   end
 
 end
@@ -622,7 +667,7 @@ file "app/helpers/admin/users_helper.rb", %q{
 module Admin::UsersHelper
 
   def user_table
-    collection_table(@users, :class => 'app-table') do |t|
+    collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
       t.header.column :login, t('.login')
       t.header.column :email, t('.email')
@@ -634,10 +679,12 @@ module Admin::UsersHelper
       t.rows.alternate = :odd
       t.rows.empty_caption = "There are no users"
       t.rows.each do |row, item, index|
+        last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
+
         row.login item.login
         row.email item.email
-        row.last_login_ip item.last_login_ip
-        row.last_login_at I18n.l(item.last_login_at.localtime, :format => "%e %B %Y")
+        row.last_login_ip item.last_login_ip || "-"
+        row.last_login_at last_login_at 
         row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y")
         row.actions user_table_actions(item)
       end
@@ -646,12 +693,12 @@ module Admin::UsersHelper
 
   def user_table_actions(item)
     edit_url = edit_admin_user_path(item)
-    delete_url = delete_admin_user_path(item)
+    delete_url = admin_user_path(item)
 
     parts = []
     parts << link_to(image_tag("edit.png"), edit_url)
     parts << "&nbsp;"
-    parts << link_to(image_tag("delete.png"), delete_url, :class => "delete")
+    parts << link_to(image_tag("delete.png"), delete_url, :method => "delete", :class => "delete")
     parts.join("\n")
   end
   
@@ -809,6 +856,7 @@ SimpleNavigation.config_file_path = config_file_path
 file "config/locales/en.yml", %q{
 en:
   cancel: "Cancel"
+  or: "or"
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
 
@@ -1017,10 +1065,9 @@ ActionController::Routing::Routes.draw do |map|
   # Administration panel routes
   map.admin_dashboard "/admin", :controller => "admin/admin_dashboard", :action => "index"
 
-  map.admin_users "/admin/users", :controller => "admin/users", :action => "index"
-  map.new_admin_user "/admin/users/new", :controller => "admin/users", :action => "new"
-  map.edit_admin_user "/admin/users/edit/:id", :controller => "admin/users", :action => "edit"
-  map.delete_admin_user "/admin/users/delete/:id", :controller => "admin/users", :action => "delete"
+  map.namespace :admin do |admin|
+    admin.resources :users
+  end
 
   # See how all your routes lay out with "rake routes"
 
@@ -2416,30 +2463,6 @@ file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
 
 }
 
-file "public/stylesheets/sass/theme/_formtastic.sass", %q{
-form.formtastic
-  input[type="text"], input[type="password"], textarea, select
-    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
-    border: 1px solid #E5E3D8
-    padding: 3px
-    -moz-box-sizing: border-box
-    -webkit-box-sizing: border-box
-    box-sizing: border-box
-
-  input[type="submit"], input[type="button"]
-    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
-    border: 1px solid #AAA
-    padding: 3px
-
-  abbr
-    font-weight: bold
-    font-size: 1.1em
-    color: red
-
-    &:before
-      content: " "
-}
-
 file "public/stylesheets/sass/theme/_sidebar.sass", %q{
 .app-sidebar .app-block
   margin-bottom: 20px
@@ -2575,6 +2598,36 @@ file "public/stylesheets/sass/theme/_table.sass", %q{
         
 }
 
+file "public/stylesheets/sass/theme/_admin.sass", %q{
+.app-admin-users-table
+
+  th.user-login
+    width: auto
+  th.user-email
+    width: 280px    
+  th.user-last_login_ip
+    width: 100px
+  th.user-last_login_at
+    width: 130px
+  th.user-created_at
+    width: 130px
+  th.user-actions
+    width: 50px
+
+  td.user-login
+
+  td.user-email
+
+  td.user-last_login_ip
+
+  td.user-last_login_at
+
+  td.user-created_at
+
+  td.user-actions
+    text-align: center    
+}
+
 file "public/stylesheets/sass/theme/_flash.sass", %q{
 .app-flash
   .flash-message
@@ -2600,6 +2653,129 @@ file "public/stylesheets/sass/theme/_flash.sass", %q{
     background-color: #eef
 
 
+}
+
+file "public/stylesheets/sass/theme/_skintastic.sass", %q{
+form.formtastic
+  +bold-labels
+  +float-form-right(100%,20%,72%,2%)
+  &.small-form
+    +float-form-right(400px,100px,280px,14px,"buttons-left")
+  &.medium-form
+    +float-form-right(500px,170px,300px,14px,"buttons-left")
+  &.large-form
+    +float-form-right(600px,200px,380px,14px,"buttons-left")
+
+  // <li> Field wrappers
+  li
+    :padding 10px 0px
+    // <li> Check/Radio wrappers
+    li
+      :padding 0
+  //--------------------------------------------------------
+  // Fieldsets
+  //--------------------------------------------------------
+  fieldset
+    :margin-top 20px
+  // Be sure to override styling for nested fieldsets
+  li
+    fieldset
+      :padding 0
+  //--------------------------------------------------------
+  // Legend & Labels
+  //--------------------------------------------------------
+  legend, label
+    // Set color manually to override IE's stupid rules for legends
+    :color #333
+  label, .label
+    :padding-bottom 5px
+    // required * <--styling
+    abbr
+      :color #f00
+      :font-weight bold
+      &:before
+        :content " "
+  label
+    :line-height 1.4em
+    :font-size 13px
+  legend
+    span
+      :font-size 1.4em
+      // Set lineheight for dumb IE
+      :line-height 1em
+      &.label
+        :font-size 1em
+  //--------------------------------------------------------
+  // Inputs
+  //--------------------------------------------------------
+  select
+    :padding 3px
+  input, textarea, select
+    :font-family inherit
+    :font-size 14px
+  textarea, input
+    :border 1px solid #999
+    :padding 6px 8px
+    :line-height 100%
+  input[type="text"], input[type="password"], textarea, select
+    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
+    border: 1px solid #E5E3D8
+    padding: 3px
+    -moz-box-sizing: border-box
+    -webkit-box-sizing: border-box
+    box-sizing: border-box
+  input[type="submit"], input[type="button"]
+    background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
+    border: 1px solid #AAA
+    padding: 3px
+  //--------------------------------------------------------
+  // Date Time Styling
+  //--------------------------------------------------------
+  .date, .time, .datetime
+    li
+      :margin 0 0.3em 0 0
+  //--------------------------------------------------------
+  // Feedback (Requirements, Errors and Hints)
+  // Add horizontal margin/padding with care as it can
+  // break the layout on floats!
+  //--------------------------------------------------------
+  #errorExplanation
+    li
+      :margin-left 15px
+  form p, .errors
+    :padding 3px 0px
+  .required
+    input,textarea,select
+      :background-color #fff
+  .error
+    input,textarea,select
+      :background-color #fcc
+      :border 1px solid #f66
+  .optional
+    input,textarea,select
+      :background-color #fff
+  .errors
+    :color #a00
+    li
+      :margin-left 1.2em
+  p.inline-errors
+    :color #f00
+  p.inline-hints
+    :color #777
+    :padding-top 4px
+  //--------------------------------------------------------
+  // Submit Buttons
+  //--------------------------------------------------------
+  .buttons
+    :padding-top 8px
+    :padding-bottom 8px
+    :margin-top 8px
+    li
+      :padding-right 0.5em
+    li.cancel
+      :padding-top 1.1em
+    input
+      :border 1px solid #999
 }
 
 file "public/stylesheets/sass/_layout.sass", %q{
@@ -2659,6 +2835,7 @@ html, body
 
 file "public/stylesheets/sass/application.sass", %q{
 @import layout
+@import _formtastic_base
 
 @import theme/application
 @import theme/user-navigation
@@ -2666,8 +2843,636 @@ file "public/stylesheets/sass/application.sass", %q{
 @import theme/flash
 @import theme/sidebar
 @import theme/table
-@import theme/formtastic
+@import theme/skintastic
+@import theme/admin
 
+}
+
+file "public/stylesheets/sass/_formtastic_base.sass", %q{
+//
+// FORMTASTIC SASS
+// Flexible styling for formtastic forms
+// http://www.github.com/active-stylus/formtastic-sass
+//
+//--------------------------------------------------------
+// STACKED FORMS
+// Labels fill up the full width of the form
+// Inputs are on new lines
+//--------------------------------------------------------
+//
+// Arguments:
+//
+// +stack-form(full-width, input-width, submit-button-align)
+//
+// Example:
+//
+// form.formtastic
+//   +stack-form(300px,"full","right")
+//
+// Default Settings:
+//
+!stacked_fieldset=100%
+// Full width of the fieldset
+//
+!stacked_input="auto"
+// "auto"   = automatic widths
+// "full"   = same width as form
+// "960px"  = custom width
+//
+!stacked_padding=0
+// Left padding on all labels and inputs
+//
+!stacked_button_align="buttons-left"
+// "buttons-left"   = float submit button left
+// "buttons-right"  = float submit button right
+// "buttons-full"   = submit button matches input width
+//
+!stacked_select_width = "select-auto"
+// "select-auto"   = default width
+// "select-full"  = same as specified input width
+//
+//--------------------------------------------------------
+// FLOATED FORMS
+// Column layout with labels left of the inputs
+// Comes in 2 flavors for text alignment of the labels
+//--------------------------------------------------------
+//
+// Arguments:
+//
+// +float-form-left(total-width, label-width, input-width, label-padding-x, submit-align)
+//
+// Examples:
+//
+// form.lefty
+//   +float-form-left(800px,500px,200px,6px,"buttons-left")
+//
+// form.righty
+//   +float-form-right(800px,500px,200px,6px,"buttons-left")
+//
+//--------------------------------------------------------
+// Default Settings:
+// (do not mix units because calculations are made)
+//
+!floated_total_width = 100%
+// Total Width of form
+//
+!floated_input_width = 70%
+// Width of inputs
+//
+!floated_label_width = 20%
+// Width of Label
+//
+!floated_label_padding_x = 0
+// How far labels are spaced from inputs
+//
+!floated_button_align = "buttons-left"
+// "buttons-left"   = float submit button left
+// "buttons-right"  = float submit button right
+// "buttons-full"   = submit button matches input width
+//
+!floated_label_text_align = "left"
+// "left"
+// "right"
+// "center"
+//
+!floated_select_width = "select-auto"
+// "select-auto"   = default width
+// "select-full"  = same as specified input width
+//
+//========================================================
+// FORMTASTIC STYLING
+// Note: Be careful when modifying widths and
+// horizontal padding/margins as you can break layouts
+//========================================================
+=clearfix
+  *display: inline-block
+  &:after
+    content: " "
+    display: block
+    height: 0
+    clear: both
+    visibility: hidden
+//
+//
+//
+//--------------------------------------------------------
+//========================================================
+// Base stuff (do not edit unless you are smarter than me :p)
+//========================================================
+//--------------------------------------------------------
+//
+//
+//
+//--------------------------------------------------------
+// Generic Mixins
+//--------------------------------------------------------
+=float-labels(!width,!padding=0,!direction="left")
+  :width = !width - !padding
+  :text-align = !direction
+  :display inline
+  :float left
+  :clear none
+  @if !padding == 0
+    :padding 0
+  @else
+    :padding-#{!direction} = !padding
+=block(!block_float="clear")
+  :display block
+  @if !block_float=="clear"
+    :clear both
+    :float none
+  @else
+    :float = !block_float
+=inline(!float="none",!clear="none")
+  :display inline
+  :float = !float
+  :clear = !clear
+=reset-form
+  // Reset elements
+  ul, ol, legend, p
+    :margin 0
+    :padding 0
+  li
+    :margin-left 0px
+    :margin-right 0px
+    :padding-left 0px
+    :padding-right 0px
+  // Clearfix fieldsets
+  fieldset
+    :display block
+    +clearfix
+  // * fields
+  abbr, acronym
+    :border 0
+    :font-variant normal
+    :font-weight normal
+  // Reset list styles
+  ol, ul
+    :list-style none
+  // Clearfix label
+  label
+    :display block
+    +clearfix
+  // Align Inputs
+  input, textarea
+    :vertical-align middle
+  // Make Labels Clickable
+  .check_boxes, .radio
+    input
+      :margin 0
+    label
+      :cursor pointer
+  // Hide hidden fields
+  .hidden
+    :display none
+  // Date Time Selects shown inline
+  .date, .time, .datetime
+    li
+      :float left
+      :width auto
+      :clear none
+    label
+      :display none
+      :width auto
+    input
+      :display inline
+      :margin 0
+      :padding 0
+  // Error lists for each input
+  .errors
+    :list-style square
+    li
+      :padding 0
+      :border none
+      :display list-item
+      :float none
+      :clear both
+  .inputs
+    :z-index 99
+  // Float Submit Buttons
+  .buttons li
+    :float left
+  // Reset Nested Fieldset & Legends
+  li
+    +clearfix
+    :display block
+    fieldset
+      :border none
+      :position relative
+      :margin-top 0px
+    legend
+      :display block
+      :margin-bottom 0
+    .label
+      :display block
+      :clear both
+      :background transparent
+    // Reset lists for checkboxes and radio buttons
+    ol
+      :float left
+      :margin 0
+      li
+        :padding 0
+        :border 0
+        :display inline
+//
+//--------------------------------------------------------
+// Form Stack
+//--------------------------------------------------------
+//
+=stack-form(!stacked_fieldset, !stacked_input, !stacked_padding, !stacked_button_align, !stacked_select_width)
+  +reset-form
+  fieldset
+    :width = !stacked_fieldset
+  ol
+    :padding-left = !stacked_padding
+  input
+    :clear both
+    :float none
+  li
+    +block
+    :width = !stacked_fieldset
+    ol
+      :padding 0
+    li
+      :clear none
+      :width auto
+    fieldset
+      legend, legend .label
+        :display block
+        :clear both
+      .label
+        :position relative
+      label, input
+        :width auto
+  .date, .time, .datetime
+    ol
+      :width = !stacked_fieldset
+    li
+      :display inline
+      :clear none
+      :float left
+      :padding-right = !stacked_padding / 2
+  .checkbox, .radio
+    li
+      :display block
+    input
+      :border none
+  label
+    +block
+    :width = !stacked_input
+  input, textarea
+    @if !stacked_input=="full"
+      :width = !stacked_fieldset - !stacked_padding
+    @else
+      :width = !stacked_input
+  select
+    @if !stacked_select_width == "select-auto"
+      :width auto
+    @else
+      :width = !stacked_input
+  .errors li
+    :display list-item
+  .buttons
+    ol
+      :padding-left = !stacked_padding
+      :padding-right = !stacked_padding
+    li
+      @if !stacked_button_align == "buttons-left"
+        :float left
+      @if !stacked_button_align == "buttons-right"
+        :float right
+      :width auto
+      :clear none
+      :display inline
+    input
+      @if !stacked_button_align == "buttons-full"
+        :width = !stacked_fieldset
+      @else
+        :width auto
+  #errorExplanation
+    :width = !stacked_fieldset - !stacked_padding
+  .label
+    // Legend Left Margin Hack for IE
+    :#left -0.5em
+    :#position relative
+//
+//--------------------------------------------------------
+// Float Form Core
+//--------------------------------------------------------
+//
+=float-form(!floated_total_width,!floated_label_width,!floated_input_width,!floated_label_padding_x, !floated_button_align, !floated_label_text_align, !floated_select_width )
+  +reset-form
+  fieldset
+    :width = !floated_total_width
+  label
+    :float left
+    :width = !floated_label_width - !floated_label_padding_x
+    :text-align = !floated_label_text_align
+    :padding-#{!floated_label_text_align} = !floated_label_padding_x
+  li
+    ol
+      :padding =  0 ( !floated_total_width - (!floated_input_width + !floated_label_width)) 0 !floated_label_width
+    fieldset
+      legend, legend .label
+        :display block
+      legend
+        +float-labels(!floated_label_width,!floated_label_padding_x,!floated_label_text_align)
+        :width = !floated_total_width - !floated_label_padding_x
+      .label
+        :position absolute
+        :width = !floated_label_width - !floated_label_padding_x
+        :top 0px
+        @if !floated_label_text_align=="right"
+          :left 0
+        @else
+          :left = !floated_label_padding_x
+      label
+        :padding-left 0
+      label, input
+        :width auto
+        :display inline
+        :clear none
+        :text-align left
+      select
+        :padding 0
+        :clear both
+        :display block
+  .inline-hints, .inline-errors, .errors
+    :margin = 0 0 0 !floated_label_width
+  input, textarea
+    :width = !floated_input_width
+  select
+    @if !floated_select_width=="select-auto"
+      :width auto
+    @else
+      :width = !floated_input_width
+  .checkbox, .radio
+    li
+      :display block
+      :clear both
+    input
+      :border none
+  .buttons
+    :padding-left = !floated_label_width
+    :width = !floated_total_width - !floated_label_width
+    input
+      :width auto
+    ol
+      @if !floated_button_align == "buttons-right"
+        :padding-right = !floated_label_padding_x
+    li
+      :width auto
+      @if !floated_button_align == "buttons-right"
+        :float right
+      @else
+        :float left
+      @if !floated_button_align == "full-buttons"
+        input
+          :width = !floated_input_width
+      @else
+        :display inline
+  #errorExplanation
+    :margin-left = !floated_label_width
+    :width = !floated_input_width
+//
+//--------------------------------------------------------
+// Float Form Left/Right
+//--------------------------------------------------------
+//
+=float-form-left(!floated_total_width,!floated_label_width,!floated_input_width,!floated_label_padding_x, !floated_button_align)
+  +float-form(!floated_total_width,!floated_label_width,!floated_input_width,!floated_label_padding_x, !floated_button_align,"left")
+
+=float-form-right(!floated_total_width,!floated_label_width,!floated_input_width,!floated_label_padding_x, !floated_button_align)
+  +float-form(!floated_total_width,!floated_label_width,!floated_input_width,!floated_label_padding_x, !floated_button_align,"right")
+
+//
+//--------------------------------------------------------
+// Float Inputs
+//--------------------------------------------------------
+//
+=float-inputs(!margin_right=10px,!line_height=150%)
+  .radio, .check_boxes
+    ol
+      +inline("left")
+    li
+      :width auto
+      +inline("left","none")
+    input
+      :float none
+      :display inline
+    label
+      :display block
+      :clear none
+      :width auto
+      :padding-left 0
+      :line-height = !line_height
+      :margin-right = !margin_right
+//
+=float-inputs-for(!dom_target,!margin_right=10px,!line_height=150%)
+  #{!dom_target}
+    +float-inputs-core(!margin_right,!line_height)
+//
+//--------------------------------------------------------
+// Grid Inputs
+//--------------------------------------------------------
+//
+=grid-inputs(!width=100px,!line_height=150%)
+  .radio, .check_boxes
+    ol
+      +inline("left")
+    li
+      +inline("left","none")
+      :width = !width
+    label
+      +inline("left","none")
+      :width auto
+      :line-height = !line_height
+
+=grid-inputs-for(!dom_target,!width=100px,!line_height=150%)
+  #{!dom_target}
+    +grid-inputs-core(!width,!line_height)
+
+//--------------------------------------------------------
+// Labels
+//--------------------------------------------------------
+=bold-labels(!select="all")
+  li
+    @if !select == "all"
+      label, legend span.label
+        :font-weight bold
+      li
+        label
+          :font-weight normal
+    @if !select == "required"
+      &.required
+        label, .label
+          :font-weight bold
+        li
+          label
+            :font-weight normal
+
+
+//---------------------------------------------------
+// Original Mixin (deprecated!)
+//
+!form_layout="float"
+// Set the general layout of the form
+// "float" will use two column layout with labels on the left
+// "clear" will have labels above the inputs
+
+//
+!total_width=100%
+// Set width of entire fieldset
+//
+// Set label widths and hint/error left margins
+!label_width=24%
+//
+!input_width=70%
+// Set width of inputs, textareas and selects
+//
+!label_pad=2%
+// Set horizontal padding for labels
+
+//
+!label_float="left"
+// Set alignment of labels
+// "clear" puts labels above inputs
+// "left" floats labels left and aligns text left
+// "right" floats labels left and aligns text right
+
+//
+// Set widths of all inputs, textareas and selects (all aligned)
+// False will preserve auto width
+!full_width_inputs=true
+//
+// Set float direction of form buttons ("right" or "left")
+!button_float="left"
+// Installation ------------------------------------------
+//
+//$ sudo gem install haml
+//$ cd rails app
+//$ haml --rails (or merb/sinatra/etc)
+//
+// Set up master Sass file and include it in your html
+// Save this file as _base.sass and include it in master sass like so:
+//
+// @import base.sass
+//
+// Usage -------------------------------------------------
+//
+// form.formtastic
+//   +formtastic-float
+//
+//  This will provide forms of columns with label floated left
+//  For label on top of inputs you can use
+//
+// form.formtastic
+//   +formtastic-block
+//
+// Customize ---------------------------------------------
+//
+// form.formtastic
+//   +formtastic(410px,100px,300px,12px,"right",true)
+//
+// Note: When using pixel values be sure to pad total width by 10px
+// Still looking for a way to make this cleaner
+//--------------------------------------------------------
+=formtastic(!total_width,!label_width,!input_width,!label_pad,!label_float,!button_float,!full_width_inputs)
+  fieldset
+    :width = !total_width
+  ol li
+    label
+      @if !label_float=="clear"
+        :display block
+        :clear both
+        :float none
+      @else
+        :float left
+        :width = !label_width - !label_pad
+        @if !label_float=="left"
+          :padding-left = !label_pad
+          :text-align left
+        @else
+          :text-align right
+    fieldset
+      legend
+        @if !label_float=="clear"
+          :display block
+          :clear both
+          :float none
+          span.label
+            :display block
+            :clear both
+            :float none
+
+        @else
+          :width = !label_width - !label_pad
+          @if !label_float=="left"
+            :padding-left = !label_pad
+          @else
+            :padding-right = !label_pad
+            :text-align right
+          span.label
+            :position absolute
+            :width = !label_width - !label_pad
+      ol
+        @if !label_float=="clear"
+          :padding 0
+        @else
+          :padding =  0 ( !total_width - (!input_width + !label_width)) 0 !label_width
+    @if !label_float == "clear"
+      &.string input, &.password input, &.numeric input, &.text textarea, select
+        :width = !input_width
+    @else
+      p.inline-hints, p.inline-errors, ul.errors
+        :margin = 0 0 0 !label_width
+      @if !full_width_inputs
+        &.string input, &.password input, &.numeric input, &.text textarea, select
+          :width = !input_width
+      &.boolean label
+        :padding-left = !label_width
+  fieldset
+    &.buttons
+      @if !label_float == "clear"
+        :width = !total_width
+      @else
+        :padding-left = !label_width
+        :width = !input_width
+      @if !button_float == "left"
+        ol
+          li
+            :display inline
+            :width auto
+            :float left
+      @if !button_float == "right"
+        ol
+          :padding-left 0
+          @if !label_float == "clear"
+            :width = !input_width
+          li
+            :float right
+            :width auto
+            @if !label_float != "clear"
+              :padding-left = !label_pad
+//--------------------------------------------------------
+// Formtastic Errors on top (aligned with label)
+//
+// Create formtastic.rb in config/initializers and add this:
+// Formtastic::SemanticFormBuilder.inline_order = [:errors, :input, :hints]
+// Best used with right-aligned labels
+// +formtastic(100%,20%,70%,4%,"right")
+//--------------------------------------------------------
+=formtastic-errors-on-top(!label_vertical_margin=21px)
+  ol li.error
+    p.inline-errors
+      :margin-top 0px
+    label, span.label
+      :margin-top = "-#{!label_vertical_margin}"
+      :padding-bottom 18px
+    fieldset label
+      :margin-top 0
+      :padding-bottom 0
 }
 
 
@@ -2690,150 +3495,6 @@ file "public/stylesheets/clearfix.css", %q{
 .clearfix { display: block; }
 /* close commented backslash hack */
 }
-
-
-file "public/stylesheets/formtastic.css", %q{
-/* -------------------------------------------------------------------------------------------------
-
-It's *strongly* suggested that you don't modify this file.  Instead, load a new stylesheet after
-this one in your layouts (eg formtastic_changes.css) and override the styles to suit your needs.
-This will allow you to update formtastic.css with new releases without clobbering your own changes.
-
-This stylesheet forms part of the Formtastic Rails Plugin
-(c) 2008 Justin French
-
---------------------------------------------------------------------------------------------------*/
-
-
-/* NORMALIZE AND RESET - obviously inspired by Yahoo's reset.css, but scoped to just form.formtastic
---------------------------------------------------------------------------------------------------*/
-form.formtastic, form.formtastic ul, form.formtastic ol, form.formtastic li, form.formtastic fieldset, form.formtastic legend, form.formtastic input, form.formtastic textarea, form.formtastic select, form.formtastic p { margin:0; padding:0; }
-form.formtastic fieldset { border:0; }
-form.formtastic em, form.formtastic strong { font-style:normal; font-weight:normal; }
-form.formtastic ol, form.formtastic ul { list-style:none; }
-form.formtastic abbr, form.formtastic acronym { border:0; font-variant:normal; }
-form.formtastic input, form.formtastic textarea, form.formtastic select { font-family:inherit; font-size:inherit; font-weight:inherit; }
-form.formtastic input, form.formtastic textarea, form.formtastic select { font-size:100%; }
-form.formtastic legend { color:#000; }
-
-
-/* FIELDSETS & LISTS
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset { }
-form.formtastic fieldset.inputs { }
-form.formtastic fieldset.buttons { padding-left:25%; }
-form.formtastic fieldset ol { }
-form.formtastic fieldset.buttons li { float:left; padding-right:0.5em; }
-
-/* clearfixing the fieldsets */
-form.formtastic fieldset { display: inline-block; }
-form.formtastic fieldset:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-html[xmlns] form.formtastic fieldset { display: block; }
-* html form.formtastic fieldset { height: 1%; }
-
-
-/* INPUT LIs
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li { margin-bottom:1.5em; }
-
-/* clearfixing the li's */
-form.formtastic fieldset ol li { display: inline-block; }
-form.formtastic fieldset ol li:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-html[xmlns] form.formtastic fieldset ol li { display: block; }
-* html form.formtastic fieldset ol li { height: 1%; }
-
-form.formtastic fieldset ol li.required { }
-form.formtastic fieldset ol li.optional { }
-form.formtastic fieldset ol li.error { }
-  
-
-/* LABELS
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li label { display:block; width:25%; float:left; padding-top:.2em; }
-form.formtastic fieldset ol li li label { line-height:100%; padding-top:0; }
-form.formtastic fieldset ol li li label input { line-height:100%; vertical-align:middle; margin-top:-0.1em;}
-
-
-/* NESTED FIELDSETS AND LEGENDS (radio, check boxes and date/time inputs use nested fieldsets)
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li fieldset { position:relative; }
-form.formtastic fieldset ol li fieldset legend { position:absolute; width:25%; padding-top:0.1em; }
-form.formtastic fieldset ol li fieldset legend span { position:absolute; }
-form.formtastic fieldset ol li fieldset legend.label label { position:absolute; }
-form.formtastic fieldset ol li fieldset ol { float:left; width:74%; margin:0; padding:0 0 0 25%; }
-form.formtastic fieldset ol li fieldset ol li { padding:0; border:0; }
-
-
-/* INLINE HINTS
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li p.inline-hints { color:#666; margin:0.5em 0 0 25%; }
-
-
-/* INLINE ERRORS
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li p.inline-errors { color:#cc0000; margin:0.5em 0 0 25%; }
-form.formtastic fieldset ol li ul.errors { color:#cc0000; margin:0.5em 0 0 25%; list-style:square; }
-form.formtastic fieldset ol li ul.errors li { padding:0; border:none; display:list-item; }
-
-
-/* STRING & NUMERIC OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.string input { width:74%; }
-form.formtastic fieldset ol li.password input { width:74%; }
-form.formtastic fieldset ol li.numeric input { width:74%; }
-
-
-/* TEXTAREA OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.text textarea { width:74%; }
-
-
-/* HIDDEN OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.hidden { display:none; }
-
-
-/* BOOLEAN OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.boolean label { padding-left:25%; width:auto; }
-form.formtastic fieldset ol li.boolean label input { margin:0 0.5em 0 0.2em; }
-
-
-/* RADIO OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.radio { }
-form.formtastic fieldset ol li.radio fieldset ol { margin-bottom:-0.6em; }
-form.formtastic fieldset ol li.radio fieldset ol li { margin:0.1em 0 0.5em 0; }
-form.formtastic fieldset ol li.radio fieldset ol li label { float:none; width:100%; }
-form.formtastic fieldset ol li.radio fieldset ol li label input { margin-right:0.2em; }
-
-
-/* CHECK BOXES (COLLECTION) OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.check_boxes { }
-form.formtastic fieldset ol li.check_boxes fieldset ol { margin-bottom:-0.6em; }
-form.formtastic fieldset ol li.check_boxes fieldset ol li { margin:0.1em 0 0.5em 0; }
-form.formtastic fieldset ol li.check_boxes fieldset ol li label { float:none; width:100%; }
-form.formtastic fieldset ol li.check_boxes fieldset ol li label input { margin-right:0.2em; }
-
-
-
-/* DATE & TIME OVERRIDES
---------------------------------------------------------------------------------------------------*/
-form.formtastic fieldset ol li.date fieldset ol li,
-form.formtastic fieldset ol li.time fieldset ol li,
-form.formtastic fieldset ol li.datetime fieldset ol li { float:left; width:auto; margin:0 .3em 0 0; }
-
-form.formtastic fieldset ol li.date fieldset ol li label,
-form.formtastic fieldset ol li.time fieldset ol li label,
-form.formtastic fieldset ol li.datetime fieldset ol li label { display:none; }
-
-form.formtastic fieldset ol li.date fieldset ol li label input, 
-form.formtastic fieldset ol li.time fieldset ol li label input, 
-form.formtastic fieldset ol li.datetime fieldset ol li label input { display:inline; margin:0; padding:0;  }
-
-}
-
 
 
 file "public/stylesheets/reset.css", %q{
@@ -2898,6 +3559,42 @@ table {
 binary_file "public/stylesheets/images/input.gif", <<-FILE_CONTENT
 R0lGODlhAgAcAKIAAPf38/7+/fb28fr6+Pn49fz8+////wAAACH5BAAAAAAA
 LAAAAAACABwAAAMOaCYCQGSMUkJQOOvNO08AOw==
+
+FILE_CONTENT
+
+
+binary_file "public/images/edit.png", <<-FILE_CONTENT
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/I
+NwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFU
+SURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDK
+kMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8N
+AM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+
+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2
+UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI
+4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLEL
+PN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQj
+dx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC
+
+FILE_CONTENT
+
+
+binary_file "public/images/delete.png", <<-FILE_CONTENT
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/I
+NwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJd
+SURBVDjLpZP7S1NhGMf9W7YfogSJboSEUVCY8zJ31trcps6zTI9bLGJpjp1h
+mkGNxVz4Q6ildtXKXzJNbJRaRmrXoeWx8tJOTWptnrNryre5YCYuI3rh+8vL
++/m8PA/PkwIg5X+y5mJWrxfOUBXm91QZM6UluUmthntHqplxUml2lciF6wrm
+dHriI0Wx3xw2hAediLwZRWRkCPzdDswaSvGqkGCfq8VEUsEyPF1O8Qu3O7A0
+9RbRvjuIttsRbT6HHzebsDjcB4/JgFFlNv9MnkmsEszodIIY7Oaut2OJcSF6
+8Qx8dgv8tmqEL1gQaaARtp5A+N4NzB0lMXxon/uxbI8gIYjB9HytGYuusfiP
+IQcN71kjgnW6VeFOkgh3XcHLvAwMSDPohOADdYQJdF1FtLMZPmslvhZJk2ah
+kgRvq4HHUoWHRDqTEDDl2mDkfheiDgt8pw340/EocuClCuFvboQzb0cwIZgk
+i4KhzlaE6w0InipbVzBfqoK/qRH94i0rgokSFeO11iBkp8EdV8cfJo0yD75a
+E2ZNRvSJ0lZKcBXLaUYmQrCzDT6tDN5SyRqYlWeDLZAg0H4JQ+Jt6M3atNLE
+10VSwQsN4Z6r0CBwqzXesHmV+BeoyAUri8EyMfi2FowXS5dhd7doo2DVII0V
+5BAjigP89GEVAtda8b2ehodU4rNaAW+dGfzlFkyo89GTlcrHYCLpKD+V7yee
+HNzLjkp24Uu1Ed6G8/F8qjqGRzlbl2H2dzjpMg1KdwsHxOlmJ7GTeZC/nesX
+beZ6c9OYnuxUc3fmBuFft/Ff8xMd0s65SXIb/gAAAABJRU5ErkJggg==
 
 FILE_CONTENT
 

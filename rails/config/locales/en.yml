@@ -1,5 +1,6 @@
 en:
   cancel: "Cancel"
+  or: "or"
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
 
@@ -56,4 +57,16 @@ en:
     edit_profile:
       title: "Change Profile"
       change: "Change"
+
+  admin:
+    users:
+      index:
+        login: "Login"
+        email: "Email"
+        created_at: "Created At"
+        last_login_at: "Last Login At"
+        last_login_ip: "Last Login IP"
+
+      sidebar:
+        new: "New User..."
 

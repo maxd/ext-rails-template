@@ -47,7 +47,10 @@ ActionController::Routing::Routes.draw do |map|
 
   # Administration panel routes
   map.admin_dashboard "/admin", :controller => "admin/admin_dashboard", :action => "index"
-  map.admin_users "/admin/users", :controller => "admin/users", :action => "index"
+
+  map.namespace :admin do |admin|
+    admin.resources :users
+  end
 
   # See how all your routes lay out with "rake routes"
 
