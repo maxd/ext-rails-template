@@ -1,3 +1,40 @@
+=table-data-types-align
+  &.left
+    text-align: left
+
+  &.center
+    text-align: center
+
+  &.right
+    text-align: right
+
+  &.text
+    text-align: left
+
+  &.integer
+    text-align: right
+
+  &.float
+    text-align: right
+
+  &.data
+    text-align: right
+
+  &.time
+    text-align: right
+
+  &.datatime
+    text-align: left
+
+  &.email
+    text-align: right
+
+  &.enum
+    text-align: left
+
+  &.buttons
+    text-align: center
+
 .app-table
   width: 100%
 
@@ -8,8 +45,9 @@
       white-space: nowrap
       color: #FFF
       background-color: #576C82
-      font-weight: normal
       padding: 4px
+
+      +table-data-types-align
 
   tbody
 
@@ -19,22 +57,10 @@
         border-bottom: 1px solid #AAA
         padding: 2px
 
+        +table-data-types-align
+
         a
-          color: #07B
           text-decoration: none
-
-        &.text
-          text-align: left
-
-        &.number
-          text-align: right
-          padding-right: 1em
-
-        &.data
-          text-align: left
-
-        &.buttons
-          text-align: center
 
       &:hover
         background-color: #FBFBFB

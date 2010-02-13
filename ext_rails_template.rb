@@ -73,11 +73,11 @@ file "app/views/admin/users/new.html.haml", %q{
 
 file "app/views/admin/users/_sidebar.html.haml", %q{
 .app-block
-  %h3 Actions
+  %h6 Actions
   .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
 
 .app-block
-  %h3 Information
+  %h6 Information
   .app-content
     %p This page contains information about all users registered in application. You can add,                          |
     edit or delete users.                                                                                              |
@@ -98,7 +98,7 @@ file "app/views/admin/users/_form.html.haml", %q{
     = form.commit_button
     %li.cancel
       = t("or")
-      = link_to t("cancel"), admin_users_path, :class => "app-active-link"
+      = link_to t("cancel"), admin_users_path
 }
 
 file "app/views/admin/users/edit.html.haml", %q{
@@ -200,37 +200,53 @@ file "app/views/layouts/_user_navigation.html.haml", %q{
 }
 
 file "app/views/dashboard/index.html.haml", %q{
-%table.app-table
-  %thead
-    %tr
-      %th Name
-      %th Description
-      %th Number
-      %th Actions
-  %tbody
-    %tr
-      %td
-        %a{ :href => "#" } Name - 1
-      %td Description - 1
-      %td.number 1
-      %td.buttons Actions - 1
-    %tr
-      %td
-        %a{ :href => "#" } Name - 2
-      %td Description - 2
-      %td.number 2
-      %td.buttons Actions - 2
+- content_for :style do
+  ul.available-features { list-style-type: circle; margin-left: 2em }
 
+%h1 Welcome
+%p
+  This Rails application has been created with the help of
+  %a(href="http://github.com/maxd/ext-rails-template") ext-rails-template
+  plugin. Now you can modifiy application as you want.
+
+%h2 Available features
+%ul.available-features
+  %li Two layout types (with and without sidebar)
+  %li Admin panel
+  %li SSL support
+  %li
+    Powerfull HTML engine
+    %a(href="http://haml-lang.com") HAML
+    and CSS engine
+    %a(href="http://sass-lang.com") SASS
+  %li
+    Authentication with
+    %a(href="http://github.com/binarylogic/authlogic") authlogic
+    and authorization with
+    %a(href="http://github.com/be9/acl9") acl9
+    plugins
+  %li
+    Navigation menu with
+    %a(href="http://github.com/andi/simple-navigation") simple-navigation
+    plugin
+  %li
+    Powerfull FORM generator
+    %a(href="http://github.com/justinfrench/formtastic") formtastic
+  %li
+    Powerfull HTML table generator
+    %a(href="http://github.com/pluginaweek/table_helper") table_helper
+    and paginator
+    %a(href="http://github.com/mislav/will_paginate") will_paginate
 
 }
 
 file "app/views/dashboard/_sidebar.html.haml", %q{
 .app-block
-  %h3 Actions
+  %h6 Actions
   .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .app-block
-  %h3 Information
+  %h6 Information
   .app-content
     %p New information text for sidebar context                
 }
@@ -254,7 +270,7 @@ file "app/views/user_session/register.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+          = link_to t("cancel"), dashboard_path
 
 }
 
@@ -275,7 +291,7 @@ file "app/views/user_session/reset_password.html.haml", %q{
       = form.commit_button t(".reset")
       %li.cancel
         = t(:or)
-        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = link_to t("cancel"), dashboard_path
 
 }
 
@@ -295,7 +311,7 @@ file "app/views/user_session/edit_profile.html.haml", %q{
       = form.commit_button t(".change")
       %li.cancel
         = t("or")
-        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = link_to t("cancel"), dashboard_path
 
 }
 
@@ -320,7 +336,7 @@ file "app/views/user_session/login.html.haml", %q{
       = form.commit_button t(".login")
       %li.cancel
         = t("or")
-        = link_to t("cancel"), dashboard_path, :class => "app-active-link"
+        = link_to t("cancel"), dashboard_path
       
 
 }
@@ -380,7 +396,7 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
       %li.cancel
         %span
           or
-          = link_to t("cancel"), login_path, :class => "app-active-link"
+          = link_to t("cancel"), login_path
 }
 
 file "app/controllers/user_session_controller.rb", %q{
@@ -463,7 +479,7 @@ private
   def load_user_using_perishable_token
     @user = User.find_using_perishable_token(params[:id])
     unless @user
-      flash[:notice] = t("user_session.load_user_using_perishable_token.wrong_perishable_token")
+      flash[:warning] = t("user_session.load_user_using_perishable_token.wrong_perishable_token")
       redirect_back_or_default root_url
     end
   end
@@ -680,11 +696,11 @@ module Admin::UsersHelper
   def user_table
     collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
-      t.header.column :login, t('.login')
-      t.header.column :email, t('.email')
-      t.header.column :last_login_ip, t('.last_login_ip')
-      t.header.column :last_login_at, t('.last_login_at')
-      t.header.column :created_at, t('.created_at')
+      t.header.column :login, t('.login'), :class => "text"
+      t.header.column :email, t('.email'), :class => "email"
+      t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
+      t.header.column :last_login_at, t('.last_login_at'), :class => "data"
+      t.header.column :created_at, t('.created_at'), :class => "data"
       t.header.column :actions, ''
 
       t.rows.alternate = :odd
@@ -692,12 +708,12 @@ module Admin::UsersHelper
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 
-        row.login item.login
-        row.email item.email
-        row.last_login_ip item.last_login_ip || "-"
-        row.last_login_at last_login_at 
-        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y")
-        row.actions user_table_actions(item)
+        row.login item.login, :class => "text"
+        row.email item.email, :class => "email"
+        row.last_login_ip item.last_login_ip || "-", :class => "right"
+        row.last_login_at last_login_at, :class => item.last_login_at ? "data" : "center"
+        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "data"
+        row.actions user_table_actions(item), :class => "buttons"
       end
     end
   end
@@ -2457,6 +2473,68 @@ file "spec/rcov.opts", %q{
 
 
 
+file "public/stylesheets/sass/theme/core/_headers.sass", %q{
+h1
+  :font-size 1.6em
+  :line-height 1
+  :margin 1em 0 .5em
+
+h2
+  :font-size 1.5em
+  :line-height 1
+  :margin 1.07em 0 .535em
+
+h3
+  :font-size 1.4em
+  :line-height 1
+  :margin 1.14em 0 .57em
+
+h4
+  :font-size 1.3em
+  :line-height 1
+  :margin 1.23em 0 .615em
+
+h5
+  :font-size 1.2em
+  :line-height 1
+  :margin 1.33em 0 .67em
+
+h6
+  :font-size 1em
+  :line-height 1
+  :margin 1.6em 0 .8em
+
+h1, h2, h3, h4, h5, h6
+  :color = !text_color
+
+  &:first-child
+    :margin-top 0
+}
+
+file "public/stylesheets/sass/theme/core/_links.sass", %q{
+!link_color = #3399ff
+!selected_link_color = #CC3333
+
+a:link, a:visited
+  :color = !link_color
+
+a:hover, a:active, a:focus
+  :color = !selected_link_color
+
+}
+
+file "public/stylesheets/sass/theme/core/_core.sass", %q{
+html, body
+  :font normal 13px/20px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
+  :color = !text_color
+
+hr, p
+  :margin-bottom 1.6em
+
+@import headers
+@import links
+}
+
 file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
 /* User navigation */
 
@@ -2466,7 +2544,7 @@ file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
   top: 0
 
   & ul
-    list-style-type: none
+    margin: 0
 
     & li
       padding: 5px 10px
@@ -2484,38 +2562,38 @@ file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
 }
 
 file "public/stylesheets/sass/theme/_sidebar.sass", %q{
-.app-sidebar .app-block
-  margin-bottom: 20px
+!sidebar_header_color = !text_color
+!sidebar_background_color = white
 
-  h3
-    background: #FFF
-    border-bottom: 1px solid #CCC
-    border-right: 1px solid #CCC
-    border-left: 1px solid #DDD
-    border-top: 1px solid #DDD
-    padding: 5px 10px
-    font-weight: bold
+.app-sidebar .app-block
+  :margin-bottom 20px
+
+  h6
+    :background = !sidebar_background_color
+    :color = !sidebar_header_color
+    :border-bottom 1px solid #CCC
+    :border-right 1px solid #CCC
+    :border-left 1px solid #DDD
+    :border-top 1px solid #DDD
+    :padding 5px 10px
+    :margin 0
 
   .app-sidebar-navigation
-    ul
-      list-style-type: none
+    ul li a
+      :display block
+      :padding 5px 10px
+      :color = !text_color
+      :text-decoration none
 
-      li a
-        display: block
-        padding: 5px 10px
-        color: #6A6A6A
-        text-decoration: none
-
-        &:hover
-          text-decoration: underline
+      &:hover
+        :text-decoration underline
 
   .app-content
-    padding: 0 10px
+    :padding 0 10px
 
-    p
-      margin: 15px 0
-      color: #6A6A6A
-        
+    p:first-child
+      :margin-top 10px
+
 
 }
 
@@ -2557,58 +2635,79 @@ file "public/stylesheets/sass/theme/_pagination.sass", %q{
 file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
 /* Main navigation */
 
-=main-navigation-link
-  display: block
-  padding: 3px 10px
-  text-decoration: none
-
 .app-main-navigation
   .app-main-navigation-prefix
-    color: white
-    float: left
-    padding-top: 4px
-    margin-right: 5px
+    :color = !light_text_color
+    :float left
+    :padding-top 4px
+    :margin-right 5px
 
-  & ul
-    list-style-type: none
-
-    & li
-      background-color: #445566
-      color: #EEEEEE
-      border-top: 1px solid #5C738A
-      margin-right: 5px
-      float: left
+  ul
+    li
+      :background-color #445566
+      :color #EEEEEE
+      :border-top 1px solid #5C738A
+      :margin-right 5px
+      :float left
 
       &:hover
-        background-color: #576C82
-        border-top: 1px solid #7593B0
+        :background-color #576C82
+        :border-top 1px solid #7593B0
 
-      & a
-        +main-navigation-link
+      a
+        :display block
+        :padding 3px 10px
+        :text-decoration none
+        :color #FFFFFF
 
-        &:visited, &:link
-          color: #FFFFFF
+    li.app-active-item
+      :background-color #EEEEEE
+      :border-top 1px solid #FFFFFF
+      :color #364B69
 
-    & li.app-active-item
-      background-color: #EEEEEE
-      border-top: 1px solid #FFFFFF
-      color: #364B69
-
-      & a
-      
-        &:visited, &:link
-          color: #364B69
-
-}
-
-file "public/stylesheets/sass/theme/_application.sass", %q{
-a.app-active-link
-  &:visited, &:link
-    color: #07B
+      a
+        :color #364B69
 
 }
 
 file "public/stylesheets/sass/theme/_table.sass", %q{
+=table-data-types-align
+  &.left
+    text-align: left
+
+  &.center
+    text-align: center
+
+  &.right
+    text-align: right
+
+  &.text
+    text-align: left
+
+  &.integer
+    text-align: right
+
+  &.float
+    text-align: right
+
+  &.data
+    text-align: right
+
+  &.time
+    text-align: right
+
+  &.datatime
+    text-align: left
+
+  &.email
+    text-align: right
+
+  &.enum
+    text-align: left
+
+  &.buttons
+    text-align: center
+
 .app-table
   width: 100%
 
@@ -2619,8 +2718,9 @@ file "public/stylesheets/sass/theme/_table.sass", %q{
       white-space: nowrap
       color: #FFF
       background-color: #576C82
-      font-weight: normal
       padding: 4px
+
+      +table-data-types-align
 
   tbody
 
@@ -2630,27 +2730,47 @@ file "public/stylesheets/sass/theme/_table.sass", %q{
         border-bottom: 1px solid #AAA
         padding: 2px
 
+        +table-data-types-align
+
         a
-          color: #07B
           text-decoration: none
-
-        &.text
-          text-align: left
-
-        &.number
-          text-align: right
-          padding-right: 1em
-
-        &.data
-          text-align: left
-
-        &.buttons
-          text-align: center
 
       &:hover
         background-color: #FBFBFB
 
         
+}
+
+file "public/stylesheets/sass/theme/_layout_styles.sass", %q{
+!header_background_color = #232C30
+!background_color = #EBEBEB
+!footer_background_color = #DDDDDD
+
+.app-container
+  :background-color = !background_color
+
+.app-header
+  :padding 5px 20px
+  :background-color = !header_background_color
+
+.app-header h1
+  :font-size 2.0em
+  :padding 5px 0
+  :margin 5px 0
+
+.app-header h1 a
+  &, &:link, &:active, &:hover, &:visited
+    :color = !light_text_color
+    :text-decoration none
+
+.app-footer
+  :background-color = !footer_background_color
+  :border-top 1px solid #BBB
+  :padding 0 10px
+
+  p
+    :text-align right
+    :margin 15px 0
 }
 
 file "public/stylesheets/sass/theme/_admin.sass", %q{
@@ -2663,31 +2783,18 @@ file "public/stylesheets/sass/theme/_admin.sass", %q{
   th.user-last_login_ip
     width: 100px
   th.user-last_login_at
-    width: 130px
+    width: 110px
   th.user-created_at
-    width: 130px
+    width: 110px
   th.user-actions
     width: 50px
-
-  td.user-login
-
-  td.user-email
-
-  td.user-last_login_ip
-
-  td.user-last_login_at
-
-  td.user-created_at
-
-  td.user-actions
-    text-align: center    
 }
 
 file "public/stylesheets/sass/theme/_flash.sass", %q{
 .app-flash
   .flash-message
-    -moz-border-radius: 3px
-    -webkit-border-radius: 3px
+    -moz-border-radius: 4px
+    -webkit-border-radius: 4px
     text-align: center
     margin: 0 auto 5px
     width: 80%
@@ -2700,12 +2807,12 @@ file "public/stylesheets/sass/theme/_flash.sass", %q{
     background-color: #fdd
 
   .warning
-    border: 1px solid #fffaaa
+    border: 1px solid #ffff66
     background-color: #ffffcc
 
   .notice
-    border: 1px solid #ddf
-    background-color: #eef
+    border: 1px solid #c6c6c6
+    background-color: #e6e6e6
 
 
 }
@@ -2836,33 +2943,12 @@ form.formtastic
 file "public/stylesheets/sass/_layout.sass", %q{
 html, body
   height: 100%
-  color: #333
-  font-family: "Lucida Grande","Helvetica Neue",Arial,sans-serif
-  font-size: 0.9em
-  line-height: 1.1em
 
 .app-container
-  background-color: #EBEBEB
   min-height: 100%
   margin-bottom: -52px
 
 .app-header
-  padding: 5px 20px
-  background-color: #232C30
-
-.app-header
-  position: relative
-
-.app-header h1
-  font-size: 2.3em
-  font-weight: normal
-  padding: 5px 0
-  margin: 5px 0
-
-.app-header h1 a
-  &, &:link, &:active, &:hover, &:visited
-    color: #EAEAEA
-    text-decoration: none
 
 .app-wrapper
   padding: 20px 20px 0 20px
@@ -2877,22 +2963,18 @@ html, body
 
 .app-footer
   height: 50px
-  background-color: #DDD
-  border-top: 1px solid #BBB
-  padding: 0 10px
-
-  & p
-    text-align: right
-    line-height: 20px
-    margin: 15px 0
 
 }
 
 file "public/stylesheets/sass/application.sass", %q{
+!text_color = #333
+!light_text_color = #EAEAEA
+
 @import layout
 @import _formtastic_base
 
-@import theme/application
+@import theme/core/core
+@import theme/layout_styles
 @import theme/user-navigation
 @import theme/main-navigation
 @import theme/flash

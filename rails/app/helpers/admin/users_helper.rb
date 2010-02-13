@@ -3,11 +3,11 @@ module Admin::UsersHelper
   def user_table
     collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
-      t.header.column :login, t('.login')
-      t.header.column :email, t('.email')
-      t.header.column :last_login_ip, t('.last_login_ip')
-      t.header.column :last_login_at, t('.last_login_at')
-      t.header.column :created_at, t('.created_at')
+      t.header.column :login, t('.login'), :class => "text"
+      t.header.column :email, t('.email'), :class => "email"
+      t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
+      t.header.column :last_login_at, t('.last_login_at'), :class => "data"
+      t.header.column :created_at, t('.created_at'), :class => "data"
       t.header.column :actions, ''
 
       t.rows.alternate = :odd
@@ -15,12 +15,12 @@ module Admin::UsersHelper
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 
-        row.login item.login
-        row.email item.email
-        row.last_login_ip item.last_login_ip || "-"
-        row.last_login_at last_login_at 
-        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y")
-        row.actions user_table_actions(item)
+        row.login item.login, :class => "text"
+        row.email item.email, :class => "email"
+        row.last_login_ip item.last_login_ip || "-", :class => "right"
+        row.last_login_at last_login_at, :class => item.last_login_at ? "data" : "center"
+        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "data"
+        row.actions user_table_actions(item), :class => "buttons"
       end
     end
   end

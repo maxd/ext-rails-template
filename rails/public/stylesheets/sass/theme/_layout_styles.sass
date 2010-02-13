@@ -1,0 +1,29 @@
+!header_background_color = #232C30
+!background_color = #EBEBEB
+!footer_background_color = #DDDDDD
+
+.app-container
+  :background-color = !background_color
+
+.app-header
+  :padding 5px 20px
+  :background-color = !header_background_color
+
+.app-header h1
+  :font-size 2.0em
+  :padding 5px 0
+  :margin 5px 0
+
+.app-header h1 a
+  &, &:link, &:active, &:hover, &:visited
+    :color = !light_text_color
+    :text-decoration none
+
+.app-footer
+  :background-color = !footer_background_color
+  :border-top 1px solid #BBB
+  :padding 0 10px
+
+  p
+    :text-align right
+    :margin 15px 0

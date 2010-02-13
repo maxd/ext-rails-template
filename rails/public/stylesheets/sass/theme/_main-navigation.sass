@@ -1,43 +1,34 @@
 /* Main navigation */
 
-=main-navigation-link
-  display: block
-  padding: 3px 10px
-  text-decoration: none
-
 .app-main-navigation
   .app-main-navigation-prefix
-    color: white
-    float: left
-    padding-top: 4px
-    margin-right: 5px
+    :color = !light_text_color
+    :float left
+    :padding-top 4px
+    :margin-right 5px
 
-  & ul
-    list-style-type: none
-
-    & li
-      background-color: #445566
-      color: #EEEEEE
-      border-top: 1px solid #5C738A
-      margin-right: 5px
-      float: left
+  ul
+    li
+      :background-color #445566
+      :color #EEEEEE
+      :border-top 1px solid #5C738A
+      :margin-right 5px
+      :float left
 
       &:hover
-        background-color: #576C82
-        border-top: 1px solid #7593B0
+        :background-color #576C82
+        :border-top 1px solid #7593B0
 
-      & a
-        +main-navigation-link
+      a
+        :display block
+        :padding 3px 10px
+        :text-decoration none
+        :color #FFFFFF
 
-        &:visited, &:link
-          color: #FFFFFF
+    li.app-active-item
+      :background-color #EEEEEE
+      :border-top 1px solid #FFFFFF
+      :color #364B69
 
-    & li.app-active-item
-      background-color: #EEEEEE
-      border-top: 1px solid #FFFFFF
-      color: #364B69
-
-      & a
-      
-        &:visited, &:link
-          color: #364B69
+      a
+        :color #364B69

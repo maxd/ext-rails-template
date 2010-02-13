@@ -77,7 +77,7 @@ private
   def load_user_using_perishable_token
     @user = User.find_using_perishable_token(params[:id])
     unless @user
-      flash[:notice] = t("user_session.load_user_using_perishable_token.wrong_perishable_token")
+      flash[:warning] = t("user_session.load_user_using_perishable_token.wrong_perishable_token")
       redirect_back_or_default root_url
     end
   end

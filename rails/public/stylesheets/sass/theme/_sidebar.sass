@@ -1,32 +1,32 @@
-.app-sidebar .app-block
-  margin-bottom: 20px
+!sidebar_header_color = !text_color
+!sidebar_background_color = white
 
-  h3
-    background: #FFF
-    border-bottom: 1px solid #CCC
-    border-right: 1px solid #CCC
-    border-left: 1px solid #DDD
-    border-top: 1px solid #DDD
-    padding: 5px 10px
-    font-weight: bold
+.app-sidebar .app-block
+  :margin-bottom 20px
+
+  h6
+    :background = !sidebar_background_color
+    :color = !sidebar_header_color
+    :border-bottom 1px solid #CCC
+    :border-right 1px solid #CCC
+    :border-left 1px solid #DDD
+    :border-top 1px solid #DDD
+    :padding 5px 10px
+    :margin 0
 
   .app-sidebar-navigation
-    ul
-      list-style-type: none
+    ul li a
+      :display block
+      :padding 5px 10px
+      :color = !text_color
+      :text-decoration none
 
-      li a
-        display: block
-        padding: 5px 10px
-        color: #6A6A6A
-        text-decoration: none
-
-        &:hover
-          text-decoration: underline
+      &:hover
+        :text-decoration underline
 
   .app-content
-    padding: 0 10px
+    :padding 0 10px
 
-    p
-      margin: 15px 0
-      color: #6A6A6A
-        
+    p:first-child
+      :margin-top 10px
+
