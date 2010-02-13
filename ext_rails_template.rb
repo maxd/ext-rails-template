@@ -527,8 +527,10 @@ class Admin::UsersController < Admin::Application
   end
 
   def destroy
-    @idea = User.find(params[:id])
-    @idea.destroy if @idea.login != "admin"
+    if @idea.login != "admin"
+      @idea = User.find(params[:id])
+      @idea.destroy
+    end
 
     redirect_to admin_users_path
   end
@@ -707,7 +709,14 @@ module Admin::UsersHelper
     parts = []
     parts << link_to(image_tag("edit.png"), edit_url)
     parts << "&nbsp;"
-    parts << link_to(image_tag("delete.png"), delete_url, :method => "delete", :class => "delete")
+
+    if item.login == "admin"
+      parts << image_tag("delete.png", :style => "opacity: 0.3")
+    else
+      parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
+                       :confirm => t(".confirm_for_delete", :login => item.login))
+    end
+
     parts.join("\n")
   end
   
@@ -931,6 +940,8 @@ en:
         created_at: "Created At"
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
+
+        confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
 
       sidebar:
         new: "New User..."

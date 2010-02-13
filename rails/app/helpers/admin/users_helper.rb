@@ -32,7 +32,14 @@ module Admin::UsersHelper
     parts = []
     parts << link_to(image_tag("edit.png"), edit_url)
     parts << "&nbsp;"
-    parts << link_to(image_tag("delete.png"), delete_url, :method => "delete", :class => "delete")
+
+    if item.login == "admin"
+      parts << image_tag("delete.png", :style => "opacity: 0.3")
+    else
+      parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
+                       :confirm => t(".confirm_for_delete", :login => item.login))
+    end
+
     parts.join("\n")
   end
   

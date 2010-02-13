@@ -67,6 +67,8 @@ en:
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
 
+        confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
+
       sidebar:
         new: "New User..."
 
