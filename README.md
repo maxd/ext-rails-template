@@ -31,3 +31,5 @@ Screenshots
 -----------
 
 ![ext-rails-template dashboard](http://github.com/maxd/ext-rails-template/raw/master/screenshot01.png)
+
+![ext-rails-template dashboard](http://github.com/maxd/ext-rails-template/raw/master/screenshot02.png)
