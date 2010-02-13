@@ -1,21 +1,37 @@
-%table.app-table
-  %thead
-    %tr
-      %th Name
-      %th Description
-      %th Number
-      %th Actions
-  %tbody
-    %tr
-      %td
-        %a{ :href => "#" } Name - 1
-      %td Description - 1
-      %td.number 1
-      %td.buttons Actions - 1
-    %tr
-      %td
-        %a{ :href => "#" } Name - 2
-      %td Description - 2
-      %td.number 2
-      %td.buttons Actions - 2
+- content_for :style do
+  ul.available-features { list-style-type: circle; margin-left: 2em }
 
+%h1 Welcome
+%p
+  This Rails application has been created with the help of
+  %a(href="http://github.com/maxd/ext-rails-template") ext-rails-template
+  plugin. Now you can modifiy application as you want.
+
+%h2 Available features
+%ul.available-features
+  %li Two layout types (with and without sidebar)
+  %li Admin panel
+  %li SSL support
+  %li
+    Powerfull HTML engine
+    %a(href="http://haml-lang.com") HAML
+    and CSS engine
+    %a(href="http://sass-lang.com") SASS
+  %li
+    Authentication with
+    %a(href="http://github.com/binarylogic/authlogic") authlogic
+    and authorization with
+    %a(href="http://github.com/be9/acl9") acl9
+    plugins
+  %li
+    Navigation menu with
+    %a(href="http://github.com/andi/simple-navigation") simple-navigation
+    plugin
+  %li
+    Powerfull FORM generator
+    %a(href="http://github.com/justinfrench/formtastic") formtastic
+  %li
+    Powerfull HTML table generator
+    %a(href="http://github.com/pluginaweek/table_helper") table_helper
+    and paginator
+    %a(href="http://github.com/mislav/will_paginate") will_paginate
