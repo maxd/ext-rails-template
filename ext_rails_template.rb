@@ -233,10 +233,17 @@ file "app/views/dashboard/index.html.haml", %q{
     Powerfull FORM generator
     %a(href="http://github.com/justinfrench/formtastic") formtastic
   %li
-    Powerfull HTML table generator
+    HTML table generator
     %a(href="http://github.com/pluginaweek/table_helper") table_helper
     and paginator
     %a(href="http://github.com/mislav/will_paginate") will_paginate
+  %li
+    Functional tests based on
+    %a(href="http://github.com/aslakhellesoy/cucumber") cucumber
+    and
+    %a(href="http://github.com/brynary/webrat") webrat
+    engines
+
 
 }
 
