@@ -2,10 +2,10 @@
 Feature: Reset password feature enabled
   In order to restore forgotten password
   A registered user
-  Should reset password
+  Should have ability to restore password
 
   Scenario: User select incorrect e-mail
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the request reset password page
     And fill in "Email" with "unknown@example.com"
     And press "Send request"
@@ -18,7 +18,7 @@ Feature: Reset password feature enabled
     And fill in "Password confirmation" with "newpass"
     And press "Reset Password"
     Then I should see flash with "Password successfully updated"
-    And should be logined to application
+    And should authenticated in application
     And I should be able to log in with login "admin" and password "newpass"
 
   Scenario: User select correct email and enter incorrect reset password
@@ -28,11 +28,11 @@ Feature: Reset password feature enabled
     And fill in "Password confirmation" with "newpass2"
     And press "Reset Password"
     Then I should see form validation for "Password"
-    Then should not be logined to application
+    Then shouldn't authenticated in application
     And I should be able to log in with login "admin" and password "admin"
 
   Scenario: User open reset password with nonexistent perishable token
     When I go to the reset password page with Id "unknown"
     Then I should see flash with "we could not locate your account"
-    And should not be logined to application
+    And shouldn't authenticated in application
 

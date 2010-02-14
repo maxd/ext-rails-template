@@ -6,7 +6,7 @@ end
 
 Given /I am request reset password for "([^\"]*)" email/ do |email|
   steps %Q{
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the request reset password page
     And fill in "Email" with "#{email}"
     And press "Send request"

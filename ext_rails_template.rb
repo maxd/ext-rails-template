@@ -1244,27 +1244,27 @@ Feature: Registration in application feature enabled
   As anonymous user
   I want to register in application
 
-
-  Scenario: Not logined user should see register link on dashboard page
-    Given I am a not logined to application
+  
+  Scenario: Anonymous user should see register link on dashboard page
+    Given I am anonymous user
     When I go to the dashboard page
     Then I should see "/register" link
 
 
   Scenario: Success registration in application
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 | user             |
-      | Password              | password         |
-      | Password Confirmation | password         |
-      | Email                 | user@example.com |
+      | Login                 | maksimka             |
+      | Password              | password             |
+      | Password Confirmation | password             |
+      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should be registered in application
 
 
   Scenario: Fail registration in application with empty fields
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
       | Login                 |                  |
@@ -1280,49 +1280,49 @@ Feature: Registration in application feature enabled
 
 
   Scenario: Fail registration in application with empty login
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 |                  |
-      | Password              | password         |
-      | Password Confirmation | password         |
-      | Email                 | user@example.com |
+      | Login                 |                      |
+      | Password              | password             |
+      | Password Confirmation | password             |
+      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Login" field
     And should not be registered in application
 
 
   Scenario: Fail registration in application with empty password
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 | user             |
-      | Password              |                  |
-      | Password Confirmation | password         |
-      | Email                 | user@example.com |
+      | Login                 | maksimka             |
+      | Password              |                      |
+      | Password Confirmation | password             |
+      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Password" field
     And should not be registered in application
 
 
   Scenario: Fail registration in application with different password and confirmation password
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 | user             |
-      | Password              | password         |
-      | Password Confirmation | password2        |
-      | Email                 | user@example.com |
+      | Login                 | maksimka             |
+      | Password              | password             |
+      | Password Confirmation | password2            |
+      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Password" field
     And should not be registered in application
 
 
   Scenario: Fail registration in application with empty e-mail
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 | user             |
+      | Login                 | maksimka         |
       | Password              | password         |
       | Password Confirmation | password         |
       | Email                 |                  |
@@ -1332,7 +1332,7 @@ Feature: Registration in application feature enabled
 
 
   Scenario: Fail registration in application with login which already registered
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
       | Login                 | admin             |
@@ -1344,13 +1344,75 @@ Feature: Registration in application feature enabled
     And should not be registered in application
 
 
-  Scenario: I can press Cancel link and return to previous page
-    Given I am a not logined to application
+  Scenario: Anonymous user can press Cancel link and return to dashboard page
+    Given I am anonymous user
     When I go to the registration page
     And follow "Cancel"
     Then I should be on the dashboard page
 
     
+}
+
+file "features/application_administrator/sucess_authorization.feature", %q{
+Feature: Application administrator should have access to all pages
+  In order to grant full access to private application functionality
+  A application administrator
+  Should have access to all pages
+
+  Scenario: Application administrator should have access to dashboard page
+    Given I am application administrator
+    When I go to the dashboard page
+    Then I should be on the dashboard page
+
+  Scenario: Application administrator should have access to profile page
+    Given I am application administrator
+    When I go to the profile page
+    Then I should be on the profile page
+
+  Scenario: Application administrator should have access to edit profile page
+    Given I am application administrator
+    When I go to the edit profile page
+    Then I should be on the edit profile page
+
+  Scenario: Application administrator should have access to admin dashboard page
+    Given I am application administrator
+    When I go to the admin dashboard page
+    Then I should be on the admin dashboard page
+
+  Scenario: Application administrator should have access to user list in admin panel
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I should be on the user list in admin panel page
+
+}
+
+file "features/application_administrator/failed_authorization.feature", %q{
+Feature: Application administrator hasn't access to several application pages
+  In order to restrict access to several application pages for authenticated users
+  A application administrator
+  Haven't access to these pages
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to login page (because he login already)
+    Given I am application administrator
+    When I go to the login page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to register page (because he registered already)
+    Given I am application administrator
+    When I go to the registration page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to request reset password page (because he known password already)
+    Given I am application administrator
+    When I go to the request reset password page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
 }
 
 file "features/support/paths.rb", %q{
@@ -1481,94 +1543,76 @@ end
 
 }
 
-file "features/authorization.feature", %q{
-Feature: Anonymous user shouldn't have access for some application resources
-  In order to restrict access for some application resources
-  A anonymous user
-  Shouldn't have access for some application resources
+file "features/support/prerequisites.rb", %q{
+Before do
 
-  Scenario: Anonymous user should have access to dashboard page
-    Given I am a not logined to application
+  # Create user account without administration privileges
+  User.create!(:login => "user", :email => "user@example.com", :password => "user", :password_confirmation => "user")
+
+end
+}
+
+file "features/application_user/sucess_authorization.feature", %q{
+Feature: Application user should have access to dashboard, profile and profile editor pages
+  In order to partially restrict application users functionality in application
+  A application user
+  Should have access to dashboard, profile and profile editor page
+
+  Scenario: Application user should have access to dashboard page
+    Given I am application user
     When I go to the dashboard page
     Then I should be on the dashboard page
 
-  Scenario: Anonymous user should have access to login page
-    Given I am a not logined to application
-    When I go to the login page
-    Then I should be on the login page
-
-  @registration_enabled  
-  Scenario: Anonymous user should have access to register page
-    Given I am a not logined to application
-    When I go to the registration page
-    Then I should be on the registration page
-
-  @registration_disabled @allow-rescue
-  Scenario: Anonymous user should not have access to register page
-    Given I am a not logined to application
-    When I go to the registration page
-    Then I should be on the login page
-
-  @reset_password_enabled
-  Scenario: Anonymous user should have access to request reset password page
-    Given I am a not logined to application
-    When I go to the request reset password page
-    Then I should be on the request reset password page
-
-  @reset_password_disabled @allow-rescue
-  Scenario: Anonymous user should have access to request reset password page
-    Given I am a not logined to application
-    When I go to the request reset password page
-    Then I should be on the login page
-
-  @allow-rescue
-  Scenario: Anonymous user shouldn't have access to logout page
-    Given I am a not logined to application
-    When I go to the logout page
-    Then I should be on the login page
-
-  @allow-rescue
-  Scenario: Anonymous user shouldn't have access to profile page
-    Given I am a not logined to application
+  Scenario: Application user should have access to profile page
+    Given I am application user
     When I go to the profile page
-    Then I should be on the login page
+    Then I should be on the profile page
 
-  @allow-rescue
-  Scenario: Anonymous user shouldn't have access to edit profile page
-    Given I am a not logined to application
+  Scenario: Application user should have access to edit profile page
+    Given I am application user
     When I go to the edit profile page
-    Then I should be on the login page
+    Then I should be on the edit profile page
+
+}
+
+file "features/application_user/failed_authorization.feature", %q{
+Feature: Application user (not application Administrator) should has partial access to private application resource
+  In order to partially restrict access to private application resources
+  A application user (not application Administrator)
+  Should have access to several application pages
 
   @allow-rescue
-  Scenario: Anonymous user shouldn't have access to admin dashboard page
-    Given I am a not logined to application
-    When I go to the admin dashboard page
-    Then I should be on the login page
-
-  @allow-rescue
-  Scenario: Anonymous user shouldn't have access to user list page in admin panel
-    Given I am a not logined to application
-    When I go to the user list in admin panel page
-    Then I should be on the login page
-
-  @allow-rescue
-  Scenario: Authenticated user shouldn't have access to login page
-    Given I am logined to application
+  Scenario: Application user shouldn't have access to login page (because he login already)
+    Given I am application user
     When I go to the login page
     Then I should be on the dashboard page
     And should see flash with "Access denied."
 
   @allow-rescue
-  Scenario: Authenticated user shouldn't have access to register page
-    Given I am logined to application
+  Scenario: Application user shouldn't have access to register page (because he registered already)
+    Given I am application user
     When I go to the registration page
     Then I should be on the dashboard page
     And should see flash with "Access denied."
 
   @allow-rescue
-  Scenario: Authenticated user shouldn't have access to request reset password page
-    Given I am logined to application
+  Scenario: Application user shouldn't have access to request reset password page (because he known password already)
+    Given I am application user
     When I go to the request reset password page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application user shouldn't have access to admin dashboard page
+    Given I am application user
+    When I go to the admin dashboard page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application user shouldn't have access to user list page in admin panel
+    Given I am application user
+    When I go to the user list in admin panel page
     Then I should be on the dashboard page
     And should see flash with "Access denied."
 
@@ -1576,47 +1620,47 @@ Feature: Anonymous user shouldn't have access for some application resources
 
 file "features/authentication.feature", %q{
 Feature: Authentication to application
-  In order to work with application
+  In order to login to application
   As registered user
-  I want to login in application
+  Should have ability to login in application 
 
-  Scenario: Not logined user should see login link on dashboard page
-    Given I am a not logined to application
+  Scenario: Anonymous user should see login link on dashboard page
+    Given I am anonymous user
     When I go to the dashboard page
     Then I should see "/login" link
 
   Scenario: Success login to application
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the login page
     And I fill in the following:
-      | Login                 | admin            |
-      | Password              | admin            |
+      | Login                 | user            |
+      | Password              | user            |
     And press "Login"
     Then I should see flash with "Login successful!"
-    And should be logined to application
+    And should authenticated in application
     And should see "/profile" link
     And "/logout" link
 
   Scenario: Fail login to application with invalid login
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the login page
     And I fill in the following:
-      | Login                 | adminko          |
-      | Password              | admin            |
+      | Login                 | adminko         |
+      | Password              | user            |
     And press "Login"
     Then I should see form validation for "Login" field
-    And should not be logined to application
+    And shouldn't authenticated in application
     And should see "/login" link
 
   Scenario: Fail login to application with invalid password
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the login page
     And I fill in the following:
-      | Login                 | admin            |
-      | Password              | adminko          |
+      | Login                 | user            |
+      | Password              | adminko         |
     And press "Login"
     Then I should see form validation for "Password" field
-    And should not be logined to application
+    And shouldn't authenticated in application
     And should see "/login" link
 
 }
@@ -1632,10 +1676,102 @@ Feature: Show dashboard page
     When I go to the dashboard page
     Then I should see dashboard page
 
-  Scenario: Show dashboard page for sign up user
-    Given I am sing up user
+  Scenario: Show dashboard page for application user
+    Given I am application user
     When I go to the dashboard page
     Then I should see dashboard page
+
+  Scenario: Show dashboard page for application administrator
+    Given I am application administrator
+    When I go to the dashboard page
+    Then I should see dashboard page
+}
+
+file "features/anonymous_user/sucess_authorization.feature", %q{
+Feature: Anonymous user should have access to dashboard, register, reset password and login pages only
+  In order to restrict anonymous users functionality in application
+  A anonymous  user
+  Should have access to dashboard, register, reset password and login pages only
+
+  Scenario: Anonymous user should have access to dashboard page
+    Given I am anonymous user
+    When I go to the dashboard page
+    Then I should be on the dashboard page
+
+  Scenario: Anonymous user should have access to login page
+    Given I am anonymous user
+    When I go to the login page
+    Then I should be on the login page
+
+  @registration_enabled
+  Scenario: Anonymous user should have access to register page if application developer allow access to it page
+    Given I am anonymous user
+    When I go to the registration page
+    Then I should be on the registration page
+
+  @reset_password_enabled
+  Scenario: Anonymous user should have access to request reset password page if application developer allow access to it page
+    Given I am anonymous user
+    When I go to the request reset password page
+    Then I should be on the request reset password page
+
+}
+
+file "features/anonymous_user/failed_authorization.feature", %q{
+Feature: Anonymous user shouldn't have access to private application resources
+  In order to restrict access to private application resources
+  A anonymous user
+  Shouldn't have access to several pages
+
+  @registration_disabled @allow-rescue
+  Scenario: Anonymous user shouldn't have access to register page if application developer restrict access to it page
+    Given I am anonymous user
+    When I go to the registration page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @reset_password_disabled @allow-rescue
+  Scenario: Anonymous user shouldn't have access to request reset password page if application developer restrict access to it page
+    Given I am anonymous user
+    When I go to the request reset password page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to logout page
+    Given I am anonymous user
+    When I go to the logout page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to profile page
+    Given I am anonymous user
+    When I go to the profile page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to edit profile page
+    Given I am anonymous user
+    When I go to the edit profile page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to admin dashboard page
+    Given I am anonymous user
+    When I go to the admin dashboard page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to user list page in admin panel
+    Given I am anonymous user
+    When I go to the user list in admin panel page
+    Then I should be on the login page
+    And should see flash with "Access denied."
+    
 }
 
 file "features/reset_password_enabled.feature", %q{
@@ -1643,10 +1779,10 @@ file "features/reset_password_enabled.feature", %q{
 Feature: Reset password feature enabled
   In order to restore forgotten password
   A registered user
-  Should reset password
+  Should have ability to restore password
 
   Scenario: User select incorrect e-mail
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the request reset password page
     And fill in "Email" with "unknown@example.com"
     And press "Send request"
@@ -1659,7 +1795,7 @@ Feature: Reset password feature enabled
     And fill in "Password confirmation" with "newpass"
     And press "Reset Password"
     Then I should see flash with "Password successfully updated"
-    And should be logined to application
+    And should authenticated in application
     And I should be able to log in with login "admin" and password "newpass"
 
   Scenario: User select correct email and enter incorrect reset password
@@ -1669,13 +1805,13 @@ Feature: Reset password feature enabled
     And fill in "Password confirmation" with "newpass2"
     And press "Reset Password"
     Then I should see form validation for "Password"
-    Then should not be logined to application
+    Then shouldn't authenticated in application
     And I should be able to log in with login "admin" and password "admin"
 
   Scenario: User open reset password with nonexistent perishable token
     When I go to the reset password page with Id "unknown"
     Then I should see flash with "we could not locate your account"
-    And should not be logined to application
+    And shouldn't authenticated in application
 
 
 }
@@ -2123,7 +2259,7 @@ end
 
 Given /I am request reset password for "([^\"]*)" email/ do |email|
   steps %Q{
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the request reset password page
     And fill in "Email" with "#{email}"
     And press "Send request"
@@ -2143,28 +2279,40 @@ end
 }
 
 file "features/step_definitions/authentication_steps.rb", %q{
-Given /^I am a not logined to application$/ do
+Given /^I am anonymous user$/ do
   visit dashboard_path
   controller.send(:current_user).should be_nil
 end
 
-Given /^I am logined to application$/ do
+Given /^I am application user$/ do
   steps %Q{
-    Given I am a not logined to application
+    Given I am anonymous user
     When I go to the login page
     And I fill in the following:
-      | Login                 | admin            |
-      | Password              | admin            |
+      | Login                 | user            |
+      | Password              | user            |
     And press "Login"
     Then I should see flash with "Login successful!"
   }
 end
 
-Then /^(?:|I )should be logined to application$/ do
+Given /^I am application administrator$/ do
+  steps %Q{
+    Given I am anonymous user
+    When I go to the login page
+    And I fill in the following:
+      | Login                 | admin           |
+      | Password              | admin           |
+    And press "Login"
+    Then I should see flash with "Login successful!"
+  }
+end
+
+Then /^(?:|I )should authenticated in application$/ do
   controller.send(:current_user).should_not be_nil
 end
 
-Then /^(?:|I )should not be logined to application$/ do
+Then /^(?:|I )shouldn't authenticated in application$/ do
   controller.send(:current_user).should be_nil
 end
 
@@ -2174,8 +2322,8 @@ end
 file "features/step_definitions/registration_steps.rb", %q{
 Then /^I should be registered in application$/ do
   controller.send(:current_user).should_not be_nil
-  controller.send(:current_user).login.should == "user"
-  controller.send(:current_user).email.should == "user@example.com"
+  controller.send(:current_user).login.should == "maksimka"
+  controller.send(:current_user).email.should == "maksimka@example.com"
 end
 
 Then /^(?:|I )should not be registered in application$/ do
@@ -2185,16 +2333,8 @@ end
 }
 
 file "features/step_definitions/dashboard_steps.rb", %q{
-Given /^I am anonymous user$/ do
-  @current_user = nil
-end
-
 Then /^I should see dashboard page$/ do
   response.should have_selector("div.app-container")
-end
-
-Given /^I am sing up user$/ do
-  @current_user = User.first
 end
 }
 
