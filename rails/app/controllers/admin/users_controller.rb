@@ -34,10 +34,8 @@ class Admin::UsersController < Admin::Application
   end
 
   def destroy
-    if @idea.login != "admin"
-      @idea = User.find(params[:id])
-      @idea.destroy
-    end
+    @idea = User.find(params[:id])
+    @idea.destroy if @idea.login != "admin"
 
     redirect_to admin_users_path
   end

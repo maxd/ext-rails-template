@@ -15,6 +15,7 @@ module Admin::UsersHelper
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 
+        row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
@@ -30,13 +31,14 @@ module Admin::UsersHelper
     delete_url = admin_user_path(item)
 
     parts = []
-    parts << link_to(image_tag("edit.png"), edit_url)
+    parts << link_to(image_tag("edit.png"), edit_url, :title => "Edit")
     parts << "&nbsp;"
 
     if item.login == "admin"
       parts << image_tag("delete.png", :style => "opacity: 0.3")
     else
       parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
+                       :title => "Delete",
                        :confirm => t(".confirm_for_delete", :login => item.login))
     end
 

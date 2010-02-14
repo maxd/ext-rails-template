@@ -543,10 +543,8 @@ class Admin::UsersController < Admin::Application
   end
 
   def destroy
-    if @idea.login != "admin"
-      @idea = User.find(params[:id])
-      @idea.destroy
-    end
+    @idea = User.find(params[:id])
+    @idea.destroy if @idea.login != "admin"
 
     redirect_to admin_users_path
   end
@@ -708,6 +706,7 @@ module Admin::UsersHelper
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 
+        row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
@@ -723,13 +722,14 @@ module Admin::UsersHelper
     delete_url = admin_user_path(item)
 
     parts = []
-    parts << link_to(image_tag("edit.png"), edit_url)
+    parts << link_to(image_tag("edit.png"), edit_url, :title => "Edit")
     parts << "&nbsp;"
 
     if item.login == "admin"
       parts << image_tag("delete.png", :style => "opacity: 0.3")
     else
       parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
+                       :title => "Delete",
                        :confirm => t(".confirm_for_delete", :login => item.login))
     end
 
@@ -1415,6 +1415,66 @@ Feature: Application administrator hasn't access to several application pages
 
 }
 
+file "features/application_administrator/user_list.feature", %q{
+Feature: The application administrator can manage registered user accounts
+  In order to manage registered user accounts
+  A application administrator
+  Should have ability to see/create/edit/delete registered user accounts
+
+  Scenario: The application administrator should see registered user accounts
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I should see 2 user accounts in table
+
+  Scenario: The application administrator can create new user account
+    Given I am application administrator
+    When I go to the new user in admin panel page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | EMail                 | maksimka@example.com |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Create User"
+    Then I am on the user list in admin panel page
+    And I should see 3 user accounts in table
+    And I should see "maksimka" user account in table
+
+  Scenario: The application administrator can change email for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | EMail                 | new_email@example.com |
+    And press "Update User"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has email "new_email@example.com"
+
+  Scenario: The application administrator can change password for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | Password                 | 12345 |
+      | Password Confirmation    | 12345 |
+    And press "Update User"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has password "12345"
+
+  Scenario: The application administrator can delete user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click delete account link for user with login "user"
+    Then I am on the user list in admin panel page
+    And I should see 1 user accounts in table
+
+  Scenario: The application administrator can't delete administrator account with login "admin"
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I shouldn't see delete link for user with login "admin"
+}
+
 file "features/support/paths.rb", %q{
 module NavigationHelpers
   # Maps a name to a path. Used by the
@@ -1448,7 +1508,8 @@ module NavigationHelpers
       admin_dashboard_path
     when /the user list in admin panel page/
       admin_users_path
-
+    when /the new user in admin panel page/
+      new_admin_user_path
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
@@ -1984,6 +2045,50 @@ Then /^I should be able to log in with login "([^\"]*)" and password "([^\"]*)"$
   UserSession.new(:login => login, :password => password).save.should == true
 end
 
+}
+
+file "features/step_definitions/user_list_steps.rb", %q{
+Then /I should see (\d+) user accounts in table/ do |number|
+  response.should have_selector("table.users td.user-login", :count => number)
+end
+
+Then /I should see "([^\"]*)" user account in table/ do |login|
+  response.should have_selector("table.users td.user-login") do |matched|
+    matched.any? {|item| item.text == login }
+  end
+end
+
+Then /click edit account link for user with login "([^\"]*)"/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.click_link "Edit"
+  end
+end
+
+When /^user with login "([^\"]*)" has email "([^\"]*)"$/ do |login, email|
+  user = User.find_by_login(login)
+  user.email.should eql(email)  
+end
+
+When /^user with login "([^\"]*)" has password "([^\"]*)"$/ do |login, password|
+  user = User.find_by_login(login)
+  user.valid_password?(password).should be_true  
+end
+
+Then /^click delete account link for user with login "([^\"]*)"$/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.click_link "Delete"
+  end
+end
+
+Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.dom.should have_selector("td > img[@alt='Delete']")
+  end
+
+end
 }
 
 file "features/step_definitions/web_steps.rb", %q{

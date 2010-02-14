@@ -30,7 +30,8 @@ module NavigationHelpers
       admin_dashboard_path
     when /the user list in admin panel page/
       admin_users_path
-
+    when /the new user in admin panel page/
+      new_admin_user_path
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
