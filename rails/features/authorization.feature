@@ -56,6 +56,18 @@ Feature: Anonymous user shouldn't have access for some application resources
     Then I should be on the login page
 
   @allow-rescue
+  Scenario: Anonymous user shouldn't have access to admin dashboard page
+    Given I am a not logined to application
+    When I go to the admin dashboard page
+    Then I should be on the login page
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to user list page in admin panel
+    Given I am a not logined to application
+    When I go to the user list in admin panel page
+    Then I should be on the login page
+
+  @allow-rescue
   Scenario: Authenticated user shouldn't have access to login page
     Given I am logined to application
     When I go to the login page

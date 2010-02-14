@@ -26,6 +26,10 @@ module NavigationHelpers
       profile_path
     when /the edit profile page/
       edit_profile_path
+    when /the admin dashboard page/
+      admin_dashboard_path
+    when /the user list in admin panel page/
+      admin_users_path
 
 
     # Add more mappings here.

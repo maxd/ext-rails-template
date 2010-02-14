@@ -1382,6 +1382,10 @@ module NavigationHelpers
       profile_path
     when /the edit profile page/
       edit_profile_path
+    when /the admin dashboard page/
+      admin_dashboard_path
+    when /the user list in admin panel page/
+      admin_users_path
 
 
     # Add more mappings here.
@@ -1533,6 +1537,18 @@ Feature: Anonymous user shouldn't have access for some application resources
   Scenario: Anonymous user shouldn't have access to edit profile page
     Given I am a not logined to application
     When I go to the edit profile page
+    Then I should be on the login page
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to admin dashboard page
+    Given I am a not logined to application
+    When I go to the admin dashboard page
+    Then I should be on the login page
+
+  @allow-rescue
+  Scenario: Anonymous user shouldn't have access to user list page in admin panel
+    Given I am a not logined to application
+    When I go to the user list in admin panel page
     Then I should be on the login page
 
   @allow-rescue
