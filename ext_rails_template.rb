@@ -2459,21 +2459,6 @@ end
 
 }
 
-file "spec/fixtures/roles.yml", %q{
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: 
-  authorizable_type: 
-  authorizable_id: 1
-
-two:
-  name: 
-  authorizable_type: 
-  authorizable_id: 1
-
-}
-
 file "spec/spec.opts", %q{
 --colour
 --format progress
