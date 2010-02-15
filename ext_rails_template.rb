@@ -92,6 +92,8 @@ file "app/views/admin/users/_form.html.haml", %q{
     - if @user.new_record?
       = form.input :login, :required => true
     = form.input :email, :required => true
+    = form.input :first_name
+    = form.input :last_name
     = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
     = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
   - form.buttons :class => "buttons" do
@@ -261,6 +263,7 @@ file "app/views/dashboard/_sidebar.html.haml", %q{
 file "app/views/user_session/register.html.haml", %q{
 - content_for :style do
   div.register-form { width: 500px; margin: 0 auto; }
+  div.register-form h1 { font-size: 2em; margin-bottom: 1em; }
 
 .register-form
   %h1= t(".title")
@@ -313,6 +316,8 @@ file "app/views/user_session/edit_profile.html.haml", %q{
   - semantic_form_for @user, :url => edit_profile_path, :html => {:class => "medium-form"} do |form|
     - form.inputs do
       = form.input :email, :required => true
+      = form.input :first_name
+      = form.input :last_name
       = form.input :password, :input_html => { :autocomplete => "off" }
       = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
     - form.buttons do
@@ -364,6 +369,9 @@ file "app/views/user_session/profile.html.haml", %q{
     %tr
       %td Email
       %td= @user.email
+    %tr
+      %td Name
+      %td= "#{@user.last_name}, #{@user.first_name}"
     %tr
       %td Login count
       %td= @user.login_count
@@ -705,6 +713,7 @@ module Admin::UsersHelper
     collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
       t.header.column :login, t('.login'), :class => "text"
+      t.header.column :name, t('.name'), :class => "text"
       t.header.column :email, t('.email'), :class => "email"
       t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
       t.header.column :last_login_at, t('.last_login_at'), :class => "data"
@@ -718,9 +727,10 @@ module Admin::UsersHelper
 
         row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
+        row.name  "#{item.last_name}, #{item.first_name}"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
-        row.last_login_at last_login_at, :class => item.last_login_at ? "data" : "center"
+        row.last_login_at last_login_at, :class => "data"
         row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "data"
         row.actions user_table_actions(item), :class => "buttons"
       end
@@ -962,6 +972,7 @@ en:
     users:
       index:
         login: "Login"
+        name: "Name"
         email: "Email"
         created_at: "Created At"
         last_login_at: "Last Login At"
@@ -1272,9 +1283,11 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
+      | Email                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
-      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should be registered in application
 
@@ -1284,9 +1297,11 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                  |
+      | Email                 |                  |
+      | First name            |                  |
+      | Last name             |                  |
       | Password              |                  |
       | Password Confirmation |                  |
-      | Email                 |                  |
     And press "Register"
     Then I should see form validation for "Login" field
     And should see form validation for "Password" field
@@ -1300,9 +1315,11 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                      |
+      | Email                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
-      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Login" field
     And should not be registered in application
@@ -1313,9 +1330,11 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
+      | Email                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              |                      |
       | Password Confirmation | password             |
-      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Password" field
     And should not be registered in application
@@ -1326,9 +1345,11 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
+      | Email                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password2            |
-      | Email                 | maksimka@example.com |
     And press "Register"
     Then I should see form validation for "Password" field
     And should not be registered in application
@@ -1338,23 +1359,52 @@ Feature: Registration in application feature enabled
     Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
-      | Login                 | maksimka         |
-      | Password              | password         |
-      | Password Confirmation | password         |
-      | Email                 |                  |
+      | Login                 | maksimka             |
+      | Email                 |                      |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
     And press "Register"
     Then I should see form validation for "Email" field 
     And should not be registered in application
 
+  Scenario: Fail registration in application with empty fist name
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | Email                 | maksimka@example.com |
+      | First name            |                      |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "First name" field
+    And should not be registered in application
+
+  Scenario: Fail registration in application with empty last name
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | Email                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             |                      |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "Last name" field 
+    And should not be registered in application
 
   Scenario: Fail registration in application with login which already registered
     Given I am anonymous user
     When I go to the registration page
     And I fill in the following:
       | Login                 | admin             |
+      | Email                 | admin@example.com |
       | Password              | pass              |
       | Password Confirmation | pass              |
-      | Email                 | admin@example.com |
     And press "Register"
     Then I should see form validation for "Login" field
     And should not be registered in application
@@ -1448,6 +1498,8 @@ Feature: The application administrator can manage registered user accounts
     And I fill in the following:
       | Login                 | maksimka             |
       | EMail                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Create User"
@@ -1465,6 +1517,18 @@ Feature: The application administrator can manage registered user accounts
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has email "new_email@example.com"
+
+  Scenario: The application administrator can change first and last name for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | First name            | Vini                  |
+      | Last name             | Pooh                  |
+    And press "Update User"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has first name "Vini" and last name "Pooh"
 
   Scenario: The application administrator can change password for user account
     Given I am application administrator
@@ -1624,7 +1688,11 @@ file "features/support/prerequisites.rb", %q{
 Before do
 
   # Create user account without administration privileges
-  User.create!(:login => "user", :email => "user@example.com", :password => "user", :password_confirmation => "user")
+  User.create! :login => "user",
+               :email => "user@example.com",
+               :first_name => "User",
+               :last_name => "User", 
+               :password => "user", :password_confirmation => "user"
 
 end
 }
@@ -2091,6 +2159,12 @@ When /^user with login "([^\"]*)" has password "([^\"]*)"$/ do |login, password|
   user.valid_password?(password).should be_true  
 end
 
+When /^user with login "([^\"]*)" has first name "([^\"]*)" and last name "([^\"]*)"$/ do |login, first_name, last_name|
+  user = User.find_by_login(login)
+  user.first_name.should eql(first_name)
+  user.last_name.should eql(last_name)  
+end
+
 Then /^click delete account link for user with login "([^\"]*)"$/ do |login|
   user = User.find_by_login(login)
   within "#user-#{user.id}" do |scope|
@@ -2105,6 +2179,8 @@ Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
   end
 
 end
+
+
 }
 
 file "features/step_definitions/web_steps.rb", %q{
@@ -2962,7 +3038,7 @@ file "public/stylesheets/sass/theme/_table.sass", %q{
     text-align: left
 
   &.email
-    text-align: right
+    text-align: left
 
   &.enum
     text-align: left
@@ -3040,6 +3116,8 @@ file "public/stylesheets/sass/theme/_admin.sass", %q{
 
   th.user-login
     width: auto
+  th.user-name
+    width: 280px    
   th.user-email
     width: 280px    
   th.user-last_login_ip

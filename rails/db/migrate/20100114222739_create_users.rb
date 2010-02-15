@@ -4,6 +4,8 @@ class CreateUsers < ActiveRecord::Migration
 
       t.string    :login,               :null => false                # optional, you can use email instead, or both
       t.string    :email,               :null => false                # optional, you can use login instead, or both
+      t.string    :first_name,          :null => false
+      t.string    :last_name,           :null => false
       t.string    :crypted_password,    :null => false                # optional, see below
       t.string    :password_salt,       :null => false                # optional, but highly recommended
       t.string    :persistence_token,   :null => false                # required
@@ -22,7 +24,11 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
 
-    User.create! :login => "admin", :email => "admin@example.com", :password => "admin", :password_confirmation => "admin"
+    User.create! :login => "admin",
+                 :email => "admin@example.com",
+                 :first_name => "Administrator",
+                 :last_name => "Administrator", 
+                 :password => "admin", :password_confirmation => "admin"
   end
 
   def self.down

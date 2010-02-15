@@ -25,6 +25,12 @@ When /^user with login "([^\"]*)" has password "([^\"]*)"$/ do |login, password|
   user.valid_password?(password).should be_true  
 end
 
+When /^user with login "([^\"]*)" has first name "([^\"]*)" and last name "([^\"]*)"$/ do |login, first_name, last_name|
+  user = User.find_by_login(login)
+  user.first_name.should eql(first_name)
+  user.last_name.should eql(last_name)  
+end
+
 Then /^click delete account link for user with login "([^\"]*)"$/ do |login|
   user = User.find_by_login(login)
   within "#user-#{user.id}" do |scope|
@@ -39,3 +45,4 @@ Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
   end
 
 end
+

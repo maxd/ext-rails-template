@@ -4,6 +4,7 @@ module Admin::UsersHelper
     collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
       t.header.column :login, t('.login'), :class => "text"
+      t.header.column :name, t('.name'), :class => "text"
       t.header.column :email, t('.email'), :class => "email"
       t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
       t.header.column :last_login_at, t('.last_login_at'), :class => "data"
@@ -17,9 +18,10 @@ module Admin::UsersHelper
 
         row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
+        row.name  "#{item.last_name}, #{item.first_name}"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
-        row.last_login_at last_login_at, :class => item.last_login_at ? "data" : "center"
+        row.last_login_at last_login_at, :class => "data"
         row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "data"
         row.actions user_table_actions(item), :class => "buttons"
       end

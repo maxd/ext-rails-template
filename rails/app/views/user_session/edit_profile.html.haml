@@ -7,6 +7,8 @@
   - semantic_form_for @user, :url => edit_profile_path, :html => {:class => "medium-form"} do |form|
     - form.inputs do
       = form.input :email, :required => true
+      = form.input :first_name
+      = form.input :last_name
       = form.input :password, :input_html => { :autocomplete => "off" }
       = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
     - form.buttons do

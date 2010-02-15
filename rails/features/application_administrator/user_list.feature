@@ -14,6 +14,8 @@ Feature: The application administrator can manage registered user accounts
     And I fill in the following:
       | Login                 | maksimka             |
       | EMail                 | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Create User"
@@ -31,6 +33,18 @@ Feature: The application administrator can manage registered user accounts
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has email "new_email@example.com"
+
+  Scenario: The application administrator can change first and last name for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | First name            | Vini                  |
+      | Last name             | Pooh                  |
+    And press "Update User"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has first name "Vini" and last name "Pooh"
 
   Scenario: The application administrator can change password for user account
     Given I am application administrator

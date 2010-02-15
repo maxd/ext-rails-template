@@ -13,6 +13,9 @@
       %td Email
       %td= @user.email
     %tr
+      %td Name
+      %td= "#{@user.last_name}, #{@user.first_name}"
+    %tr
       %td Login count
       %td= @user.login_count
     -if @user.last_login_at.present?

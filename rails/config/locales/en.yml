@@ -62,6 +62,7 @@ en:
     users:
       index:
         login: "Login"
+        name: "Name"
         email: "Email"
         created_at: "Created At"
         last_login_at: "Last Login At"
