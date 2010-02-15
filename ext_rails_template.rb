@@ -307,6 +307,7 @@ file "app/views/user_session/reset_password.html.haml", %q{
 file "app/views/user_session/edit_profile.html.haml", %q{
 - content_for :style do
   div.profile-form { width: 500px; margin: 0 auto; }
+
 .profile-form
   %h1= t(".title")
 
@@ -321,7 +322,7 @@ file "app/views/user_session/edit_profile.html.haml", %q{
       = form.commit_button t(".change")
       %li.cancel
         = t("or")
-        = link_to t("cancel"), dashboard_path
+        = link_to t("cancel"), profile_path
 
 }
 
@@ -352,42 +353,37 @@ file "app/views/user_session/login.html.haml", %q{
 
 file "app/views/user_session/profile.html.haml", %q{
 - content_for :style do
-  table { width: 600px; margin: 0 auto; padding: 0 5px; }
+  div.user-profile { width: 600px; margin: 0 auto; position: relative; }
+  h1.user-name { float: left; }
+  a.edit-profile-link { float: left; padding-left: 1em }
 
-%h1 User Profile
+.user-profile
 
-%table
-  %tbody
-    %tr
-      %td Login
-      %td= @user.login
-    %tr
-      %td Email
-      %td= @user.email
-    %tr
-      %td Name
-      %td= "#{@user.last_name}, #{@user.first_name}"
-    %tr
-      %td Login count
-      %td= @user.login_count
+  .clearfix
+    %h1.user-name= "#{@user.last_name}, #{@user.first_name}"
+    = link_to 'Edit', edit_profile_path, :class => "edit-profile-link clear"
+
+  %ul
+    %li
+      Email:
+      = @user.email 
+    %li
+      Registered on:
+      = l(@user.created_at.localtime, :format => "%e %B %Y")
     -if @user.last_login_at.present?
-      %tr
-        %td Last login at
-        %td= l(@user.last_login_at.localtime, :format => :short)
-    %tr
-      %td Current login at
-      %td= l(@user.current_login_at.localtime, :format => :short)
-    - if @user.last_login_ip.present?
-      %tr
-        %td Last login ip
-        %td= @user.last_login_ip
-    %tr
-      %td Current login ip
-      %td= @user.current_login_ip
-  %tfoot
-    %tr
-      %td &nbsp;
-      %td= link_to 'Edit', edit_profile_path
+      %li
+        &nbsp;
+      %li
+        %h5 Connection information
+      %li
+        Last connection:
+        = l(@user.last_login_at.localtime, :format => "%e %B %Y %H:%M")
+      %li
+        Last login IP:
+        = @user.last_login_ip
+      %li
+        Current login IP:
+        = @user.current_login_ip
 }
 
 file "app/views/user_session/request_reset_password.html.haml", %q{

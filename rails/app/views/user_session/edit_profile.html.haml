@@ -1,5 +1,6 @@
 - content_for :style do
   div.profile-form { width: 500px; margin: 0 auto; }
+
 .profile-form
   %h1= t(".title")
 
@@ -14,4 +15,4 @@
       = form.commit_button t(".change")
       %li.cancel
         = t("or")
-        = link_to t("cancel"), dashboard_path
+        = link_to t("cancel"), profile_path
