@@ -263,7 +263,6 @@ file "app/views/dashboard/_sidebar.html.haml", %q{
 file "app/views/user_session/register.html.haml", %q{
 - content_for :style do
   div.register-form { width: 500px; margin: 0 auto; }
-  div.register-form h1 { font-size: 2em; margin-bottom: 1em; }
 
 .register-form
   %h1= t(".title")
@@ -288,7 +287,6 @@ file "app/views/user_session/register.html.haml", %q{
 file "app/views/user_session/reset_password.html.haml", %q{
 - content_for :style do
   div.login-form { width: 500px; margin: 0 auto; }
-  div.login-form .header h1 { font-size: 2em; margin-bottom: 1em; }
 
 .login-form
   .header
@@ -309,7 +307,6 @@ file "app/views/user_session/reset_password.html.haml", %q{
 file "app/views/user_session/edit_profile.html.haml", %q{
 - content_for :style do
   div.profile-form { width: 500px; margin: 0 auto; }
-  div.profile-form h1 { font-size: 2em; margin-bottom: 1em; }
 .profile-form
   %h1= t(".title")
 
@@ -332,7 +329,6 @@ file "app/views/user_session/login.html.haml", %q{
 - content_for :style do
   div.login-form { width: 400px; margin: 0 auto; }
   div.login-form .header { position: relative; }
-  div.login-form .header h1 { font-size: 2em; margin-bottom: 1em; }
   div.login-form .header a { position: absolute; top: 0px; right: 10px; }
 .login-form
   .header
@@ -356,7 +352,6 @@ file "app/views/user_session/login.html.haml", %q{
 
 file "app/views/user_session/profile.html.haml", %q{
 - content_for :style do
-  h1 { font-size: 2em; margin-bottom: 1em; }
   table { width: 600px; margin: 0 auto; padding: 0 5px; }
 
 %h1 User Profile
@@ -398,8 +393,6 @@ file "app/views/user_session/profile.html.haml", %q{
 file "app/views/user_session/request_reset_password.html.haml", %q{
 - content_for :style do
   div.request-reset-password-form { width: 400px; margin: 0 auto; }
-  div.request-reset-password-form h1 { font-size: 2em; margin-bottom: 1em; }
-  div.request-reset-password-form p { margin: 7px 0; }
 
 .request-reset-password-form
   %h1 Reset Password
