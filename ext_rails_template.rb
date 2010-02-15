@@ -261,7 +261,6 @@ file "app/views/dashboard/_sidebar.html.haml", %q{
 file "app/views/user_session/register.html.haml", %q{
 - content_for :style do
   div.register-form { width: 500px; margin: 0 auto; }
-  div.register-form h1 { font-size: 2em; margin-bottom: 1em; }
 
 .register-form
   %h1= t(".title")
@@ -270,6 +269,8 @@ file "app/views/user_session/register.html.haml", %q{
     - form.inputs do
       = form.input :login, :input_html => { :autocomplete => "off" }, :required => true
       = form.input :email, :required => true
+      = form.input :first_name
+      = form.input :last_name
       = form.input :password, :input_html => { :autocomplete => "off" }, :required => true
       = form.input :password_confirmation, :input_html => { :autocomplete => "off" }, :required => true
     - form.buttons do
@@ -685,6 +686,8 @@ file "app/models/user.rb", %q{
 class User < ActiveRecord::Base
   acts_as_authentic
   acts_as_authorization_subject
+
+  validates_presence_of :first_name, :last_name
 
   def deliver_password_reset_instructions!
     reset_perishable_token!
@@ -1185,6 +1188,8 @@ class CreateUsers < ActiveRecord::Migration
 
       t.string    :login,               :null => false                # optional, you can use email instead, or both
       t.string    :email,               :null => false                # optional, you can use login instead, or both
+      t.string    :first_name,          :null => false
+      t.string    :last_name,           :null => false
       t.string    :crypted_password,    :null => false                # optional, see below
       t.string    :password_salt,       :null => false                # optional, but highly recommended
       t.string    :persistence_token,   :null => false                # required
@@ -1203,7 +1208,11 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
 
-    User.create! :login => "admin", :email => "admin@example.com", :password => "admin", :password_confirmation => "admin"
+    User.create! :login => "admin",
+                 :email => "admin@example.com",
+                 :first_name => "Administrator",
+                 :last_name => "Administrator", 
+                 :password => "admin", :password_confirmation => "admin"
   end
 
   def self.down
@@ -2728,32 +2737,32 @@ file "spec/rcov.opts", %q{
 
 file "public/stylesheets/sass/theme/core/_headers.sass", %q{
 h1
-  :font-size 1.6em
+  :font-size 2.2em
   :line-height 1
   :margin 1em 0 .5em
 
 h2
-  :font-size 1.5em
+  :font-size 2em
   :line-height 1
   :margin 1.07em 0 .535em
 
 h3
-  :font-size 1.4em
+  :font-size 1.8em
   :line-height 1
   :margin 1.14em 0 .57em
 
 h4
-  :font-size 1.3em
+  :font-size 1.6em
   :line-height 1
   :margin 1.23em 0 .615em
 
 h5
-  :font-size 1.2em
+  :font-size 1.4em
   :line-height 1
   :margin 1.33em 0 .67em
 
 h6
-  :font-size 1em
+  :font-size 1.2em
   :line-height 1
   :margin 1.6em 0 .8em
 
