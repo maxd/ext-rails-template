@@ -7,8 +7,8 @@ module Admin::UsersHelper
       t.header.column :name, t('.name'), :class => "text"
       t.header.column :email, t('.email'), :class => "email"
       t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
-      t.header.column :last_login_at, t('.last_login_at'), :class => "data"
-      t.header.column :created_at, t('.created_at'), :class => "data"
+      t.header.column :last_login_at, t('.last_login_at'), :class => "date"
+      t.header.column :created_at, t('.created_at'), :class => "date"
       t.header.column :actions, ''
 
       t.rows.alternate = :odd
@@ -21,8 +21,8 @@ module Admin::UsersHelper
         row.name  "#{item.last_name}, #{item.first_name}"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
-        row.last_login_at last_login_at, :class => "data"
-        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "data"
+        row.last_login_at last_login_at, :class => "date"
+        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "date"
         row.actions user_table_actions(item), :class => "buttons"
       end
     end
