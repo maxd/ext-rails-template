@@ -3,6 +3,7 @@ en:
   or: "or"
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
+  title_of_reset_password_email: "Password Reset Instructions"
 
   layouts:
     main_navigation:
@@ -19,6 +20,10 @@ en:
       main_navigation:
         dashboard: "Dashboard"
         users: "Users"
+
+  sidebar:
+    actions: "Actions"
+    information: "Information"
 
   user_session:
     login:
@@ -38,6 +43,8 @@ en:
       account_registred: "Account registered!"
 
     request_reset_password:
+      title: "Reset Password"
+      description: "Fill out the form below and instructions to reset your password will be emailed to you:"
       send_request: "Send request"
 
       email_notification: "Instructions to reset your password have been emailed to you. Please check your email."
@@ -61,6 +68,7 @@ en:
   admin:
     users:
       index:
+        title: "Users"
         login: "Login"
         name: "Name"
         email: "Email"
@@ -69,6 +77,14 @@ en:
         last_login_ip: "Last Login IP"
 
         confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
+        edit_hint: "Edit"
+        delete_hint: "Delete"
+
+      new:
+        title: "New User"
+
+      edit:
+        title: "Change User"
 
       sidebar:
         new: "New User..."

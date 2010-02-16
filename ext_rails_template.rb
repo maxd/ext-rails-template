@@ -43,7 +43,7 @@ FILE_CONTENT
 # Additional application files
 
 file "app/views/notifier/password_reset_instructions.html.haml", %q{
-%h1 Password Reset Instructions
+%h1= I18n.t("title_of_reset_password_email")
 
 %p
   A request to reset your password has been made. If you did not
@@ -55,7 +55,7 @@ file "app/views/notifier/password_reset_instructions.html.haml", %q{
 }
 
 file "app/views/admin/users/index.html.haml", %q{
-%h1 Users
+%h1= t(".title")
 
 = user_table
 .pagination
@@ -66,18 +66,18 @@ file "app/views/admin/users/index.html.haml", %q{
 }
 
 file "app/views/admin/users/new.html.haml", %q{
-%h1 New User
+%h1= t(".title")
 
 = render :partial => "form"
 }
 
 file "app/views/admin/users/_sidebar.html.haml", %q{
 .app-block
-  %h6 Actions
+  %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
 
 .app-block
-  %h6 Information
+  %h6= t("sidebar.information")
   .app-content
     %p This page contains information about all users registered in application. You can add,                          |
     edit or delete users.                                                                                              |
@@ -104,7 +104,7 @@ file "app/views/admin/users/_form.html.haml", %q{
 }
 
 file "app/views/admin/users/edit.html.haml", %q{
-%h1 Edit User
+%h1= t(".title")
 
 = render :partial => "form"
 }
@@ -251,11 +251,11 @@ file "app/views/dashboard/index.html.haml", %q{
 
 file "app/views/dashboard/_sidebar.html.haml", %q{
 .app-block
-  %h6 Actions
+  %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .app-block
-  %h6 Information
+  %h6= t("sidebar.information")
   .app-content
     %p New information text for sidebar context                
 }
@@ -391,8 +391,8 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
   div.request-reset-password-form { width: 400px; margin: 0 auto; }
 
 .request-reset-password-form
-  %h1 Reset Password
-  %p Fill out the form below and instructions to reset your password will be emailed to you:
+  %h1= t(".title")
+  %p= t(".description")
 
   - semantic_form_for :request_reset_password, :html => {:class => "small-form"} do |form|
     = form.inputs :email
@@ -668,7 +668,7 @@ file "app/models/notifier.rb", %q{
 class Notifier < ActionMailer::Base
 
   def password_reset_instructions(user)
-    subject       "Password Reset Instructions"
+    subject       I18n.t("title_of_reset_password_email")
     from          FROM_EMAIL_ADDRESS
     recipients    user.email
     sent_on       Time.now
@@ -731,14 +731,14 @@ module Admin::UsersHelper
     delete_url = admin_user_path(item)
 
     parts = []
-    parts << link_to(image_tag("edit.png"), edit_url, :title => "Edit")
+    parts << link_to(image_tag("edit.png"), edit_url, :title => t(".edit_hint"))
     parts << "&nbsp;"
 
     if item.login == "admin"
       parts << image_tag("delete.png", :style => "opacity: 0.3")
     else
       parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
-                       :title => "Delete",
+                       :title => t(".delete_hint"),
                        :confirm => t(".confirm_for_delete", :login => item.login))
     end
 
@@ -905,6 +905,7 @@ en:
   or: "or"
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
+  title_of_reset_password_email: "Password Reset Instructions"
 
   layouts:
     main_navigation:
@@ -921,6 +922,10 @@ en:
       main_navigation:
         dashboard: "Dashboard"
         users: "Users"
+
+  sidebar:
+    actions: "Actions"
+    information: "Information"
 
   user_session:
     login:
@@ -940,6 +945,8 @@ en:
       account_registred: "Account registered!"
 
     request_reset_password:
+      title: "Reset Password"
+      description: "Fill out the form below and instructions to reset your password will be emailed to you:"
       send_request: "Send request"
 
       email_notification: "Instructions to reset your password have been emailed to you. Please check your email."
@@ -963,6 +970,7 @@ en:
   admin:
     users:
       index:
+        title: "Users"
         login: "Login"
         name: "Name"
         email: "Email"
@@ -971,6 +979,14 @@ en:
         last_login_ip: "Last Login IP"
 
         confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
+        edit_hint: "Edit"
+        delete_hint: "Delete"
+
+      new:
+        title: "New User"
+
+      edit:
+        title: "Change User"
 
       sidebar:
         new: "New User..."

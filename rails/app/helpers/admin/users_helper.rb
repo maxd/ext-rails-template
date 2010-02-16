@@ -33,14 +33,14 @@ module Admin::UsersHelper
     delete_url = admin_user_path(item)
 
     parts = []
-    parts << link_to(image_tag("edit.png"), edit_url, :title => "Edit")
+    parts << link_to(image_tag("edit.png"), edit_url, :title => t(".edit_hint"))
     parts << "&nbsp;"
 
     if item.login == "admin"
       parts << image_tag("delete.png", :style => "opacity: 0.3")
     else
       parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
-                       :title => "Delete",
+                       :title => t(".delete_hint"),
                        :confirm => t(".confirm_for_delete", :login => item.login))
     end
 
