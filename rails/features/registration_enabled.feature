@@ -16,7 +16,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -30,7 +30,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                  |
-      | Email                 |                  |
+      | E-Mail                |                  |
       | First name            |                  |
       | Last name             |                  |
       | Password              |                  |
@@ -39,7 +39,7 @@ Feature: Registration in application feature enabled
     Then I should see form validation for "Login" field
     And should see form validation for "Password" field
     And should see form validation for "Password confirmation" field
-    And should see form validation for "Email" field
+    And should see form validation for "E-Mail" field
     And should not be registered in application
 
 
@@ -48,7 +48,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                      |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -63,7 +63,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              |                      |
@@ -78,7 +78,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -93,13 +93,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 |                      |
+      | E-Mail                |                      |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "Email" field 
+    Then I should see form validation for "E-Mail" field
     And should not be registered in application
 
   Scenario: Fail registration in application with empty fist name
@@ -107,13 +107,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            |                      |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "First name" field
+    Then I should see form validation for "First Name" field
     And should not be registered in application
 
   Scenario: Fail registration in application with empty last name
@@ -121,13 +121,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             |                      |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "Last name" field 
+    Then I should see form validation for "Last Name" field 
     And should not be registered in application
 
   Scenario: Fail registration in application with login which already registered
@@ -135,7 +135,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | admin             |
-      | Email                 | admin@example.com |
+      | E-Mail                | admin@example.com |
       | Password              | pass              |
       | Password Confirmation | pass              |
     And press "Register"

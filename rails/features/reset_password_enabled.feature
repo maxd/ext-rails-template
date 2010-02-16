@@ -7,7 +7,7 @@ Feature: Reset password feature enabled
   Scenario: User select incorrect e-mail
     Given I am anonymous user
     When I go to the request reset password page
-    And fill in "Email" with "unknown@example.com"
+    And fill in "E-Mail" with "unknown@example.com"
     And press "Send request"
     Then I should see flash with "No user was found with that email address"
 

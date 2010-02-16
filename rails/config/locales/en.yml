@@ -45,6 +45,7 @@ en:
     request_reset_password:
       title: "Reset Password"
       description: "Fill out the form below and instructions to reset your password will be emailed to you:"
+      email: "E-Mail"
       send_request: "Send request"
 
       email_notification: "Instructions to reset your password have been emailed to you. Please check your email."

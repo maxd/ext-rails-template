@@ -13,12 +13,12 @@ Feature: The application administrator can manage registered user accounts
     When I go to the new user in admin panel page
     And I fill in the following:
       | Login                 | maksimka             |
-      | EMail                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
-    And press "Create User"
+    And press "Create Account"
     Then I am on the user list in admin panel page
     And I should see 3 user accounts in table
     And I should see "maksimka" user account in table
@@ -28,8 +28,8 @@ Feature: The application administrator can manage registered user accounts
     When I go to the user list in admin panel page
     Then click edit account link for user with login "user"
     When I fill in the following:
-      | EMail                 | new_email@example.com |
-    And press "Update User"
+      | E-Mail                | new_email@example.com |
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has email "new_email@example.com"
@@ -41,7 +41,7 @@ Feature: The application administrator can manage registered user accounts
     When I fill in the following:
       | First name            | Vini                  |
       | Last name             | Pooh                  |
-    And press "Update User"
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has first name "Vini" and last name "Pooh"
@@ -53,7 +53,7 @@ Feature: The application administrator can manage registered user accounts
     When I fill in the following:
       | Password                 | 12345 |
       | Password Confirmation    | 12345 |
-    And press "Update User"
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has password "12345"

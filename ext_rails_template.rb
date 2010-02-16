@@ -948,6 +948,7 @@ en:
     request_reset_password:
       title: "Reset Password"
       description: "Fill out the form below and instructions to reset your password will be emailed to you:"
+      email: "E-Mail"
       send_request: "Send request"
 
       email_notification: "Instructions to reset your password have been emailed to you. Please check your email."
@@ -1448,7 +1449,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -1462,7 +1463,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                  |
-      | Email                 |                  |
+      | E-Mail                |                  |
       | First name            |                  |
       | Last name             |                  |
       | Password              |                  |
@@ -1471,7 +1472,7 @@ Feature: Registration in application feature enabled
     Then I should see form validation for "Login" field
     And should see form validation for "Password" field
     And should see form validation for "Password confirmation" field
-    And should see form validation for "Email" field
+    And should see form validation for "E-Mail" field
     And should not be registered in application
 
 
@@ -1480,7 +1481,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 |                      |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -1495,7 +1496,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              |                      |
@@ -1510,7 +1511,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
@@ -1525,13 +1526,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 |                      |
+      | E-Mail                |                      |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "Email" field 
+    Then I should see form validation for "E-Mail" field
     And should not be registered in application
 
   Scenario: Fail registration in application with empty fist name
@@ -1539,13 +1540,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            |                      |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "First name" field
+    Then I should see form validation for "First Name" field
     And should not be registered in application
 
   Scenario: Fail registration in application with empty last name
@@ -1553,13 +1554,13 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | maksimka             |
-      | Email                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             |                      |
       | Password              | password             |
       | Password Confirmation | password             |
     And press "Register"
-    Then I should see form validation for "Last name" field 
+    Then I should see form validation for "Last Name" field 
     And should not be registered in application
 
   Scenario: Fail registration in application with login which already registered
@@ -1567,7 +1568,7 @@ Feature: Registration in application feature enabled
     When I go to the registration page
     And I fill in the following:
       | Login                 | admin             |
-      | Email                 | admin@example.com |
+      | E-Mail                | admin@example.com |
       | Password              | pass              |
       | Password Confirmation | pass              |
     And press "Register"
@@ -1662,12 +1663,12 @@ Feature: The application administrator can manage registered user accounts
     When I go to the new user in admin panel page
     And I fill in the following:
       | Login                 | maksimka             |
-      | EMail                 | maksimka@example.com |
+      | E-Mail                | maksimka@example.com |
       | First name            | Maksimka             |
       | Last name             | Dobriakov            |
       | Password              | password             |
       | Password Confirmation | password             |
-    And press "Create User"
+    And press "Create Account"
     Then I am on the user list in admin panel page
     And I should see 3 user accounts in table
     And I should see "maksimka" user account in table
@@ -1677,8 +1678,8 @@ Feature: The application administrator can manage registered user accounts
     When I go to the user list in admin panel page
     Then click edit account link for user with login "user"
     When I fill in the following:
-      | EMail                 | new_email@example.com |
-    And press "Update User"
+      | E-Mail                | new_email@example.com |
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has email "new_email@example.com"
@@ -1690,7 +1691,7 @@ Feature: The application administrator can manage registered user accounts
     When I fill in the following:
       | First name            | Vini                  |
       | Last name             | Pooh                  |
-    And press "Update User"
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has first name "Vini" and last name "Pooh"
@@ -1702,7 +1703,7 @@ Feature: The application administrator can manage registered user accounts
     When I fill in the following:
       | Password                 | 12345 |
       | Password Confirmation    | 12345 |
-    And press "Update User"
+    And press "Update Account"
     Then I am on the user list in admin panel page
     And I should see 2 user accounts in table
     And user with login "user" has password "12345"
@@ -2094,7 +2095,7 @@ Feature: Reset password feature enabled
   Scenario: User select incorrect e-mail
     Given I am anonymous user
     When I go to the request reset password page
-    And fill in "Email" with "unknown@example.com"
+    And fill in "E-Mail" with "unknown@example.com"
     And press "Send request"
     Then I should see flash with "No user was found with that email address"
 
@@ -2623,7 +2624,7 @@ Given /I am request reset password for "([^\"]*)" email/ do |email|
   steps %Q{
     Given I am anonymous user
     When I go to the request reset password page
-    And fill in "Email" with "#{email}"
+    And fill in "E-Mail" with "#{email}"
     And press "Send request"
     Then I should see flash with "Instructions to reset your password have been emailed to you."
   }
