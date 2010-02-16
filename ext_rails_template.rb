@@ -279,7 +279,7 @@ file "app/views/user_session/register.html.haml", %q{
       = form.commit_button t(".register")
       %li.cancel
         %span
-          or
+          = t("or")
           = link_to t("cancel"), dashboard_path
 
 }
@@ -361,28 +361,28 @@ file "app/views/user_session/profile.html.haml", %q{
 
   .clearfix
     %h1.user-name= "#{@user.last_name}, #{@user.first_name}"
-    = link_to 'Edit', edit_profile_path, :class => "edit-profile-link clear"
+    = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
 
   %ul
     %li
-      Email:
+      = t("activerecord.attributes.user.email") + ":"
       = @user.email 
     %li
-      Registered on:
+      = t("activerecord.attributes.user.created_at") + ":"
       = l(@user.created_at.localtime, :format => "%e %B %Y")
     -if @user.last_login_at.present?
       %li
         &nbsp;
       %li
-        %h5 Connection information
+        %h5= t(".connection_information")
       %li
-        Last connection:
+        = t("activerecord.attributes.user.last_login_at") + ":"
         = l(@user.last_login_at.localtime, :format => "%e %B %Y %H:%M")
       %li
-        Last login IP:
+        = t("activerecord.attributes.user.last_login_ip") + ":"
         = @user.last_login_ip
       %li
-        Current login IP:
+        = t("activerecord.attributes.user.current_login_ip") + ":"
         = @user.current_login_ip
 }
 
@@ -395,12 +395,13 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
   %p= t(".description")
 
   - semantic_form_for :request_reset_password, :html => {:class => "small-form"} do |form|
-    = form.inputs :email
+    - form.inputs do
+      = form.input :email, :label => t(".email")
     - form.buttons do
       = form.commit_button t(".send_request")
       %li.cancel
         %span
-          or
+          = t("or")
           = link_to t("cancel"), login_path
 }
 
@@ -921,7 +922,7 @@ en:
     admin:
       main_navigation:
         dashboard: "Dashboard"
-        users: "Users"
+        users: "Accounts"
 
   sidebar:
     actions: "Actions"
@@ -963,6 +964,10 @@ en:
                                copying and pasting the URL from your email into your browser or restarting the
                                reset password process."
 
+    profile:
+      edit: "edit"
+      connection_information: "Connection information"
+
     edit_profile:
       title: "Change Profile"
       change: "Change"
@@ -970,10 +975,10 @@ en:
   admin:
     users:
       index:
-        title: "Users"
+        title: "Accounts"
         login: "Login"
         name: "Name"
-        email: "Email"
+        email: "E-Mail"
         created_at: "Created At"
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
@@ -983,14 +988,166 @@ en:
         delete_hint: "Delete"
 
       new:
-        title: "New User"
+        title: "New Account"
 
       edit:
-        title: "Change User"
+        title: "Update Account"
 
       sidebar:
-        new: "New User..."
+        new: "New Account..."
 
+  activerecord:
+    attributes:
+      user:
+        login: "Login"
+        email: "E-Mail"
+        first_name: "First Name"
+        last_name: "Last Name"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        created_at: "Created At"
+        last_login_at: "Last Login At"
+        last_login_ip: "Last Login IP"
+        current_login_ip: "Current IP"
+
+  authlogic:
+    attributes:
+      user_session:
+        login: "Login"
+        email: "E-Mail"
+        password: "Password"
+        remember_me: "Remember me"
+
+  formtastic:
+    actions:
+      user:
+        create: "Create Account"
+        update: "Update Account"
+
+}
+
+file "config/locales/ru.yml", %q{
+ru:
+  cancel: "Отменить"
+  or: "или"
+  access_denied: "Доступ запрещён."
+  access_denied_try_to_login: "Доступ запрещён. Залогинтесь в приложение и повторите попытку."
+  title_of_reset_password_email: "Инструкции для востановлении пароля"
+
+  layouts:
+    main_navigation:
+      dashboard: "Главная"
+
+    user_navigation:
+      login: "Вход"
+      logout: "Выход"
+      register: "Регистрация"
+      profile: "Профайл"
+      administration: "Управлене приложением"
+
+    admin:
+      main_navigation:
+        dashboard: "Главная"
+        users: "Аккаунты"
+
+  sidebar:
+    actions: "Действия"
+    information: "Информация"
+
+  user_session:
+    login:
+      title: "Вход"
+      login: "Войти"
+      reset_password: "Забыли пароль?"
+
+      success_login: "Вы успешно вошли в приложение!"
+
+    logout:
+      success_logout: "Вы успешно вышли из приложения!"
+
+    register:
+      title: "Регистрация нового аккаунта"
+      register: "Зарегистрировать"
+
+      account_registred: "Аккаунт зарегистрирован!"
+
+    request_reset_password:
+      title: "Восстановление пароля"
+      description: "Заполните форму находящуюся ниже и следуйте инструкциям отправленным по e-mail для восстановления пароля:"
+      email: "E-Mail"
+      send_request: "Отправить запрос"
+
+      email_notification: "Инструкции для восстановления пароля были отправлены на ваш e-mail."
+      nonexistent_email: "Не найдено пользователя с указанным e-mail адресом"
+
+    reset_password:
+      title: "Смена пароля"
+      reset: "Применить новый пароль"
+
+      password_updated: "Пароль востановлен"
+
+    load_user_using_perishable_token:
+      wrong_perishable_token: "Информация для востановления пароля устарела. Попробуйте повторить процедуру востановление пароля."
+
+    profile:
+      edit: "Изменить"
+      connection_information: "Информация о соединении"
+
+    edit_profile:
+      title: "Изменение профайла"
+      change: "Изменить"
+
+  admin:
+    users:
+      index:
+        title: "Аккаунты"
+        login: "Логин"
+        name: "ФИО"
+        email: "E-Mail"
+        created_at: "Создан"
+        last_login_at: "Последний логин"
+        last_login_ip: "IP последнего логина"
+
+        confirm_for_delete: "Вы действительно хотите удалить пользователя с логином '{{login}}'?"
+        edit_hint: "Изменить"
+        delete_hint: "Удалить"
+
+      new:
+        title: "Новый аккаунт"
+
+      edit:
+        title: "Изменить аккаунт"
+
+      sidebar:
+        new: "Новый аккаунт..."
+
+  activerecord:
+    attributes:
+      user:
+        login: "Логин"
+        email: "E-Mail"
+        first_name: "Имя"
+        last_name: "Фамилия"
+        password: "Пароль"
+        password_confirmation: "Повторить пароль"
+        created_at: "Создан"
+        last_login_at: "Последний логин"
+        last_login_ip: "IP последнего логина"
+        current_login_ip: "Текущий IP"
+
+  authlogic:
+    attributes:
+      user_session:
+        login: "Логин"
+        email: "E-Mail"
+        password: "Пароль"
+        remember_me: "Запомнить"
+
+  formtastic:
+    actions:
+      user:
+        create: "Создать аккаунт"
+        update: "Изменить аккаунт"
 
 }
 

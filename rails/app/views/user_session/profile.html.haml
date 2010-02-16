@@ -7,26 +7,26 @@
 
   .clearfix
     %h1.user-name= "#{@user.last_name}, #{@user.first_name}"
-    = link_to 'Edit', edit_profile_path, :class => "edit-profile-link clear"
+    = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
 
   %ul
     %li
-      Email:
+      = t("activerecord.attributes.user.email") + ":"
       = @user.email 
     %li
-      Registered on:
+      = t("activerecord.attributes.user.created_at") + ":"
       = l(@user.created_at.localtime, :format => "%e %B %Y")
     -if @user.last_login_at.present?
       %li
         &nbsp;
       %li
-        %h5 Connection information
+        %h5= t(".connection_information")
       %li
-        Last connection:
+        = t("activerecord.attributes.user.last_login_at") + ":"
         = l(@user.last_login_at.localtime, :format => "%e %B %Y %H:%M")
       %li
-        Last login IP:
+        = t("activerecord.attributes.user.last_login_ip") + ":"
         = @user.last_login_ip
       %li
-        Current login IP:
+        = t("activerecord.attributes.user.current_login_ip") + ":"
         = @user.current_login_ip

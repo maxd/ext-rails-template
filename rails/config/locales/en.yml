@@ -19,7 +19,7 @@ en:
     admin:
       main_navigation:
         dashboard: "Dashboard"
-        users: "Users"
+        users: "Accounts"
 
   sidebar:
     actions: "Actions"
@@ -61,6 +61,10 @@ en:
                                copying and pasting the URL from your email into your browser or restarting the
                                reset password process."
 
+    profile:
+      edit: "edit"
+      connection_information: "Connection information"
+
     edit_profile:
       title: "Change Profile"
       change: "Change"
@@ -68,10 +72,10 @@ en:
   admin:
     users:
       index:
-        title: "Users"
+        title: "Accounts"
         login: "Login"
         name: "Name"
-        email: "Email"
+        email: "E-Mail"
         created_at: "Created At"
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
@@ -81,11 +85,38 @@ en:
         delete_hint: "Delete"
 
       new:
-        title: "New User"
+        title: "New Account"
 
       edit:
-        title: "Change User"
+        title: "Update Account"
 
       sidebar:
-        new: "New User..."
+        new: "New Account..."
 
+  activerecord:
+    attributes:
+      user:
+        login: "Login"
+        email: "E-Mail"
+        first_name: "First Name"
+        last_name: "Last Name"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        created_at: "Created At"
+        last_login_at: "Last Login At"
+        last_login_ip: "Last Login IP"
+        current_login_ip: "Current IP"
+
+  authlogic:
+    attributes:
+      user_session:
+        login: "Login"
+        email: "E-Mail"
+        password: "Password"
+        remember_me: "Remember me"
+
+  formtastic:
+    actions:
+      user:
+        create: "Create Account"
+        update: "Update Account"

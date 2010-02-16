@@ -1,0 +1,121 @@
+ru:
+  cancel: "Отменить"
+  or: "или"
+  access_denied: "Доступ запрещён."
+  access_denied_try_to_login: "Доступ запрещён. Залогинтесь в приложение и повторите попытку."
+  title_of_reset_password_email: "Инструкции для востановлении пароля"
+
+  layouts:
+    main_navigation:
+      dashboard: "Главная"
+
+    user_navigation:
+      login: "Вход"
+      logout: "Выход"
+      register: "Регистрация"
+      profile: "Профайл"
+      administration: "Управлене приложением"
+
+    admin:
+      main_navigation:
+        dashboard: "Главная"
+        users: "Аккаунты"
+
+  sidebar:
+    actions: "Действия"
+    information: "Информация"
+
+  user_session:
+    login:
+      title: "Вход"
+      login: "Войти"
+      reset_password: "Забыли пароль?"
+
+      success_login: "Вы успешно вошли в приложение!"
+
+    logout:
+      success_logout: "Вы успешно вышли из приложения!"
+
+    register:
+      title: "Регистрация нового аккаунта"
+      register: "Зарегистрировать"
+
+      account_registred: "Аккаунт зарегистрирован!"
+
+    request_reset_password:
+      title: "Восстановление пароля"
+      description: "Заполните форму находящуюся ниже и следуйте инструкциям отправленным по e-mail для восстановления пароля:"
+      email: "E-Mail"
+      send_request: "Отправить запрос"
+
+      email_notification: "Инструкции для восстановления пароля были отправлены на ваш e-mail."
+      nonexistent_email: "Не найдено пользователя с указанным e-mail адресом"
+
+    reset_password:
+      title: "Смена пароля"
+      reset: "Применить новый пароль"
+
+      password_updated: "Пароль востановлен"
+
+    load_user_using_perishable_token:
+      wrong_perishable_token: "Информация для востановления пароля устарела. Попробуйте повторить процедуру востановление пароля."
+
+    profile:
+      edit: "Изменить"
+      connection_information: "Информация о соединении"
+
+    edit_profile:
+      title: "Изменение профайла"
+      change: "Изменить"
+
+  admin:
+    users:
+      index:
+        title: "Аккаунты"
+        login: "Логин"
+        name: "ФИО"
+        email: "E-Mail"
+        created_at: "Создан"
+        last_login_at: "Последний логин"
+        last_login_ip: "IP последнего логина"
+
+        confirm_for_delete: "Вы действительно хотите удалить пользователя с логином '{{login}}'?"
+        edit_hint: "Изменить"
+        delete_hint: "Удалить"
+
+      new:
+        title: "Новый аккаунт"
+
+      edit:
+        title: "Изменить аккаунт"
+
+      sidebar:
+        new: "Новый аккаунт..."
+
+  activerecord:
+    attributes:
+      user:
+        login: "Логин"
+        email: "E-Mail"
+        first_name: "Имя"
+        last_name: "Фамилия"
+        password: "Пароль"
+        password_confirmation: "Повторить пароль"
+        created_at: "Создан"
+        last_login_at: "Последний логин"
+        last_login_ip: "IP последнего логина"
+        current_login_ip: "Текущий IP"
+
+  authlogic:
+    attributes:
+      user_session:
+        login: "Логин"
+        email: "E-Mail"
+        password: "Пароль"
+        remember_me: "Запомнить"
+
+  formtastic:
+    actions:
+      user:
+        create: "Создать аккаунт"
+        update: "Изменить аккаунт"
