@@ -5,3 +5,4 @@ tmp/*
 coverage/
 db/schema.rb
 public/stylesheets/application.css
+config/database.yml
