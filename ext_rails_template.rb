@@ -3289,9 +3289,11 @@ file "public/stylesheets/sass/theme/_admin.sass", %q{
   th.user-last_login_ip
     width: 100px
   th.user-last_login_at
-    width: 110px
+    width: 130px
+    min-width: 130px
   th.user-created_at
-    width: 110px
+    width: 130px
+    min-width: 130px
   th.user-actions
     width: 50px
 }
