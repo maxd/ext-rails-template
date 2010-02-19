@@ -2,6 +2,7 @@
   div.login-form { width: 400px; margin: 0 auto; }
   div.login-form .header { position: relative; }
   div.login-form .header a { position: absolute; top: 0px; right: 10px; }
+
 .login-form
   .header
     %h1= t(".title")
@@ -18,4 +19,3 @@
       %li.cancel
         = t("or")
         = link_to t("cancel"), dashboard_path
-      

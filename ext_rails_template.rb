@@ -331,6 +331,7 @@ file "app/views/user_session/login.html.haml", %q{
   div.login-form { width: 400px; margin: 0 auto; }
   div.login-form .header { position: relative; }
   div.login-form .header a { position: absolute; top: 0px; right: 10px; }
+
 .login-form
   .header
     %h1= t(".title")
@@ -347,7 +348,6 @@ file "app/views/user_session/login.html.haml", %q{
       %li.cancel
         = t("or")
         = link_to t("cancel"), dashboard_path
-      
 
 }
 
@@ -3394,10 +3394,14 @@ form.formtastic
     -moz-box-sizing: border-box
     -webkit-box-sizing: border-box
     box-sizing: border-box
-  input[type="submit"], input[type="button"]
+  input[type="submit"], input[type="button"],input[type="checkbox"]
     background: #FFFFFF url(images/input.gif) repeat-x scroll 0 0
     border: 1px solid #AAA
     padding: 3px
+  input[type="checkbox"]
+    width: auto
+    margin-right: 3px
+
   //--------------------------------------------------------
   // Date Time Styling
   //--------------------------------------------------------
