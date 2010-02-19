@@ -122,7 +122,7 @@ file "app/views/layouts/admin/_main_navigation.html.haml", %q{
 file "app/views/layouts/admin/application.html.haml", %q{
 !!! XML
 !!! Strict
-%html
+%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
   %head
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= Admin::Application::TITLE
@@ -163,7 +163,7 @@ file "app/views/layouts/_main_navigation.html.haml", %q{
 file "app/views/layouts/application.html.haml", %q{
 !!! XML
 !!! Strict
-%html
+%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
   %head
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= ApplicationController::TITLE
