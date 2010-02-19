@@ -47,6 +47,7 @@ file ".gitignore", %q{
 .DS_Store
 log/*.*
 tmp/**/*
+db/*.sqlite3
 coverage/
 db/schema.rb
 public/stylesheets/application.css
