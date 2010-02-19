@@ -42,8 +42,7 @@ FILE_CONTENT
 
 # Additional application files
 
-file ".gitignore", %q{
-.idea
+file ".gitignore", %q{.idea
 .DS_Store
 log/*.*
 tmp/**/*
@@ -52,13 +51,11 @@ coverage/
 db/schema.rb
 public/stylesheets/application.css
 config/database.yml
-rerun.txt
-}
+rerun.txt}
 
 
 
-file "app/views/notifier/password_reset_instructions.html.haml", %q{
-%h1= I18n.t("title_of_reset_password_email")
+file "app/views/notifier/password_reset_instructions.html.haml", %q{%h1= I18n.t("title_of_reset_password_email")
 
 %p
   A request to reset your password has been made. If you did not
@@ -66,28 +63,22 @@ file "app/views/notifier/password_reset_instructions.html.haml", %q{
   request, follow the link below.
 
 = link_to "Reset Password!", @reset_password_url
-
 }
 
-file "app/views/admin/users/index.html.haml", %q{
-%h1= t(".title")
+file "app/views/admin/users/index.html.haml", %q{%h1= t(".title")
 
 = user_table
 .pagination
   = will_paginate(@users, :container => false)
   &nbsp;&nbsp;
   = page_entries_info(@users)
-
 }
 
-file "app/views/admin/users/new.html.haml", %q{
-%h1= t(".title")
+file "app/views/admin/users/new.html.haml", %q{%h1= t(".title")
 
-= render :partial => "form"
-}
+= render :partial => "form"}
 
-file "app/views/admin/users/_sidebar.html.haml", %q{
-.app-block
+file "app/views/admin/users/_sidebar.html.haml", %q{.app-block
   %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
 
@@ -98,11 +89,9 @@ file "app/views/admin/users/_sidebar.html.haml", %q{
     edit or delete users.                                                                                              |
     %p NOTE: You can't delete general administrator account with login "admin".
 
-
 }
 
-file "app/views/admin/users/_form.html.haml", %q{
-- semantic_form_for [:admin, @user] do |form|
+file "app/views/admin/users/_form.html.haml", %q{- semantic_form_for [:admin, @user] do |form|
   - form.inputs do
     - if @user.new_record?
       = form.input :login, :required => true
@@ -115,27 +104,19 @@ file "app/views/admin/users/_form.html.haml", %q{
     = form.commit_button
     %li.cancel
       = t("or")
-      = link_to t("cancel"), admin_users_path
-}
+      = link_to t("cancel"), admin_users_path}
 
-file "app/views/admin/users/edit.html.haml", %q{
-%h1= t(".title")
+file "app/views/admin/users/edit.html.haml", %q{%h1= t(".title")
 
-= render :partial => "form"
-}
+= render :partial => "form"}
 
-file "app/views/admin/admin_dashboard/index.html.haml", %q{
-%h1 Dashboard
-}
+file "app/views/admin/admin_dashboard/index.html.haml", %q{%h1 Dashboard}
 
-file "app/views/layouts/admin/_main_navigation.html.haml", %q{
-.app-main-navigation.clearfix
+file "app/views/layouts/admin/_main_navigation.html.haml", %q{.app-main-navigation.clearfix
   %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
-  = render_navigation :context => :admin_main
-}
+  = render_navigation :context => :admin_main}
 
-file "app/views/layouts/admin/application.html.haml", %q{
-!!! XML
+file "app/views/layouts/admin/application.html.haml", %q{!!! XML
 !!! Strict
 %html{ :xmlns => "http://www.w3.org/1999/xhtml" }
   %head
@@ -168,15 +149,11 @@ file "app/views/layouts/admin/application.html.haml", %q{
     .app-footer
       %p
         = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
-
 }
 
-file "app/views/layouts/_main_navigation.html.haml", %q{
-.app-main-navigation.clearfix= render_navigation :context => :main
-}
+file "app/views/layouts/_main_navigation.html.haml", %q{.app-main-navigation.clearfix= render_navigation :context => :main}
 
-file "app/views/layouts/application.html.haml", %q{
-!!! XML
+file "app/views/layouts/application.html.haml", %q{!!! XML
 !!! Strict
 %html{ :xmlns => "http://www.w3.org/1999/xhtml" }
   %head
@@ -209,15 +186,11 @@ file "app/views/layouts/application.html.haml", %q{
     .app-footer
       %p
         = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"                        
-
 }
 
-file "app/views/layouts/_user_navigation.html.haml", %q{
-.app-user-navigation.clearfix= render_navigation :context => :user
-}
+file "app/views/layouts/_user_navigation.html.haml", %q{.app-user-navigation.clearfix= render_navigation :context => :user}
 
-file "app/views/dashboard/index.html.haml", %q{
-- content_for :style do
+file "app/views/dashboard/index.html.haml", %q{- content_for :style do
   ul.available-features { list-style-type: circle; margin-left: 2em }
 
 %h1 Welcome
@@ -261,22 +234,18 @@ file "app/views/dashboard/index.html.haml", %q{
     %a(href="http://github.com/brynary/webrat") webrat
     engines
 
-
 }
 
-file "app/views/dashboard/_sidebar.html.haml", %q{
-.app-block
+file "app/views/dashboard/_sidebar.html.haml", %q{.app-block
   %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .app-block
   %h6= t("sidebar.information")
   .app-content
-    %p New information text for sidebar context                
-}
+    %p New information text for sidebar context                }
 
-file "app/views/user_session/register.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/register.html.haml", %q{- content_for :style do
   div.register-form { width: 500px; margin: 0 auto; }
 
 .register-form
@@ -296,11 +265,9 @@ file "app/views/user_session/register.html.haml", %q{
         %span
           = t("or")
           = link_to t("cancel"), dashboard_path
-
 }
 
-file "app/views/user_session/reset_password.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/reset_password.html.haml", %q{- content_for :style do
   div.login-form { width: 500px; margin: 0 auto; }
 
 .login-form
@@ -316,11 +283,9 @@ file "app/views/user_session/reset_password.html.haml", %q{
       %li.cancel
         = t(:or)
         = link_to t("cancel"), dashboard_path
-
 }
 
-file "app/views/user_session/edit_profile.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/edit_profile.html.haml", %q{- content_for :style do
   div.profile-form { width: 500px; margin: 0 auto; }
 
 .profile-form
@@ -338,11 +303,9 @@ file "app/views/user_session/edit_profile.html.haml", %q{
       %li.cancel
         = t("or")
         = link_to t("cancel"), profile_path
-
 }
 
-file "app/views/user_session/login.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/login.html.haml", %q{- content_for :style do
   div.login-form { width: 400px; margin: 0 auto; }
   div.login-form .header { position: relative; }
   div.login-form .header a { position: absolute; top: 0px; right: 10px; }
@@ -363,11 +326,9 @@ file "app/views/user_session/login.html.haml", %q{
       %li.cancel
         = t("or")
         = link_to t("cancel"), dashboard_path
-
 }
 
-file "app/views/user_session/profile.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/profile.html.haml", %q{- content_for :style do
   div.user-profile { width: 600px; margin: 0 auto; position: relative; }
   h1.user-name { float: left; }
   a.edit-profile-link { float: left; padding-left: 1em }
@@ -398,11 +359,9 @@ file "app/views/user_session/profile.html.haml", %q{
         = @user.last_login_ip
       %li
         = t("activerecord.attributes.user.current_login_ip") + ":"
-        = @user.current_login_ip
-}
+        = @user.current_login_ip}
 
-file "app/views/user_session/request_reset_password.html.haml", %q{
-- content_for :style do
+file "app/views/user_session/request_reset_password.html.haml", %q{- content_for :style do
   div.request-reset-password-form { width: 400px; margin: 0 auto; }
 
 .request-reset-password-form
@@ -417,11 +376,9 @@ file "app/views/user_session/request_reset_password.html.haml", %q{
       %li.cancel
         %span
           = t("or")
-          = link_to t("cancel"), login_path
-}
+          = link_to t("cancel"), login_path}
 
-file "app/controllers/user_session_controller.rb", %q{
-class UserSessionController < ApplicationController
+file "app/controllers/user_session_controller.rb", %q{class UserSessionController < ApplicationController
 
   ssl_required :login, :edit_profile
 
@@ -514,21 +471,17 @@ private
   end
 
 end
-
 }
 
-file "app/controllers/admin/admin_dashboard_controller.rb", %q{
-class Admin::AdminDashboardController < Admin::Application
+file "app/controllers/admin/admin_dashboard_controller.rb", %q{class Admin::AdminDashboardController < Admin::Application
 
   def index
   end
 
 end
-
 }
 
-file "app/controllers/admin/users_controller.rb", %q{
-class Admin::UsersController < Admin::Application
+file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersController < Admin::Application
 
   navigation :users
 
@@ -571,11 +524,9 @@ class Admin::UsersController < Admin::Application
   end
 
 end
-
 }
 
-file "app/controllers/admin/application.rb", %q{
-class Admin::Application < ApplicationController
+file "app/controllers/admin/application.rb", %q{class Admin::Application < ApplicationController
 
   layout 'admin/application'
 
@@ -595,11 +546,9 @@ private
   end
 
 end
-
 }
 
-file "app/controllers/application_controller.rb", %q{
-class ApplicationController < ActionController::Base
+file "app/controllers/application_controller.rb", %q{class ApplicationController < ActionController::Base
 
   TITLE = I18n.t(:application_title)
 
@@ -651,11 +600,9 @@ private
   end
   
 end
-
 }
 
-file "app/controllers/dashboard_controller.rb", %q{
-class DashboardController < ApplicationController
+file "app/controllers/dashboard_controller.rb", %q{class DashboardController < ApplicationController
 
   access_control do
     allow all
@@ -665,23 +612,17 @@ class DashboardController < ApplicationController
   end
 
 end
-
 }
 
-file "app/models/role.rb", %q{
-class Role < ActiveRecord::Base
+file "app/models/role.rb", %q{class Role < ActiveRecord::Base
   acts_as_authorization_role
 end
-
 }
 
-file "app/models/user_session.rb", %q{
-class UserSession < Authlogic::Session::Base
-end
-}
+file "app/models/user_session.rb", %q{class UserSession < Authlogic::Session::Base
+end}
 
-file "app/models/notifier.rb", %q{
-class Notifier < ActionMailer::Base
+file "app/models/notifier.rb", %q{class Notifier < ActionMailer::Base
 
   def password_reset_instructions(user)
     subject       I18n.t("title_of_reset_password_email")
@@ -692,11 +633,9 @@ class Notifier < ActionMailer::Base
   end
 
 end
-
 }
 
-file "app/models/user.rb", %q{
-class User < ActiveRecord::Base
+file "app/models/user.rb", %q{class User < ActiveRecord::Base
   acts_as_authentic
   acts_as_authorization_subject
 
@@ -708,11 +647,9 @@ class User < ActiveRecord::Base
   end
   
 end
-
 }
 
-file "app/helpers/admin/users_helper.rb", %q{
-module Admin::UsersHelper
+file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
 
   def user_table
     collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
@@ -762,23 +699,17 @@ module Admin::UsersHelper
   end
   
 end
-
 }
 
-file "app/helpers/user_session_helper.rb", %q{
-module UserSessionHelper
+file "app/helpers/user_session_helper.rb", %q{module UserSessionHelper
 end
-
 }
 
-file "app/helpers/dashboard_helper.rb", %q{
-module DashboardHelper
+file "app/helpers/dashboard_helper.rb", %q{module DashboardHelper
 end
-
 }
 
-file "app/helpers/application_helper.rb", %q{
-# Methods added to this helper will be available to all templates in the application.
+file "app/helpers/application_helper.rb", %q{# Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
   def has_partial?(partial_path)
@@ -788,14 +719,12 @@ module ApplicationHelper
   end
 
 end
-
 }
 
 
 
 
-file "config/environments/cucumber.rb", %q{
-# Edit at your own peril - it's recommended to regenerate this file
+file "config/environments/cucumber.rb", %q{# Edit at your own peril - it's recommended to regenerate this file
 # in the future when you upgrade to a newer version of Cucumber.
 
 # IMPORTANT: Setting config.cache_classes to false is known to
@@ -829,12 +758,10 @@ config.gem 'spork',            :lib => false, :version => '>=0.7.4' unless File.
 config.gem 'email_spec',       :lib => false, :version => '>=0.4.0'  unless File.directory?(File.join(Rails.root, 'vendor/plugins/email_spec'))
 
 config.action_mailer.default_url_options = { :host => "localhost:3000" }
-
 }
 
 
-file "config/initializers/formtastic.rb", %q{
-# Set the default text field size when input is a string. Default is 50.
+file "config/initializers/formtastic.rb", %q{# Set the default text field size when input is a string. Default is 50.
 # Formtastic::SemanticFormBuilder.default_text_field_size = 50
 
 # Should all fields be considered "required" by default?
@@ -885,38 +812,30 @@ Formtastic::SemanticFormBuilder.i18n_lookups_by_default = true
 # You can add custom inputs or override parts of Formtastic by subclassing SemanticFormBuilder and
 # specifying that class here.  Defaults to SemanticFormBuilder.
 # Formtastic::SemanticFormHelper.builder = MyCustomBuilder
-
 }
 
 
-file "config/initializers/i18n.rb", %q{
-# Set default locale to :en (gem russian switch this settings to :ru)
+file "config/initializers/i18n.rb", %q{# Set default locale to :en (gem russian switch this settings to :ru)
 
-I18n.default_locale = :en
-}
+I18n.default_locale = :en}
 
 
-file "config/initializers/global_settings.rb", %q{
-# Enable/disable user registration
+file "config/initializers/global_settings.rb", %q{# Enable/disable user registration
 ENABLE_USER_REGISTRATION = true
 
 # Enable/disable user to request reset password
 ENABLE_REQUEST_RESET_PASSWORD = true
 
 # From email address in mail for restore password 
-FROM_EMAIL_ADDRESS = "noreplay@domain.com"
-}
+FROM_EMAIL_ADDRESS = "noreplay@domain.com"}
 
 
-file "config/initializers/simple_navigation.rb", %q{
-config_file_path = File.join(RAILS_ROOT, 'config', 'navigation')
+file "config/initializers/simple_navigation.rb", %q{config_file_path = File.join(RAILS_ROOT, 'config', 'navigation')
 
-SimpleNavigation.config_file_path = config_file_path
-}
+SimpleNavigation.config_file_path = config_file_path}
 
 
-file "config/locales/en.yml", %q{
-en:
+file "config/locales/en.yml", %q{en:
   application_title: "Application Title"
   cancel: "Cancel"
   or: "or"
@@ -1040,11 +959,9 @@ en:
       user:
         create: "Create Account"
         update: "Update Account"
-
 }
 
-file "config/locales/ru.yml", %q{
-ru:
+file "config/locales/ru.yml", %q{ru:
   application_title: "Название приложения"
   cancel: "Отменить"
   or: "или"
@@ -1166,12 +1083,10 @@ ru:
       user:
         create: "Создать аккаунт"
         update: "Изменить аккаунт"
-
 }
 
 
-file "config/navigation/user_navigation.rb", %q{
-# Configures user navigation menu
+file "config/navigation/user_navigation.rb", %q{# Configures user navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
@@ -1184,11 +1099,9 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :logout, t(".logout"), logout_path,       :if => lambda { current_user.present? }
 
   end
-end
-}
+end}
 
-file "config/navigation/admin_users_sidebar_navigation.rb", %q{
-# Configures main navigation menu
+file "config/navigation/admin_users_sidebar_navigation.rb", %q{# Configures main navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
@@ -1197,11 +1110,9 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :new, t(".new"), new_admin_user_path
 
   end
-end
-}
+end}
 
-file "config/navigation/dashboard_navigation.rb", %q{
-# Configures dashboard sidebar menu
+file "config/navigation/dashboard_navigation.rb", %q{# Configures dashboard sidebar menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
@@ -1211,11 +1122,9 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :action2, "Action2", "#"
 
   end
-end
-}
+end}
 
-file "config/navigation/main_navigation.rb", %q{
-# Configures main navigation menu
+file "config/navigation/main_navigation.rb", %q{# Configures main navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
@@ -1224,11 +1133,9 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :dashboard, t(".dashboard"), dashboard_path
 
   end
-end
-}
+end}
 
-file "config/navigation/admin_main_navigation.rb", %q{
-# Configures main navigation menu
+file "config/navigation/admin_main_navigation.rb", %q{# Configures main navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
@@ -1238,24 +1145,20 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.item :users, t(".users"), admin_users_path
 
   end
-end
-}
+end}
 
 
-file "config/cucumber.yml", %q{
-<%
+file "config/cucumber.yml", %q{<%
 rerun = File.file?('rerun.txt') ? IO.read('rerun.txt') : ""
 rerun_opts = rerun.to_s.strip.empty? ? "--format progress features" : "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} #{rerun}"
 std_opts = "#{rerun_opts} --format rerun --out rerun.txt --strict --tags ~@wip"
 %>
 default: --drb <%= std_opts %>
 wip: --drb --tags @wip:3 --wip features
-
 }
 
 
-file "config/routes.rb", %q{
-ActionController::Routing::Routes.draw do |map|
+file "config/routes.rb", %q{ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
@@ -1317,14 +1220,12 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
 end
-
 }
 
 
 
 
-file "db/migrate/20100127202616_create_roles.rb", %q{
-class CreateRoles < ActiveRecord::Migration
+file "db/migrate/20100127202616_create_roles.rb", %q{class CreateRoles < ActiveRecord::Migration
   def self.up
     create_table :roles do |t|
       t.string :name,               :limit => 40
@@ -1339,11 +1240,9 @@ class CreateRoles < ActiveRecord::Migration
     drop_table :roles
   end
 end
-
 }
 
-file "db/migrate/20100208201733_assign_roles.rb", %q{
-class AssignRoles < ActiveRecord::Migration
+file "db/migrate/20100208201733_assign_roles.rb", %q{class AssignRoles < ActiveRecord::Migration
   def self.up
     User.find_by_login("admin").has_role!(:admin)
   end
@@ -1352,11 +1251,9 @@ class AssignRoles < ActiveRecord::Migration
     User.find_by_login("admin").has_no_roles!
   end
 end
-
 }
 
-file "db/migrate/20100114222613_create_sessions.rb", %q{
-class CreateSessions < ActiveRecord::Migration
+file "db/migrate/20100114222613_create_sessions.rb", %q{class CreateSessions < ActiveRecord::Migration
   def self.up
     create_table :sessions do |t|
       t.string :session_id, :null => false
@@ -1372,11 +1269,9 @@ class CreateSessions < ActiveRecord::Migration
     drop_table :sessions
   end
 end
-
 }
 
-file "db/migrate/20100114222739_create_users.rb", %q{
-class CreateUsers < ActiveRecord::Migration
+file "db/migrate/20100114222739_create_users.rb", %q{class CreateUsers < ActiveRecord::Migration
   def self.up
     create_table :users do |t|
 
@@ -1413,11 +1308,9 @@ class CreateUsers < ActiveRecord::Migration
     drop_table :users
   end
 end
-
 }
 
-file "db/migrate/20100127202741_create_roles_users.rb", %q{
-class CreateRolesUsers < ActiveRecord::Migration
+file "db/migrate/20100127202741_create_roles_users.rb", %q{class CreateRolesUsers < ActiveRecord::Migration
   def self.up
     create_table "roles_users", :id => false, :force => true do |t|
       t.references  :user
@@ -1430,25 +1323,21 @@ class CreateRolesUsers < ActiveRecord::Migration
     drop_table "roles_users"
   end
 end
-
 }
 
 
-file "db/seeds.rb", %q{
-# This file should contain all the record creation needed to seed the database with its default values.
+file "db/seeds.rb", %q{# This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
 # Examples:
 #   
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Major.create(:name => 'Daley', :city => cities.first)
-
 }
 
 
 
-file "features/registration_enabled.feature", %q{
-@registration_enabled
+file "features/registration_enabled.feature", %q{@registration_enabled
 Feature: Registration in application feature enabled
   In order to work with advanced features of application
   As anonymous user
@@ -1599,11 +1488,9 @@ Feature: Registration in application feature enabled
     And follow "Cancel"
     Then I should be on the dashboard page
 
-    
-}
+    }
 
-file "features/application_administrator/sucess_authorization.feature", %q{
-Feature: Application administrator should have access to all pages
+file "features/application_administrator/sucess_authorization.feature", %q{Feature: Application administrator should have access to all pages
   In order to grant full access to private application functionality
   A application administrator
   Should have access to all pages
@@ -1632,11 +1519,9 @@ Feature: Application administrator should have access to all pages
     Given I am application administrator
     When I go to the user list in admin panel page
     Then I should be on the user list in admin panel page
-
 }
 
-file "features/application_administrator/failed_authorization.feature", %q{
-Feature: Application administrator hasn't access to several application pages
+file "features/application_administrator/failed_authorization.feature", %q{Feature: Application administrator hasn't access to several application pages
   In order to restrict access to several application pages for authenticated users
   A application administrator
   Haven't access to these pages
@@ -1661,11 +1546,9 @@ Feature: Application administrator hasn't access to several application pages
     When I go to the request reset password page
     Then I should be on the dashboard page
     And should see flash with "Access denied."
-
 }
 
-file "features/application_administrator/user_list.feature", %q{
-Feature: The application administrator can manage registered user accounts
+file "features/application_administrator/user_list.feature", %q{Feature: The application administrator can manage registered user accounts
   In order to manage registered user accounts
   A application administrator
   Should have ability to see/create/edit/delete registered user accounts
@@ -1735,11 +1618,9 @@ Feature: The application administrator can manage registered user accounts
   Scenario: The application administrator can't delete administrator account with login "admin"
     Given I am application administrator
     When I go to the user list in admin panel page
-    Then I shouldn't see delete link for user with login "admin"
-}
+    Then I shouldn't see delete link for user with login "admin"}
 
-file "features/support/paths.rb", %q{
-module NavigationHelpers
+file "features/support/paths.rb", %q{module NavigationHelpers
   # Maps a name to a path. Used by the
   #
   #   When /^I go to (.+)$/ do |page_name|
@@ -1788,11 +1669,9 @@ module NavigationHelpers
 end
 
 World(NavigationHelpers)
-
 }
 
-file "features/support/env.rb", %q{
-# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
+file "features/support/env.rb", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
 # It is recommended to regenerate this file in the future when you upgrade to a 
 # newer version of cucumber-rails. Consider adding your own code to a new file 
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
@@ -1864,11 +1743,9 @@ Spork.each_run do
   DatabaseCleaner.strategy = :truncation
 
 end
-
 }
 
-file "features/support/prerequisites.rb", %q{
-Before do
+file "features/support/prerequisites.rb", %q{Before do
 
   # Create user account without administration privileges
   User.create! :login => "user",
@@ -1877,11 +1754,9 @@ Before do
                :last_name => "User", 
                :password => "user", :password_confirmation => "user"
 
-end
-}
+end}
 
-file "features/application_user/sucess_authorization.feature", %q{
-Feature: Application user should have access to dashboard, profile and profile editor pages
+file "features/application_user/sucess_authorization.feature", %q{Feature: Application user should have access to dashboard, profile and profile editor pages
   In order to partially restrict application users functionality in application
   A application user
   Should have access to dashboard, profile and profile editor page
@@ -1900,11 +1775,9 @@ Feature: Application user should have access to dashboard, profile and profile e
     Given I am application user
     When I go to the edit profile page
     Then I should be on the edit profile page
-
 }
 
-file "features/application_user/failed_authorization.feature", %q{
-Feature: Application user (not application Administrator) should has partial access to private application resource
+file "features/application_user/failed_authorization.feature", %q{Feature: Application user (not application Administrator) should has partial access to private application resource
   In order to partially restrict access to private application resources
   A application user (not application Administrator)
   Should have access to several application pages
@@ -1943,11 +1816,9 @@ Feature: Application user (not application Administrator) should has partial acc
     When I go to the user list in admin panel page
     Then I should be on the dashboard page
     And should see flash with "Access denied."
-
 }
 
-file "features/authentication.feature", %q{
-Feature: Authentication to application
+file "features/authentication.feature", %q{Feature: Authentication to application
   In order to login to application
   As registered user
   Should have ability to login in application 
@@ -1990,11 +1861,9 @@ Feature: Authentication to application
     Then I should see form validation for "Password" field
     And shouldn't authenticated in application
     And should see "/login" link
-
 }
 
-file "features/dashboard.feature", %q{
-Feature: Show dashboard page
+file "features/dashboard.feature", %q{Feature: Show dashboard page
   In order to show home/root page
   A any user
   Should be able to see dashboard page
@@ -2012,11 +1881,9 @@ Feature: Show dashboard page
   Scenario: Show dashboard page for application administrator
     Given I am application administrator
     When I go to the dashboard page
-    Then I should see dashboard page
-}
+    Then I should see dashboard page}
 
-file "features/anonymous_user/sucess_authorization.feature", %q{
-Feature: Anonymous user should have access to dashboard, register, reset password and login pages only
+file "features/anonymous_user/sucess_authorization.feature", %q{Feature: Anonymous user should have access to dashboard, register, reset password and login pages only
   In order to restrict anonymous users functionality in application
   A anonymous  user
   Should have access to dashboard, register, reset password and login pages only
@@ -2042,11 +1909,9 @@ Feature: Anonymous user should have access to dashboard, register, reset passwor
     Given I am anonymous user
     When I go to the request reset password page
     Then I should be on the request reset password page
-
 }
 
-file "features/anonymous_user/failed_authorization.feature", %q{
-Feature: Anonymous user shouldn't have access to private application resources
+file "features/anonymous_user/failed_authorization.feature", %q{Feature: Anonymous user shouldn't have access to private application resources
   In order to restrict access to private application resources
   A anonymous user
   Shouldn't have access to several pages
@@ -2099,11 +1964,9 @@ Feature: Anonymous user shouldn't have access to private application resources
     When I go to the user list in admin panel page
     Then I should be on the login page
     And should see flash with "Access denied."
-    
-}
+    }
 
-file "features/reset_password_enabled.feature", %q{
-@reset_password_enabled
+file "features/reset_password_enabled.feature", %q{@reset_password_enabled
 Feature: Reset password feature enabled
   In order to restore forgotten password
   A registered user
@@ -2141,11 +2004,9 @@ Feature: Reset password feature enabled
     Then I should see flash with "we could not locate your account"
     And shouldn't authenticated in application
 
-
 }
 
-file "features/step_definitions/email_steps.rb", %q{
-# Commonly used email steps
+file "features/step_definitions/email_steps.rb", %q{# Commonly used email steps
 #
 # To add your own steps make a custom_email_steps.rb
 # The provided methods are:
@@ -2288,11 +2149,9 @@ When /^(?:I|they) click the first link in the email$/ do
   click_first_link_in_email
 end
 
-
 }
 
-file "features/step_definitions/common_steps.rb", %q{
-Then /^(?:|I )should see "([^\"]*)" link$/ do |link|
+file "features/step_definitions/common_steps.rb", %q{Then /^(?:|I )should see "([^\"]*)" link$/ do |link|
   response.should have_xpath("//a[@href='#{link}']")
 end
 
@@ -2311,11 +2170,9 @@ end
 Then /^I should be able to log in with login "([^\"]*)" and password "([^\"]*)"$/ do |login, password|
   UserSession.new(:login => login, :password => password).save.should == true
 end
-
 }
 
-file "features/step_definitions/user_list_steps.rb", %q{
-Then /I should see (\d+) user accounts in table/ do |number|
+file "features/step_definitions/user_list_steps.rb", %q{Then /I should see (\d+) user accounts in table/ do |number|
   response.should have_selector("table.users td.user-login", :count => number)
 end
 
@@ -2363,11 +2220,9 @@ Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
 
 end
 
-
 }
 
-file "features/step_definitions/web_steps.rb", %q{
-# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
+file "features/step_definitions/web_steps.rb", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
 # It is recommended to regenerate this file in the future when you upgrade to a 
 # newer version of cucumber-rails. Consider adding your own code to a new file 
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
@@ -2627,11 +2482,9 @@ end
 
 Then /^show me the page$/ do
   save_and_open_page
-end
-}
+end}
 
-file "features/step_definitions/reset_password_steps.rb", %q{
-Then /^I should be with user.perishable_token on the reset password page$/ do
+file "features/step_definitions/reset_password_steps.rb", %q{Then /^I should be with user.perishable_token on the reset password page$/ do
   user = User.first(:conditions => { :email => "admin@example.com" })
 
   Then "I should be on the reset password page with Id \"#{user.perishable_token}\""
@@ -2655,11 +2508,9 @@ Given /open reset password page from "([^\"]*)" email/ do |email|
     When I follow "Reset Password!" in the email
     Then I should be with user.perishable_token on the reset password page
   }
-end
-}
+end}
 
-file "features/step_definitions/authentication_steps.rb", %q{
-Given /^I am anonymous user$/ do
+file "features/step_definitions/authentication_steps.rb", %q{Given /^I am anonymous user$/ do
   visit dashboard_path
   controller.send(:current_user).should be_nil
 end
@@ -2696,11 +2547,9 @@ Then /^(?:|I )shouldn't authenticated in application$/ do
   controller.send(:current_user).should be_nil
 end
 
-
 }
 
-file "features/step_definitions/registration_steps.rb", %q{
-Then /^I should be registered in application$/ do
+file "features/step_definitions/registration_steps.rb", %q{Then /^I should be registered in application$/ do
   controller.send(:current_user).should_not be_nil
   controller.send(:current_user).login.should == "maksimka"
   controller.send(:current_user).email.should == "maksimka@example.com"
@@ -2709,19 +2558,15 @@ end
 Then /^(?:|I )should not be registered in application$/ do
   controller.send(:current_user).should be_nil
 end
-
 }
 
-file "features/step_definitions/dashboard_steps.rb", %q{
-Then /^I should see dashboard page$/ do
+file "features/step_definitions/dashboard_steps.rb", %q{Then /^I should see dashboard page$/ do
   response.should have_selector("div.app-container")
-end
-}
+end}
 
 
 
-file "lib/tasks/cucumber.rake", %q{
-# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
+file "lib/tasks/cucumber.rake", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
 # It is recommended to regenerate this file in the future when you upgrade to a 
 # newer version of cucumber-rails. Consider adding your own code to a new file 
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
@@ -2768,11 +2613,9 @@ rescue LoadError
 end
 
 end
-
 }
 
-file "lib/tasks/rspec.rake", %q{
-gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9
+file "lib/tasks/rspec.rake", %q{gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9
 rspec_gem_dir = nil
 Dir["#{RAILS_ROOT}/vendor/gems/*"].each do |subdir|
   rspec_gem_dir = subdir if subdir.gsub("#{RAILS_ROOT}/vendor/gems/","") =~ /^(\w+-)?rspec-(\d+)/ && File.exist?("#{subdir}/lib/spec/rake/spectask.rb")
@@ -2916,13 +2759,11 @@ namespace :spec do
 end
 
 end
-
 }
 
 
 
-file "spec/spec_helper.rb", %q{
-# This file is copied to ~/spec when you run 'ruby script/generate rspec'
+file "spec/spec_helper.rb", %q{# This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path(File.join(File.dirname(__FILE__),'..','config','environment'))
@@ -2976,26 +2817,20 @@ Spec::Runner.configure do |config|
   #
   # For more information take a look at Spec::Runner::Configuration and Spec::Runner
 end
-
 }
 
-file "spec/spec.opts", %q{
---colour
+file "spec/spec.opts", %q{--colour
 --format progress
 --loadby mtime
 --reverse
-
 }
 
-file "spec/rcov.opts", %q{
---exclude "spec/*,gems/*"
---rails
-}
+file "spec/rcov.opts", %q{--exclude "spec/*,gems/*"
+--rails}
 
 
 
-file "public/stylesheets/sass/theme/core/_headers.sass", %q{
-h1
+file "public/stylesheets/sass/theme/core/_headers.sass", %q{h1
   :font-size 2.2em
   :line-height 1
   :margin 1em 0 .5em
@@ -3029,11 +2864,9 @@ h1, h2, h3, h4, h5, h6
   :color = !text_color
 
   &:first-child
-    :margin-top 0
-}
+    :margin-top 0}
 
-file "public/stylesheets/sass/theme/core/_links.sass", %q{
-!link_color = #3399ff
+file "public/stylesheets/sass/theme/core/_links.sass", %q{!link_color = #3399ff
 !selected_link_color = #CC3333
 
 a:link, a:visited
@@ -3041,11 +2874,9 @@ a:link, a:visited
 
 a:hover, a:active, a:focus
   :color = !selected_link_color
-
 }
 
-file "public/stylesheets/sass/theme/core/_core.sass", %q{
-html, body
+file "public/stylesheets/sass/theme/core/_core.sass", %q{html, body
   :font normal 13px/20px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
   :color = !text_color
 
@@ -3053,11 +2884,9 @@ hr, p
   :margin-bottom 1.6em
 
 @import headers
-@import links
-}
+@import links}
 
-file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
-/* User navigation */
+file "public/stylesheets/sass/theme/_user-navigation.sass", %q{/* User navigation */
 
 .app-user-navigation
   position: absolute
@@ -3079,11 +2908,9 @@ file "public/stylesheets/sass/theme/_user-navigation.sass", %q{
         &:hover
           border-bottom: 1px dotted #CDE
           color: #FFF
-
 }
 
-file "public/stylesheets/sass/theme/_sidebar.sass", %q{
-!sidebar_header_color = !text_color
+file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !text_color
 !sidebar_background_color = white
 
 .app-sidebar .app-block
@@ -3115,11 +2942,9 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{
     p:first-child
       :margin-top 10px
 
-
 }
 
-file "public/stylesheets/sass/theme/_pagination.sass", %q{
-.pagination
+file "public/stylesheets/sass/theme/_pagination.sass", %q{.pagination
   :text-align center
   :padding .3em
   :margin-top 7px
@@ -3150,11 +2975,9 @@ file "public/stylesheets/sass/theme/_pagination.sass", %q{
     :margin-right 1em
   .next_page
     :margin-left 1em
-
 }
 
-file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
-/* Main navigation */
+file "public/stylesheets/sass/theme/_main-navigation.sass", %q{/* Main navigation */
 
 .app-main-navigation
   .app-main-navigation-prefix
@@ -3188,11 +3011,9 @@ file "public/stylesheets/sass/theme/_main-navigation.sass", %q{
 
       a
         :color #364B69
-
 }
 
-file "public/stylesheets/sass/theme/_table.sass", %q{
-=table-data-types-align
+file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
   &.left
     text-align: left
 
@@ -3259,11 +3080,9 @@ file "public/stylesheets/sass/theme/_table.sass", %q{
       &:hover
         background-color: #FBFBFB
 
-        
-}
+        }
 
-file "public/stylesheets/sass/theme/_layout_styles.sass", %q{
-!header_background_color = #232C30
+file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_color = #232C30
 !background_color = #EBEBEB
 !footer_background_color = #DDDDDD
 
@@ -3291,11 +3110,9 @@ file "public/stylesheets/sass/theme/_layout_styles.sass", %q{
 
   p
     :text-align right
-    :margin 15px 0
-}
+    :margin 15px 0}
 
-file "public/stylesheets/sass/theme/_admin.sass", %q{
-.app-admin-users-table
+file "public/stylesheets/sass/theme/_admin.sass", %q{.app-admin-users-table
 
   th.user-login
     width: auto
@@ -3312,11 +3129,9 @@ file "public/stylesheets/sass/theme/_admin.sass", %q{
     width: 130px
     min-width: 130px
   th.user-actions
-    width: 50px
-}
+    width: 50px}
 
-file "public/stylesheets/sass/theme/_flash.sass", %q{
-.app-flash
+file "public/stylesheets/sass/theme/_flash.sass", %q{.app-flash
   .flash-message
     -moz-border-radius: 4px
     -webkit-border-radius: 4px
@@ -3339,11 +3154,9 @@ file "public/stylesheets/sass/theme/_flash.sass", %q{
     border: 1px solid #c6c6c6
     background-color: #e6e6e6
 
-
 }
 
-file "public/stylesheets/sass/theme/_skintastic.sass", %q{
-form.formtastic
+file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
   +bold-labels
   +float-form-right(100%,20%,72%,2%)
   &.small-form
@@ -3466,11 +3279,9 @@ form.formtastic
     li.cancel
       :padding-top 1.1em
     input
-      :border 1px solid #999
-}
+      :border 1px solid #999}
 
-file "public/stylesheets/sass/_layout.sass", %q{
-html, body
+file "public/stylesheets/sass/_layout.sass", %q{html, body
   height: 100%
 
 .app-container
@@ -3492,11 +3303,9 @@ html, body
 
 .app-footer
   height: 50px
-
 }
 
-file "public/stylesheets/sass/application.sass", %q{
-!text_color = #333
+file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 !light_text_color = #EAEAEA
 
 @import layout
@@ -3511,11 +3320,9 @@ file "public/stylesheets/sass/application.sass", %q{
 @import theme/table
 @import theme/skintastic
 @import theme/admin
-@import theme/pagination
-}
+@import theme/pagination}
 
-file "public/stylesheets/sass/_formtastic_base.sass", %q{
-//
+file "public/stylesheets/sass/_formtastic_base.sass", %q{//
 // FORMTASTIC SASS
 // Flexible styling for formtastic forms
 // http://www.github.com/active-stylus/formtastic-sass
@@ -4138,12 +3945,10 @@ file "public/stylesheets/sass/_formtastic_base.sass", %q{
       :padding-bottom 18px
     fieldset label
       :margin-top 0
-      :padding-bottom 0
-}
+      :padding-bottom 0}
 
 
-file "public/stylesheets/clearfix.css", %q{
-/* slightly enhanced, universal clearfix hack */
+file "public/stylesheets/clearfix.css", %q{/* slightly enhanced, universal clearfix hack */
 .clearfix:after {
      visibility: hidden;
      display: block;
@@ -4159,12 +3964,10 @@ file "public/stylesheets/clearfix.css", %q{
 * html .clearfix { height: 1%; }
 
 .clearfix { display: block; }
-/* close commented backslash hack */
-}
+/* close commented backslash hack */}
 
 
-file "public/stylesheets/reset.css", %q{
-/* http://meyerweb.com/eric/tools/css/reset/ */
+file "public/stylesheets/reset.css", %q{/* http://meyerweb.com/eric/tools/css/reset/ */
 /* v1.0 | 20080212 */
 
 html, body, div, span, applet, object, iframe,
@@ -4217,7 +4020,6 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
 }
 
 

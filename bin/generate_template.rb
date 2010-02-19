@@ -42,9 +42,7 @@ class Application
     content = File.open(file_name, "r").read
 
     <<-EOF
-file "#{rails_file_name}", %q{
-#{content}
-}
+file "#{rails_file_name}", %q{#{content}}
 
     EOF
   end
