@@ -601,7 +601,7 @@ end
 file "app/controllers/application_controller.rb", %q{
 class ApplicationController < ActionController::Base
 
-  TITLE = "Application Title"
+  TITLE = I18n.t(:application_title)
 
   include SslRequirement
   skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)
@@ -917,6 +917,7 @@ SimpleNavigation.config_file_path = config_file_path
 
 file "config/locales/en.yml", %q{
 en:
+  application_title: "Application Title"
   cancel: "Cancel"
   or: "or"
   access_denied: "Access denied."
@@ -1044,6 +1045,7 @@ en:
 
 file "config/locales/ru.yml", %q{
 ru:
+  application_title: "Название приложения"
   cancel: "Отменить"
   or: "или"
   access_denied: "Доступ запрещён."

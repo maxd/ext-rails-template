@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
 
-  TITLE = "Application Title"
+  TITLE = I18n.t(:application_title)
 
   include SslRequirement
   skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)

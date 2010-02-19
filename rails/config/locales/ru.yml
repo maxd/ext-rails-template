@@ -1,4 +1,5 @@
 ru:
+  application_title: "Название приложения"
   cancel: "Отменить"
   or: "или"
   access_denied: "Доступ запрещён."
