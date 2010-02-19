@@ -1,8 +1,9 @@
 .idea
-rerun.txt
+.DS_Store
 log/*.*
-tmp/*
+tmp/**/*
 coverage/
 db/schema.rb
 public/stylesheets/application.css
 config/database.yml
+rerun.txt

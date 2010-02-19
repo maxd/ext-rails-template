@@ -42,6 +42,20 @@ FILE_CONTENT
 
 # Additional application files
 
+file ".gitignore", %q{
+.idea
+.DS_Store
+log/*.*
+tmp/**/*
+coverage/
+db/schema.rb
+public/stylesheets/application.css
+config/database.yml
+rerun.txt
+}
+
+
+
 file "app/views/notifier/password_reset_instructions.html.haml", %q{
 %h1= I18n.t("title_of_reset_password_email")
 
