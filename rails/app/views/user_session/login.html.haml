@@ -13,7 +13,9 @@
     - form.inputs do
       = form.input :login
       = form.input :password, :as => :password
-      = form.input :remember_me, :as => :boolean, :label_html => { :style => "width: 300px; margin-left: 100px; text-align:left" }, :required => false
+      %li
+        = form.label :remember_me
+        = form.check_box :remember_me
     - form.buttons do
       = form.commit_button t(".login")
       %li.cancel

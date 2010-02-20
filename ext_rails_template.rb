@@ -320,7 +320,9 @@ file "app/views/user_session/login.html.haml", %q{- content_for :style do
     - form.inputs do
       = form.input :login
       = form.input :password, :as => :password
-      = form.input :remember_me, :as => :boolean, :label_html => { :style => "width: 300px; margin-left: 100px; text-align:left" }, :required => false
+      %li
+        = form.label :remember_me
+        = form.check_box :remember_me
     - form.buttons do
       = form.commit_button t(".login")
       %li.cancel
@@ -3160,7 +3162,7 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
   +bold-labels
   +float-form-right(100%,20%,72%,2%)
   &.small-form
-    +float-form-right(400px,100px,280px,14px,"buttons-left")
+    +float-form-right(400px,110px,270px,14px,"buttons-left")
   &.medium-form
     +float-form-right(500px,170px,300px,14px,"buttons-left")
   &.large-form
