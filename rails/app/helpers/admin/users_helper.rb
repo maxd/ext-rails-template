@@ -1,7 +1,7 @@
 module Admin::UsersHelper
 
   def user_table
-    collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
+    collection_table(@users, :class => 'app-table') do |t|
       t.header.hide_when_empty = false
       t.header.column :login, t('.login'), :class => "text"
       t.header.column :name, t('.name'), :class => "text"
