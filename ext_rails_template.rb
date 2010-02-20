@@ -3255,7 +3255,6 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
       :background-color #fff
   .error
     input,textarea,select
-      :background-color #fcc
       :border 1px solid #f66
   .optional
     input,textarea,select
