@@ -3282,7 +3282,29 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
     input
       :border 1px solid #999}
 
-file "public/stylesheets/sass/_layout.sass", %q{html, body
+file "public/stylesheets/sass/application.sass", %q{!text_color = #333
+!light_text_color = #EAEAEA
+
+/* Application styles */
+@import layout/layout
+@import layout/formtastic_base
+
+@import theme/core/core
+@import theme/layout_styles
+@import theme/user-navigation
+@import theme/main-navigation
+@import theme/flash
+@import theme/sidebar
+@import theme/table
+@import theme/skintastic
+@import theme/admin
+@import theme/pagination
+
+/* User styles */
+
+/* Put or import your styles here*/}
+
+file "public/stylesheets/sass/layout/_layout.sass", %q{html, body
   height: 100%
 
 .app-container
@@ -3306,24 +3328,7 @@ file "public/stylesheets/sass/_layout.sass", %q{html, body
   height: 50px
 }
 
-file "public/stylesheets/sass/application.sass", %q{!text_color = #333
-!light_text_color = #EAEAEA
-
-@import layout
-@import _formtastic_base
-
-@import theme/core/core
-@import theme/layout_styles
-@import theme/user-navigation
-@import theme/main-navigation
-@import theme/flash
-@import theme/sidebar
-@import theme/table
-@import theme/skintastic
-@import theme/admin
-@import theme/pagination}
-
-file "public/stylesheets/sass/_formtastic_base.sass", %q{//
+file "public/stylesheets/sass/layout/_formtastic_base.sass", %q{//
 // FORMTASTIC SASS
 // Flexible styling for formtastic forms
 // http://www.github.com/active-stylus/formtastic-sass
