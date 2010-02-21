@@ -606,6 +606,8 @@ end
 
 file "app/controllers/dashboard_controller.rb", %q{class DashboardController < ApplicationController
 
+  navigation :dashboard
+
   access_control do
     allow all
   end

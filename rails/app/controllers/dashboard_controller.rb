@@ -1,5 +1,7 @@
 class DashboardController < ApplicationController
 
+  navigation :dashboard
+
   access_control do
     allow all
   end
