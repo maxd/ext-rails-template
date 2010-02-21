@@ -1,6 +1,7 @@
 class Admin::UsersController < Admin::Application
 
   navigation :users
+  sidebar
 
   def index
     @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)

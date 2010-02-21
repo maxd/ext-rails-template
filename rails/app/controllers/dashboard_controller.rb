@@ -1,6 +1,7 @@
 class DashboardController < ApplicationController
 
   navigation :dashboard
+  sidebar
 
   access_control do
     allow all

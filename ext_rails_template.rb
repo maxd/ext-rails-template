@@ -136,14 +136,14 @@ file "app/views/layouts/admin/application.html.haml", %q{!!! XML
         = render :partial => 'layouts/user_navigation'
         = render :partial => "layouts/admin/main_navigation"
       .app-wrapper.clearfix
-        .app-main{ :class => ("app-has-sidebar" if has_partial? "sidebar" ) }
+        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
           - if flash.present?
             .app-flash
               - flash.each do |type, message|
                 %div{ :class => "flash-message #{type}" }
                   %p= message
           = yield
-        - if has_partial? "sidebar"
+        - if has_sidebar?
           .app-sidebar
             = render :partial => "sidebar"
     .app-footer
@@ -173,14 +173,14 @@ file "app/views/layouts/application.html.haml", %q{!!! XML
         = render :partial => 'layouts/user_navigation'
         = render :partial => "layouts/main_navigation"
       .app-wrapper.clearfix
-        .app-main{ :class => ("app-has-sidebar" if has_partial? "sidebar" ) }
+        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
           - if flash.present?
             .app-flash
               - flash.each do |type, message|
                 %div{ :class => "flash-message #{type}" }
                   %p= message
           = yield
-        - if has_partial? "sidebar"
+        - if has_sidebar?
           .app-sidebar
             = render :partial => "sidebar"
     .app-footer
@@ -486,6 +486,7 @@ end
 file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersController < Admin::Application
 
   navigation :users
+  sidebar
 
   def index
     @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)
@@ -607,6 +608,7 @@ end
 file "app/controllers/dashboard_controller.rb", %q{class DashboardController < ApplicationController
 
   navigation :dashboard
+  sidebar
 
   access_control do
     allow all
@@ -715,12 +717,6 @@ end
 
 file "app/helpers/application_helper.rb", %q{# Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-
-  def has_partial?(partial_path)
-    path = "#{controller.class.controller_path}/_#{partial_path}"
-    self.view_paths.find_template(path, "html") rescue return false
-    true
-  end
 
 end
 }

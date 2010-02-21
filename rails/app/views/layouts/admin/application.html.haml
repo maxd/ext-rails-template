@@ -18,14 +18,14 @@
         = render :partial => 'layouts/user_navigation'
         = render :partial => "layouts/admin/main_navigation"
       .app-wrapper.clearfix
-        .app-main{ :class => ("app-has-sidebar" if has_partial? "sidebar" ) }
+        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
           - if flash.present?
             .app-flash
               - flash.each do |type, message|
                 %div{ :class => "flash-message #{type}" }
                   %p= message
           = yield
-        - if has_partial? "sidebar"
+        - if has_sidebar?
           .app-sidebar
             = render :partial => "sidebar"
     .app-footer
