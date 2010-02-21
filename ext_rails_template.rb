@@ -3064,27 +3064,24 @@ file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
       white-space: nowrap
       color: #FFF
       background-color: #576C82
-      padding: 4px
+      padding: 2px
 
       +table-data-types-align
 
-  tbody
+  tbody tr
 
-    tr
+    td
+      border-bottom: 1px solid #AAA
+      padding: 2px
 
-      td
-        border-bottom: 1px solid #AAA
-        padding: 2px
+      +table-data-types-align
 
-        +table-data-types-align
+      a
+        text-decoration: none
 
-        a
-          text-decoration: none
-
-      &:hover
-        background-color: #FBFBFB
-
-        }
+    &:hover
+      background-color: #FBFBFB
+}
 
 file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_color = #232C30
 !background_color = #EBEBEB
