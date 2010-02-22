@@ -3060,7 +3060,7 @@ file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
       white-space: nowrap
       color: #FFF
       background-color: #576C82
-      padding: 2px
+      padding: 1px 4px
 
       +table-data-types-align
 
@@ -3068,7 +3068,7 @@ file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
 
     td
       border-bottom: 1px solid #AAA
-      padding: 2px
+      padding: 1px 4px
 
       +table-data-types-align
 
