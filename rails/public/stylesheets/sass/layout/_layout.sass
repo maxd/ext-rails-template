@@ -1,22 +1,28 @@
+!footer_height = 50px
+
 html, body
-  height: 100%
+  :height 100%
 
 .app-container
-  min-height: 100%
-  margin-bottom: -52px
+  :min-height 100%
+  :position relative
 
 .app-header
 
 .app-wrapper
-  padding: 20px 20px 0 20px
+  :padding 20px 20px 0 20px
+  :padding-bottom = !footer_height
 
 .app-main.app-has-sidebar
-  float: left
-  width: 73%
+  :float left
+  :width 73%
 
 .app-sidebar
-  float: right
-  width: 25%
+  :float right
+  :width 25%
 
 .app-footer
-  height: 50px
+  :position absolute
+  :bottom 0
+  :height = !footer_height
+  :width 100%

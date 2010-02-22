@@ -146,9 +146,9 @@ file "app/views/layouts/admin/application.html.haml", %q{!!! XML
         - if has_sidebar?
           .app-sidebar
             = render :partial => "sidebar"
-    .app-footer
-      %p
-        = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
+      .app-footer
+        %p
+          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 }
 
 file "app/views/layouts/_main_navigation.html.haml", %q{.app-main-navigation.clearfix= render_navigation :context => :main}
@@ -183,9 +183,9 @@ file "app/views/layouts/application.html.haml", %q{!!! XML
         - if has_sidebar?
           .app-sidebar
             = render :partial => "sidebar"
-    .app-footer
-      %p
-        = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"                        
+      .app-footer
+        %p
+          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 }
 
 file "app/views/layouts/_user_navigation.html.haml", %q{.app-user-navigation.clearfix= render_navigation :context => :user}
@@ -3103,11 +3103,12 @@ file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_
 .app-footer
   :background-color = !footer_background_color
   :border-top 1px solid #BBB
-  :padding 0 10px
 
   p
     :text-align right
-    :margin 15px 0}
+    :margin 15px 0
+    :padding 0 10px
+}
 
 file "public/stylesheets/sass/theme/_admin.sass", %q{.app-table.users
 
@@ -3299,28 +3300,34 @@ file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 
 /* Put or import your styles here*/}
 
-file "public/stylesheets/sass/layout/_layout.sass", %q{html, body
-  height: 100%
+file "public/stylesheets/sass/layout/_layout.sass", %q{!footer_height = 50px
+
+html, body
+  :height 100%
 
 .app-container
-  min-height: 100%
-  margin-bottom: -52px
+  :min-height 100%
+  :position relative
 
 .app-header
 
 .app-wrapper
-  padding: 20px 20px 0 20px
+  :padding 20px 20px 0 20px
+  :padding-bottom = !footer_height
 
 .app-main.app-has-sidebar
-  float: left
-  width: 73%
+  :float left
+  :width 73%
 
 .app-sidebar
-  float: right
-  width: 25%
+  :float right
+  :width 25%
 
 .app-footer
-  height: 50px
+  :position absolute
+  :bottom 0
+  :height = !footer_height
+  :width 100%
 }
 
 file "public/stylesheets/sass/layout/_formtastic_base.sass", %q{//
