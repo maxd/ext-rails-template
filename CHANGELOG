@@ -1,0 +1,18 @@
+== 0.0.2 2010-02-22
+
+* Fixed cosmetic mistakes
+* Added .gitignore file
+* Fixed problem with first empty line in all created files
+* Removed background color for fields with errors
+* Re-organized directories with CSS files
+* Sidebar was improved and moved to plug-in. Now it is possible to choose actions of controller which will have sidebar in view.
+
+== 0.0.1 2010-02-18
+
+* Initial commit. Template has the following functionality:
+ - authorization and authentication
+ - markup base on HAML and SASS
+ - SSL support
+ - admin panel with user list
+ - main and user menus base on simple-navigation
+ - etc. 

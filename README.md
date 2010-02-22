@@ -1,7 +1,7 @@
 ext-rails-template
 ==================
 
-Version 0.0.1
+Version 0.0.2
 
 Introduction
 ------------
@@ -14,7 +14,7 @@ For more details see [Wiki pages](http://wiki.github.com/maxd/ext-rails-template
 How to generate Rails application from ext-rails-template template?
 -------------------------------------------------------------------
 
-    rails <you application name> -m http://github.com/maxd/ext-rails-template/raw/0.0.1/ext_rails_template.rb
+    rails <you application name> -m http://github.com/maxd/ext-rails-template/raw/0.0.2/ext_rails_template.rb
     rake gems:install
     rake db:create
     rake db:migrate
