@@ -78,11 +78,11 @@ file "app/views/admin/users/new.html.haml", %q{%h1= t(".title")
 
 = render :partial => "form"}
 
-file "app/views/admin/users/_sidebar.html.haml", %q{.app-block
+file "app/views/admin/users/_sidebar.html.haml", %q{.sidebar-block
   %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
 
-.app-block
+.sidebar-block
   %h6= t("sidebar.information")
   .app-content
     %p This page contains information about all users registered in application. You can add,                          |
@@ -236,11 +236,11 @@ file "app/views/dashboard/index.html.haml", %q{- content_for :style do
 
 }
 
-file "app/views/dashboard/_sidebar.html.haml", %q{.app-block
+file "app/views/dashboard/_sidebar.html.haml", %q{.sidebar-block
   %h6= t("sidebar.actions")
   .app-sidebar-navigation= render_navigation :context => :dashboard
 
-.app-block
+.sidebar-block
   %h6= t("sidebar.information")
   .app-content
     %p New information text for sidebar context                }
@@ -2914,7 +2914,7 @@ file "public/stylesheets/sass/theme/_user-navigation.sass", %q{/* User navigatio
 file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !text_color
 !sidebar_background_color = white
 
-.app-sidebar .app-block
+.app-sidebar .sidebar-block
   :margin-bottom 20px
 
   h6
@@ -3279,6 +3279,14 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
     input
       :border 1px solid #999}
 
+file "public/stylesheets/sass/theme/_block.sass", %q{.app-block
+  border: 1px solid gray
+  padding: 7px
+
+  & > h1:first-child, & > h2:first-child, & > h3:first-child, & > h4:first-child, & > h5:first-child, & > h6:first-child
+    border-bottom: 1px solid gray
+    padding-bottom: 2px}
+
 file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 !light_text_color = #EAEAEA
 
@@ -3296,6 +3304,7 @@ file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 @import theme/skintastic
 @import theme/admin
 @import theme/pagination
+@import theme/block
 
 /* User styles */
 
