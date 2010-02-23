@@ -2871,10 +2871,11 @@ file "public/stylesheets/sass/theme/core/_links.sass", %q{!link_color = #3399ff
 
 a:link, a:visited
   :color = !link_color
+  text-decoration: none
 
 a:hover, a:active, a:focus
   :color = !selected_link_color
-}
+  text-decoration: underline}
 
 file "public/stylesheets/sass/theme/core/_core.sass", %q{html, body
   :font normal 13px/20px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
