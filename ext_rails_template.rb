@@ -142,6 +142,10 @@ file "app/views/layouts/admin/application.html.haml", %q{!!! XML
               - flash.each do |type, message|
                 %div{ :class => "flash-message #{type}" }
                   %p= message
+            :javascript
+              Event.observe(window, "load", function() {
+                Effect.Shrink.delay(3, $$(".app-flash").first());
+              });
           = yield
         - if has_sidebar?
           .app-sidebar
@@ -179,6 +183,10 @@ file "app/views/layouts/application.html.haml", %q{!!! XML
               - flash.each do |type, message|
                 %div{ :class => "flash-message #{type}" }
                   %p= message
+            :javascript
+              Event.observe(window, "load", function() {
+                Effect.Shrink.delay(3, $$(".app-flash").first());
+              });
           = yield
         - if has_sidebar?
           .app-sidebar
