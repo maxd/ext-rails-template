@@ -2895,30 +2895,6 @@ hr, p
 @import headers
 @import links}
 
-file "public/stylesheets/sass/theme/_user-navigation.sass", %q{/* User navigation */
-
-.app-user-navigation
-  position: absolute
-  right: 20px
-  top: 0
-
-  & ul
-    margin: 0
-
-    & li
-      padding: 5px 10px
-      float: left
-
-      & a
-        text-decoration: none
-        &:visited, &:link
-          color: #CDE
-          border-bottom: 1px dotted #345
-        &:hover
-          border-bottom: 1px dotted #CDE
-          color: #FFF
-}
-
 file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !text_color
 !sidebar_background_color = white
 
@@ -2953,40 +2929,7 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !
 
 }
 
-file "public/stylesheets/sass/theme/_pagination.sass", %q{.pagination
-  :text-align center
-  :padding .3em
-  :margin-top 7px
-  a, span
-    :padding .2em .5em
-  span.disabled
-    :border 1px solid #AAA
-    :color #AAA
-  span.current
-    :font-weight bold
-    :background-color #EEE
-    :color #364B69
-    :border 1px solid #AAA
-  a
-    :border-top 1px solid #5C738A
-    :background #456
-    :color #EEE
-    :text-decoration none
-    &:hover, &:focus
-      :border-top 1px solid #7593B0
-      :background #576C82
-      :color #EEE
-  .page_info
-    :color #aaa
-    :padding-top .8em
-  .prev_page, .next_page
-  .prev_page
-    :margin-right 1em
-  .next_page
-    :margin-left 1em
-}
-
-file "public/stylesheets/sass/theme/_main-navigation.sass", %q{/* Main navigation */
+file "public/stylesheets/sass/theme/_main_navigation.sass", %q{/* Main navigation */
 
 .app-main-navigation
   .app-main-navigation-prefix
@@ -3020,6 +2963,39 @@ file "public/stylesheets/sass/theme/_main-navigation.sass", %q{/* Main navigatio
 
       a
         :color #364B69
+}
+
+file "public/stylesheets/sass/theme/_pagination.sass", %q{.pagination
+  :text-align center
+  :padding .3em
+  :margin-top 7px
+  a, span
+    :padding .2em .5em
+  span.disabled
+    :border 1px solid #AAA
+    :color #AAA
+  span.current
+    :font-weight bold
+    :background-color #EEE
+    :color #364B69
+    :border 1px solid #AAA
+  a
+    :border-top 1px solid #5C738A
+    :background #456
+    :color #EEE
+    :text-decoration none
+    &:hover, &:focus
+      :border-top 1px solid #7593B0
+      :background #576C82
+      :color #EEE
+  .page_info
+    :color #aaa
+    :padding-top .8em
+  .prev_page, .next_page
+  .prev_page
+    :margin-right 1em
+  .next_page
+    :margin-left 1em
 }
 
 file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
@@ -3117,6 +3093,30 @@ file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_
     :text-align right
     :margin 15px 0
     :padding 0 10px
+}
+
+file "public/stylesheets/sass/theme/_user_navigation.sass", %q{/* User navigation */
+
+.app-user-navigation
+  position: absolute
+  right: 20px
+  top: 0
+
+  & ul
+    margin: 0
+
+    & li
+      padding: 5px 10px
+      float: left
+
+      & a
+        text-decoration: none
+        &:visited, &:link
+          color: #CDE
+          border-bottom: 1px dotted #345
+        &:hover
+          border-bottom: 1px dotted #CDE
+          color: #FFF
 }
 
 file "public/stylesheets/sass/theme/_admin.sass", %q{.app-table.users
@@ -3304,8 +3304,8 @@ file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 
 @import theme/core/core
 @import theme/layout_styles
-@import theme/user-navigation
-@import theme/main-navigation
+@import theme/user_navigation
+@import theme/main_navigation
 @import theme/flash
 @import theme/sidebar
 @import theme/table
