@@ -904,9 +904,9 @@ file "config/locales/en.yml", %q{en:
       password_updated: "Password successfully updated"
 
     load_user_using_perishable_token:
-      wrong_perishable_token: "We're sorry, but we could not locate your account. If you are having issues try
-                               copying and pasting the URL from your email into your browser or restarting the
-                               reset password process."
+      wrong_perishable_token: >
+        We're sorry, but we could not locate your account. If you are having issues try copying and pasting
+        the URL from your email into your browser or restarting the reset password process.
 
     profile:
       edit: "edit"
@@ -1031,7 +1031,9 @@ file "config/locales/ru.yml", %q{ru:
       password_updated: "Пароль востановлен"
 
     load_user_using_perishable_token:
-      wrong_perishable_token: "Информация для востановления пароля устарела. Попробуйте повторить процедуру востановление пароля."
+      wrong_perishable_token: >
+        Информация для востановления пароля устарела.
+        Попробуйте повторить процедуру востановление пароля.
 
     profile:
       edit: "Изменить"
