@@ -43,7 +43,7 @@ class UserSessionController < ApplicationController
   def edit_profile
     @user = @current_user
     if request.put? and @user.update_attributes(params[:user])
-      flash[:notice] = "Account updated!"
+      flash[:notice] = t("user_session.edit_profile.account_updated")
       redirect_back_or_default root_url
     end
   end

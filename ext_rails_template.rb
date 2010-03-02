@@ -433,7 +433,7 @@ file "app/controllers/user_session_controller.rb", %q{class UserSessionControlle
   def edit_profile
     @user = @current_user
     if request.put? and @user.update_attributes(params[:user])
-      flash[:notice] = "Account updated!"
+      flash[:notice] = t("user_session.edit_profile.account_updated")
       redirect_back_or_default root_url
     end
   end
@@ -915,6 +915,7 @@ file "config/locales/en.yml", %q{en:
     edit_profile:
       title: "Change Profile"
       change: "Change"
+      account_updated: "Account updated!"
 
   admin:
     users:
@@ -986,7 +987,7 @@ file "config/locales/ru.yml", %q{ru:
       logout: "Выход"
       register: "Регистрация"
       profile: "Профайл"
-      administration: "Управлене приложением"
+      administration: "Управление приложением"
 
     admin:
       main_navigation:
@@ -1039,6 +1040,7 @@ file "config/locales/ru.yml", %q{ru:
     edit_profile:
       title: "Изменение профайла"
       change: "Изменить"
+      account_updated: "Профайл изменён!"
 
   admin:
     users:

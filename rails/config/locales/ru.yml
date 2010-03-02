@@ -15,7 +15,7 @@ ru:
       logout: "Выход"
       register: "Регистрация"
       profile: "Профайл"
-      administration: "Управлене приложением"
+      administration: "Управление приложением"
 
     admin:
       main_navigation:
@@ -68,6 +68,7 @@ ru:
     edit_profile:
       title: "Изменение профайла"
       change: "Изменить"
+      account_updated: "Профайл изменён!"
 
   admin:
     users:

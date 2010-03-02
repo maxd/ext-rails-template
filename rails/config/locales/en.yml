@@ -70,6 +70,7 @@ en:
     edit_profile:
       title: "Change Profile"
       change: "Change"
+      account_updated: "Account updated!"
 
   admin:
     users:
