@@ -110,7 +110,7 @@ file "app/views/admin/users/edit.html.haml", %q{%h1= t(".title")
 
 = render :partial => "form"}
 
-file "app/views/admin/admin_dashboard/index.html.haml", %q{%h1 Dashboard}
+file "app/views/admin/admin_dashboard/index.html.haml", %q{%h1= t(".title")}
 
 file "app/views/layouts/admin/_main_navigation.html.haml", %q{.app-main-navigation.clearfix
   %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
@@ -918,6 +918,10 @@ file "config/locales/en.yml", %q{en:
       account_updated: "Account updated!"
 
   admin:
+    admin_dashboard:
+      index:
+        title: "Dashboard"
+  
     users:
       index:
         title: "Accounts"
@@ -1045,6 +1049,10 @@ file "config/locales/ru.yml", %q{ru:
       account_updated: "Профайл изменён!"
 
   admin:
+    admin_dashboard:
+      index:
+        title: "Панель управления"
+
     users:
       index:
         title: "Аккаунты"

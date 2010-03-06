@@ -73,6 +73,10 @@ ru:
       account_updated: "Профайл изменён!"
 
   admin:
+    admin_dashboard:
+      index:
+        title: "Панель управления"
+
     users:
       index:
         title: "Аккаунты"

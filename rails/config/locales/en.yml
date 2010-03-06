@@ -73,6 +73,10 @@ en:
       account_updated: "Account updated!"
 
   admin:
+    admin_dashboard:
+      index:
+        title: "Dashboard"
+  
     users:
       index:
         title: "Accounts"
