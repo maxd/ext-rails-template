@@ -18,7 +18,7 @@ module Admin::UsersHelper
 
         row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
-        row.name  "#{item.last_name}, #{item.first_name}"
+        row.name  "#{item.last_name} #{item.first_name}"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
         row.last_login_at last_login_at, :class => "date"

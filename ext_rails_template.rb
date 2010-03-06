@@ -346,7 +346,7 @@ file "app/views/user_session/profile.html.haml", %q{- content_for :style do
 .user-profile
 
   .clearfix
-    %h1.user-name= "#{@user.last_name}, #{@user.first_name}"
+    %h1.user-name= "#{@user.last_name} #{@user.first_name}"
     = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
 
   %ul
@@ -683,7 +683,7 @@ file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
 
         row[:id] = "user-#{item.id}"
         row.login item.login, :class => "text"
-        row.name  "#{item.last_name}, #{item.first_name}"
+        row.name  "#{item.last_name} #{item.first_name}"
         row.email item.email, :class => "email"
         row.last_login_ip item.last_login_ip || "-", :class => "right"
         row.last_login_at last_login_at, :class => "date"

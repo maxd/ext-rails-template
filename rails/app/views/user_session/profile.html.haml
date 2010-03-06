@@ -6,7 +6,7 @@
 .user-profile
 
   .clearfix
-    %h1.user-name= "#{@user.last_name}, #{@user.first_name}"
+    %h1.user-name= "#{@user.last_name} #{@user.first_name}"
     = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
 
   %ul
