@@ -3326,6 +3326,7 @@ html, body
 .app-container
   :min-height 100%
   :position relative
+  :min-width 1024px
 
 .app-header
 
