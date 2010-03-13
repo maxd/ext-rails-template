@@ -198,17 +198,14 @@ file "app/views/layouts/application.html.haml", %q{!!! XML
 
 file "app/views/layouts/_user_navigation.html.haml", %q{.app-user-navigation.clearfix= render_navigation :context => :user}
 
-file "app/views/dashboard/index.html.haml", %q{- content_for :style do
-  ul.available-features { list-style-type: circle; margin-left: 2em }
-
-%h1 Welcome
+file "app/views/dashboard/index.html.haml", %q{%h1 Welcome
 %p
   This Rails application has been created with the help of
   %a(href="http://github.com/maxd/ext-rails-template") ext-rails-template
   plugin. Now you can modifiy application as you want.
 
 %h2 Available features
-%ul.available-features
+%ul.square-list
   %li Two layout types (with and without sidebar)
   %li Admin panel
   %li SSL support
@@ -663,7 +660,7 @@ end
 file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
 
   def user_table
-    collection_table(@users, :class => 'app-table') do |t|
+    collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
       t.header.hide_when_empty = false
       t.header.column :login, t('.login'), :class => "text"
       t.header.column :name, t('.name'), :class => "text"
@@ -898,7 +895,7 @@ file "config/locales/en.yml", %q{en:
       password_updated: "Password successfully updated"
 
     load_user_using_perishable_token:
-      wrong_perishable_token: >
+      wrong_perishable_token: |+
         We're sorry, but we could not locate your account. If you are having issues try copying and pasting
         the URL from your email into your browser or restarting the reset password process.
 
@@ -1025,7 +1022,7 @@ file "config/locales/ru.yml", %q{ru:
       password_updated: "Пароль востановлен"
 
     load_user_using_perishable_token:
-      wrong_perishable_token: >
+      wrong_perishable_token: |+
         Информация для востановления пароля устарела.
         Попробуйте повторить процедуру востановление пароля.
 
@@ -2841,38 +2838,36 @@ file "spec/rcov.opts", %q{--exclude "spec/*,gems/*"
 file "public/stylesheets/sass/theme/core/_headers.sass", %q{h1
   :font-size 2.2em
   :line-height 1
-  :margin 1em 0 .5em
+  :margin-bottom .5em
 
 h2
   :font-size 2em
   :line-height 1
-  :margin 1.07em 0 .535em
+  :margin-bottom .535em
 
 h3
   :font-size 1.8em
   :line-height 1
-  :margin 1.14em 0 .57em
+  :margin-bottom .57em
 
 h4
   :font-size 1.6em
   :line-height 1
-  :margin 1.23em 0 .615em
+  :margin-bottom .615em
 
 h5
   :font-size 1.4em
   :line-height 1
-  :margin 1.33em 0 .67em
+  :margin-bottom .67em
 
 h6
   :font-size 1.2em
   :line-height 1
-  :margin 1.6em 0 .8em
+  :margin-bottom .8em
 
 h1, h2, h3, h4, h5, h6
   :color = !text_color
-
-  &:first-child
-    :margin-top 0}
+}
 
 file "public/stylesheets/sass/theme/core/_links.sass", %q{!link_color = #3399ff
 !selected_link_color = #CC3333
@@ -2881,16 +2876,21 @@ a:link, a:visited
   :color = !link_color
   text-decoration: none
 
-a:hover, a:active, a:focus
+a:hover, a:active
   :color = !selected_link_color
   text-decoration: underline}
 
 file "public/stylesheets/sass/theme/core/_core.sass", %q{html, body
-  :font normal 13px/20px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
+  :font normal 13px/19px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
   :color = !text_color
 
 hr, p
-  :margin-bottom 1.6em
+  :margin-bottom 0.8em
+
+ul.square-list
+  list-style-type: square
+  margin-left: 1.5em
+  line-height: 1.2em
 
 @import headers
 @import links}
@@ -2924,8 +2924,8 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !
   .app-content
     :padding 0 10px
 
-    p:first-child
-      :margin-top 10px
+    p
+      :margin 10px 0
 
 }
 
@@ -3119,7 +3119,7 @@ file "public/stylesheets/sass/theme/_user_navigation.sass", %q{/* User navigatio
           color: #FFF
 }
 
-file "public/stylesheets/sass/theme/_admin.sass", %q{.app-table.users
+file "public/stylesheets/sass/theme/_admin.sass", %q{.app-admin-users-table
 
   th.user-login
     width: auto
@@ -3238,6 +3238,10 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
   input[type="checkbox"]
     width: auto
     margin-right: 3px
+
+  .numeric input[type="text"]
+    width: 200px
+    text-align: right
 
   //--------------------------------------------------------
   // Date Time Styling
