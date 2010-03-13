@@ -17,14 +17,12 @@ class UserSessionController < ApplicationController
   def login
     @user_session = UserSession.new(params[:user_session])
     if request.post? and @user_session.save
-      flash[:notice] = t("user_session.login.success_login")
       redirect_back_or_default root_url
     end
   end
 
   def logout
     current_user_session.destroy
-    flash[:notice] = t("user_session.logout.success_logout")
     redirect_back_or_default root_url
   end
 
@@ -43,7 +41,6 @@ class UserSessionController < ApplicationController
   def edit_profile
     @user = @current_user
     if request.put? and @user.update_attributes(params[:user])
-      flash[:notice] = t("user_session.edit_profile.account_updated")
       redirect_back_or_default root_url
     end
   end

@@ -32,10 +32,7 @@ en:
       login: "Login"
       reset_password: "Reset password"
 
-      success_login: "Login successful!"
-
     logout:
-      success_logout: "Logout successful!"
 
     register:
       title: "Register"
@@ -70,7 +67,6 @@ en:
     edit_profile:
       title: "Change Profile"
       change: "Change"
-      account_updated: "Account updated!"
 
   admin:
     admin_dashboard:

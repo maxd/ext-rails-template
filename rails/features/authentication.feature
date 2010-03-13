@@ -15,8 +15,7 @@ Feature: Authentication to application
       | Login                 | user            |
       | Password              | user            |
     And press "Login"
-    Then I should see flash with "Login successful!"
-    And should authenticated in application
+    Then I should authenticated in application
     And should see "/profile" link
     And "/logout" link
 

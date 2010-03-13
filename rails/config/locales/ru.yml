@@ -32,10 +32,7 @@ ru:
       login: "Войти"
       reset_password: "Забыли пароль?"
 
-      success_login: "Вы успешно вошли в приложение!"
-
     logout:
-      success_logout: "Вы успешно вышли из приложения!"
 
     register:
       title: "Регистрация нового аккаунта"
@@ -70,7 +67,6 @@ ru:
     edit_profile:
       title: "Изменение профайла"
       change: "Изменить"
-      account_updated: "Профайл изменён!"
 
   admin:
     admin_dashboard:

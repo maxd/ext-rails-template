@@ -407,14 +407,12 @@ file "app/controllers/user_session_controller.rb", %q{class UserSessionControlle
   def login
     @user_session = UserSession.new(params[:user_session])
     if request.post? and @user_session.save
-      flash[:notice] = t("user_session.login.success_login")
       redirect_back_or_default root_url
     end
   end
 
   def logout
     current_user_session.destroy
-    flash[:notice] = t("user_session.logout.success_logout")
     redirect_back_or_default root_url
   end
 
@@ -433,7 +431,6 @@ file "app/controllers/user_session_controller.rb", %q{class UserSessionControlle
   def edit_profile
     @user = @current_user
     if request.put? and @user.update_attributes(params[:user])
-      flash[:notice] = t("user_session.edit_profile.account_updated")
       redirect_back_or_default root_url
     end
   end
@@ -877,10 +874,7 @@ file "config/locales/en.yml", %q{en:
       login: "Login"
       reset_password: "Reset password"
 
-      success_login: "Login successful!"
-
     logout:
-      success_logout: "Logout successful!"
 
     register:
       title: "Register"
@@ -915,7 +909,6 @@ file "config/locales/en.yml", %q{en:
     edit_profile:
       title: "Change Profile"
       change: "Change"
-      account_updated: "Account updated!"
 
   admin:
     admin_dashboard:
@@ -1008,10 +1001,7 @@ file "config/locales/ru.yml", %q{ru:
       login: "Войти"
       reset_password: "Забыли пароль?"
 
-      success_login: "Вы успешно вошли в приложение!"
-
     logout:
-      success_logout: "Вы успешно вышли из приложения!"
 
     register:
       title: "Регистрация нового аккаунта"
@@ -1046,7 +1036,6 @@ file "config/locales/ru.yml", %q{ru:
     edit_profile:
       title: "Изменение профайла"
       change: "Изменить"
-      account_updated: "Профайл изменён!"
 
   admin:
     admin_dashboard:
@@ -1855,8 +1844,7 @@ file "features/authentication.feature", %q{Feature: Authentication to applicatio
       | Login                 | user            |
       | Password              | user            |
     And press "Login"
-    Then I should see flash with "Login successful!"
-    And should authenticated in application
+    Then I should authenticated in application
     And should see "/profile" link
     And "/logout" link
 
@@ -2543,7 +2531,7 @@ Given /^I am application user$/ do
       | Login                 | user            |
       | Password              | user            |
     And press "Login"
-    Then I should see flash with "Login successful!"
+    Then I should authenticated in application
   }
 end
 
@@ -2555,7 +2543,7 @@ Given /^I am application administrator$/ do
       | Login                 | admin           |
       | Password              | admin           |
     And press "Login"
-    Then I should see flash with "Login successful!"
+    Then I should authenticated in application
   }
 end
 
