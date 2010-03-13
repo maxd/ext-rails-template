@@ -56,7 +56,7 @@ ru:
       password_updated: "Пароль востановлен"
 
     load_user_using_perishable_token:
-      wrong_perishable_token: >
+      wrong_perishable_token: |+
         Информация для востановления пароля устарела.
         Попробуйте повторить процедуру востановление пароля.
 
