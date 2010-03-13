@@ -122,8 +122,8 @@ file "app/views/layouts/admin/application.html.haml", %q{!!! XML
   %head
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= Admin::Application::TITLE
-    = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "application"
+    = javascript_include_tag :defaults, :cache => "all"
+    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
     = yield :head
     - if yield :style
       %style{ :type => "text/css" }
@@ -163,8 +163,8 @@ file "app/views/layouts/application.html.haml", %q{!!! XML
   %head
     %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
     %title= ApplicationController::TITLE
-    = javascript_include_tag :defaults
-    = stylesheet_link_tag "reset", "clearfix", "application"
+    = javascript_include_tag :defaults, :cache => "all"
+    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
     = yield :head
     - if yield :style
       %style{ :type => "text/css" }
