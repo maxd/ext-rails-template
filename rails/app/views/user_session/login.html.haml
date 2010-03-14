@@ -11,6 +11,7 @@
 
   - semantic_form_for @user_session, :url => login_path, :html => {:class => "small-form"} do |form|
     - form.inputs do
+      = form.error_messages :header_message => nil, :message => nil, :class => "errors"
       = form.input :login
       = form.input :password, :as => :password
       %li

@@ -5,6 +5,7 @@ ru:
   access_denied: "Доступ запрещён."
   access_denied_try_to_login: "Доступ запрещён. Залогинтесь в приложение и повторите попытку."
   title_of_reset_password_email: "Инструкции для востановлении пароля"
+  invalid_login_or_password: "Неверный логин или пароль"
 
   layouts:
     main_navigation:

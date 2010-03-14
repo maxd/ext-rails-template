@@ -5,6 +5,7 @@ en:
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
   title_of_reset_password_email: "Password Reset Instructions"
+  invalid_login_or_password: "Invalid login or password"
 
   layouts:
     main_navigation:

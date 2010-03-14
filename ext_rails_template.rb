@@ -323,6 +323,7 @@ file "app/views/user_session/login.html.haml", %q{- content_for :style do
 
   - semantic_form_for @user_session, :url => login_path, :html => {:class => "small-form"} do |form|
     - form.inputs do
+      = form.error_messages :header_message => nil, :message => nil, :class => "errors"
       = form.input :login
       = form.input :password, :as => :password
       %li
@@ -632,6 +633,9 @@ end
 }
 
 file "app/models/user_session.rb", %q{class UserSession < Authlogic::Session::Base
+
+  generalize_credentials_error_messages I18n.t("invalid_login_or_password")
+
 end}
 
 file "app/models/notifier.rb", %q{class Notifier < ActionMailer::Base
@@ -848,6 +852,7 @@ file "config/locales/en.yml", %q{en:
   access_denied: "Access denied."
   access_denied_try_to_login: "Access denied. Try to log in first."
   title_of_reset_password_email: "Password Reset Instructions"
+  invalid_login_or_password: "Invalid login or password"
 
   layouts:
     main_navigation:
@@ -976,6 +981,7 @@ file "config/locales/ru.yml", %q{ru:
   access_denied: "Доступ запрещён."
   access_denied_try_to_login: "Доступ запрещён. Залогинтесь в приложение и повторите попытку."
   title_of_reset_password_email: "Инструкции для востановлении пароля"
+  invalid_login_or_password: "Неверный логин или пароль"
 
   layouts:
     main_navigation:
