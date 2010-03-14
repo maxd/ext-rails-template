@@ -15,24 +15,20 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  # config.gem "bj"
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "russian", :version => ">=0.2.5", :source => "http://gemcutter.org"
+  config.gem "russian", :version => ">=0.2.5"
 
-  config.gem "haml", :source => "http://gemcutter.org"
+  config.gem "haml", :version => ">=2.2.17"
 
-  config.gem "authlogic", :source => "http://gemcutter.org"
-  config.gem "acl9", :source => "http://gemcutter.org"
+  config.gem "authlogic", :version => ">=2.1.3"
+  config.gem "acl9", :version => ">=0.12.0"
 
-  config.gem "validation_reflection", :source => "http://gemcutter.org"
-  config.gem "formtastic", :source => "http://gemcutter.org"
+  config.gem "validation_reflection", :version => ">=0.3.5"
+  config.gem "formtastic", :version => ">=0.9.7"
 
-  config.gem "simple-navigation", :source => "http://gemcutter.org"
-  config.gem "ssl_requirement", :source => "http://gemcutter.org"
-  config.gem "will_paginate", :source => "http://gemcutter.org"
-  config.gem "table_helper", :source => "http://gemcutter.org"
+  config.gem "simple-navigation", :version => ">=2.2.3"
+  config.gem "ssl_requirement", :version => ">=0.1.0"
+  config.gem "will_paginate", :version => ">=2.3.12"
+  config.gem "table_helper", :version => ">=0.2.1"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
