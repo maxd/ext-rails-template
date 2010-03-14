@@ -83,6 +83,7 @@ ru:
         last_login_at: "Последний логин"
         last_login_ip: "IP последнего логина"
 
+        no_users: "Нет пользователей"
         confirm_for_delete: "Вы действительно хотите удалить пользователя с логином '{{login}}'?"
         edit_hint: "Изменить"
         delete_hint: "Удалить"

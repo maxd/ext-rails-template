@@ -12,7 +12,7 @@ module Admin::UsersHelper
       t.header.column :actions, ''
 
       t.rows.alternate = :odd
-      t.rows.empty_caption = "There are no users"
+      t.rows.empty_caption = t(".no_users")
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 

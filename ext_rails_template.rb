@@ -675,7 +675,7 @@ file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
       t.header.column :actions, ''
 
       t.rows.alternate = :odd
-      t.rows.empty_caption = "There are no users"
+      t.rows.empty_caption = t(".no_users")
       t.rows.each do |row, item, index|
         last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
 
@@ -926,7 +926,8 @@ file "config/locales/en.yml", %q{en:
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
 
-        confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
+        no_users: "There are no accounts"
+        confirm_for_delete: "Do you want to delete account with login '{{login}}'?"
         edit_hint: "Edit"
         delete_hint: "Delete"
 
@@ -1053,6 +1054,7 @@ file "config/locales/ru.yml", %q{ru:
         last_login_at: "Последний логин"
         last_login_ip: "IP последнего логина"
 
+        no_users: "Нет пользователей"
         confirm_for_delete: "Вы действительно хотите удалить пользователя с логином '{{login}}'?"
         edit_hint: "Изменить"
         delete_hint: "Удалить"

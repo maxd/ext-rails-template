@@ -83,7 +83,8 @@ en:
         last_login_at: "Last Login At"
         last_login_ip: "Last Login IP"
 
-        confirm_for_delete: "Do you want to delete user with login '{{login}}'?"
+        no_users: "There are no accounts"
+        confirm_for_delete: "Do you want to delete account with login '{{login}}'?"
         edit_hint: "Edit"
         delete_hint: "Delete"
 
