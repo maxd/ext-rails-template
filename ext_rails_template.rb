@@ -490,6 +490,8 @@ file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersControlle
   navigation :users
   sidebar
 
+  before_filter :load_user, :only => [ :edit, :update, :destroy ]
+
   def index
     @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)
   end
@@ -508,12 +510,9 @@ file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersControlle
   end
 
   def edit
-    @user = User.find(params[:id])
   end
 
   def update
-    @user = User.find(params[:id])
-
     if @user.update_attributes(params[:user])
       redirect_to admin_users_path
     else
@@ -522,10 +521,15 @@ file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersControlle
   end
 
   def destroy
-    @idea = User.find(params[:id])
-    @idea.destroy if @idea.login != "admin"
+    @user.destroy if @user.login != "admin"
 
     redirect_to admin_users_path
+  end
+
+private
+
+  def load_user
+    @user = User.find(params[:id])
   end
 
 end
