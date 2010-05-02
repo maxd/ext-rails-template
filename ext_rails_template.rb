@@ -65,138 +65,150 @@ file "app/views/notifier/password_reset_instructions.html.haml", %q{%h1= I18n.t(
 = link_to "Reset Password!", @reset_password_url
 }
 
-file "app/views/admin/users/index.html.haml", %q{%h1= t(".title")
+file "app/views/user_session/request_reset_password.html.haml", %q{- content_for :style do
+  div.request-reset-password-form { width: 400px; margin: 0 auto; }
 
-= user_table
-.pagination
-  = will_paginate(@users, :container => false)
-  &nbsp;&nbsp;
-  = page_entries_info(@users)
+.request-reset-password-form
+  %h1= t(".title")
+  %p= t(".description")
+
+  - semantic_form_for :request_reset_password, :html => {:class => "small-form"} do |form|
+    - form.inputs do
+      = form.input :email, :label => t(".email")
+    - form.buttons do
+      = form.commit_button t(".send_request")
+      %li.cancel
+        %span
+          = t("or")
+          = link_to t("cancel"), login_path}
+
+file "app/views/user_session/reset_password.html.haml", %q{- content_for :style do
+  div.login-form { width: 500px; margin: 0 auto; }
+
+.login-form
+  .header
+    %h1= t(".title")
+
+  - semantic_form_for @user, :url => reset_password_path(params[:id]), :html => {:class => "medium-form"} do |form|
+    - form.inputs do
+      = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
+    - form.buttons do
+      = form.commit_button t(".reset")
+      %li.cancel
+        = t(:or)
+        = link_to t("cancel"), dashboard_path
 }
 
-file "app/views/admin/users/new.html.haml", %q{%h1= t(".title")
+file "app/views/user_session/login.html.haml", %q{- content_for :style do
+  div.login-form { width: 400px; margin: 0 auto; }
+  div.login-form .header { position: relative; }
+  div.login-form .header a { position: absolute; top: 0px; right: 10px; }
 
-= render :partial => "form"}
+.login-form
+  .header
+    %h1= t(".title")
+    - if ENABLE_REQUEST_RESET_PASSWORD
+      = link_to t(".reset_password"), request_reset_password_path
 
-file "app/views/admin/users/_sidebar.html.haml", %q{.sidebar-block
+  - semantic_form_for @user_session, :url => login_path, :html => {:class => "small-form"} do |form|
+    - form.inputs do
+      = form.error_messages :header_message => nil, :message => nil, :class => "errors"
+      = form.input :login
+      = form.input :password, :as => :password
+      %li
+        = form.label :remember_me
+        = form.check_box :remember_me
+    - form.buttons do
+      = form.commit_button t(".login")
+      %li.cancel
+        = t("or")
+        = link_to t("cancel"), dashboard_path
+}
+
+file "app/views/user_session/edit_profile.html.haml", %q{- content_for :style do
+  div.profile-form { width: 500px; margin: 0 auto; }
+
+.profile-form
+  %h1= t(".title")
+
+  - semantic_form_for @user, :url => edit_profile_path, :html => {:class => "medium-form"} do |form|
+    - form.inputs do
+      = form.input :email, :required => true
+      = form.input :first_name
+      = form.input :last_name
+      = form.input :password, :input_html => { :autocomplete => "off" }
+      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
+    - form.buttons do
+      = form.commit_button t(".change")
+      %li.cancel
+        = t("or")
+        = link_to t("cancel"), profile_path
+}
+
+file "app/views/user_session/profile.html.haml", %q{- content_for :style do
+  div.user-profile { width: 600px; margin: 0 auto; position: relative; }
+  h1.user-name { float: left; }
+  a.edit-profile-link { float: left; padding-left: 1em }
+
+.user-profile
+
+  .clearfix
+    %h1.user-name= "#{@user.last_name} #{@user.first_name}"
+    = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
+
+  %ul
+    %li
+      = t("activerecord.attributes.user.email") + ":"
+      = @user.email 
+    %li
+      = t("activerecord.attributes.user.created_at") + ":"
+      = l(@user.created_at.localtime, :format => "%e %B %Y")
+    -if @user.last_login_at.present?
+      %li
+        &nbsp;
+      %li
+        %h5= t(".connection_information")
+      %li
+        = t("activerecord.attributes.user.last_login_at") + ":"
+        = l(@user.last_login_at.localtime, :format => "%e %B %Y %H:%M")
+      %li
+        = t("activerecord.attributes.user.last_login_ip") + ":"
+        = @user.last_login_ip
+      %li
+        = t("activerecord.attributes.user.current_login_ip") + ":"
+        = @user.current_login_ip}
+
+file "app/views/user_session/register.html.haml", %q{- content_for :style do
+  div.register-form { width: 500px; margin: 0 auto; }
+
+.register-form
+  %h1= t(".title")
+
+  - semantic_form_for @user, :url => register_path, :html => {:class => "medium-form"} do |form|
+    - form.inputs do
+      = form.input :login, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :email, :required => true
+      = form.input :first_name
+      = form.input :last_name
+      = form.input :password, :input_html => { :autocomplete => "off" }, :required => true
+      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }, :required => true
+    - form.buttons do
+      = form.commit_button t(".register")
+      %li.cancel
+        %span
+          = t("or")
+          = link_to t("cancel"), dashboard_path
+}
+
+file "app/views/dashboard/_sidebar.html.haml", %q{.sidebar-block
   %h6= t("sidebar.actions")
-  .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
+  .app-sidebar-navigation= render_navigation :context => :dashboard
 
 .sidebar-block
   %h6= t("sidebar.information")
   .app-content
-    %p This page contains information about all users registered in application. You can add,                          |
-    edit or delete users.                                                                                              |
-    %p NOTE: You can't delete general administrator account with login "admin".
-
-}
-
-file "app/views/admin/users/_form.html.haml", %q{- semantic_form_for [:admin, @user] do |form|
-  - form.inputs do
-    - if @user.new_record?
-      = form.input :login, :required => true
-    = form.input :email, :required => true
-    = form.input :first_name
-    = form.input :last_name
-    = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
-    = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
-  - form.buttons :class => "buttons" do
-    = form.commit_button
-    %li.cancel
-      = t("or")
-      = link_to t("cancel"), admin_users_path}
-
-file "app/views/admin/users/edit.html.haml", %q{%h1= t(".title")
-
-= render :partial => "form"}
-
-file "app/views/admin/admin_dashboard/index.html.haml", %q{%h1= t(".title")}
-
-file "app/views/layouts/admin/_main_navigation.html.haml", %q{.app-main-navigation.clearfix
-  %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
-  = render_navigation :context => :admin_main}
-
-file "app/views/layouts/admin/application.html.haml", %q{!!! XML
-!!! Strict
-%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
-  %head
-    %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
-    %title= Admin::Application::TITLE
-    = javascript_include_tag :defaults, :cache => "all"
-    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
-    = yield :head
-    - if yield :style
-      %style{ :type => "text/css" }
-        = yield :style
-  %body
-    .app-container
-      .app-header
-        %h1
-          %a{ :href => "/" }= Admin::Application::TITLE
-        = render :partial => 'layouts/user_navigation'
-        = render :partial => "layouts/admin/main_navigation"
-      .app-wrapper.clearfix
-        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
-          - if flash.present?
-            .app-flash
-              - flash.each do |type, message|
-                %div{ :class => "flash-message #{type}" }
-                  %p= message
-            :javascript
-              Event.observe(window, "load", function() {
-                Effect.Shrink.delay(3, $$(".app-flash").first());
-              });
-          = yield
-        - if has_sidebar?
-          .app-sidebar
-            = render :partial => "sidebar"
-      .app-footer
-        %p
-          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
-}
-
-file "app/views/layouts/_main_navigation.html.haml", %q{.app-main-navigation.clearfix= render_navigation :context => :main}
-
-file "app/views/layouts/application.html.haml", %q{!!! XML
-!!! Strict
-%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
-  %head
-    %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
-    %title= ApplicationController::TITLE
-    = javascript_include_tag :defaults, :cache => "all"
-    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
-    = yield :head
-    - if yield :style
-      %style{ :type => "text/css" }
-        = yield :style
-  %body
-    .app-container
-      .app-header
-        %h1
-          %a{ :href => "/" }= ApplicationController::TITLE
-        = render :partial => 'layouts/user_navigation'
-        = render :partial => "layouts/main_navigation"
-      .app-wrapper.clearfix
-        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
-          - if flash.present?
-            .app-flash
-              - flash.each do |type, message|
-                %div{ :class => "flash-message #{type}" }
-                  %p= message
-            :javascript
-              Event.observe(window, "load", function() {
-                Effect.Shrink.delay(3, $$(".app-flash").first());
-              });
-          = yield
-        - if has_sidebar?
-          .app-sidebar
-            = render :partial => "sidebar"
-      .app-footer
-        %p
-          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
-}
-
-file "app/views/layouts/_user_navigation.html.haml", %q{.app-user-navigation.clearfix= render_navigation :context => :user}
+    %p New information text for sidebar context                }
 
 file "app/views/dashboard/index.html.haml", %q{%h1 Welcome
 %p
@@ -241,150 +253,391 @@ file "app/views/dashboard/index.html.haml", %q{%h1 Welcome
 
 }
 
-file "app/views/dashboard/_sidebar.html.haml", %q{.sidebar-block
+file "app/views/admin/users/_form.html.haml", %q{- semantic_form_for [:admin, @user] do |form|
+  - form.inputs do
+    - if @user.new_record?
+      = form.input :login, :required => true
+    = form.input :email, :required => true
+    = form.input :first_name
+    = form.input :last_name
+    = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+    = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => @user.new_record?
+  - form.buttons :class => "buttons" do
+    = form.commit_button
+    %li.cancel
+      = t("or")
+      = link_to t("cancel"), admin_users_path}
+
+file "app/views/admin/users/_sidebar.html.haml", %q{.sidebar-block
   %h6= t("sidebar.actions")
-  .app-sidebar-navigation= render_navigation :context => :dashboard
+  .app-sidebar-navigation= render_navigation :context => :admin_users_sidebar
 
 .sidebar-block
   %h6= t("sidebar.information")
   .app-content
-    %p New information text for sidebar context                }
+    %p This page contains information about all users registered in application. You can add,                          |
+    edit or delete users.                                                                                              |
+    %p NOTE: You can't delete general administrator account with login "admin".
 
-file "app/views/user_session/register.html.haml", %q{- content_for :style do
-  div.register-form { width: 500px; margin: 0 auto; }
-
-.register-form
-  %h1= t(".title")
-
-  - semantic_form_for @user, :url => register_path, :html => {:class => "medium-form"} do |form|
-    - form.inputs do
-      = form.input :login, :input_html => { :autocomplete => "off" }, :required => true
-      = form.input :email, :required => true
-      = form.input :first_name
-      = form.input :last_name
-      = form.input :password, :input_html => { :autocomplete => "off" }, :required => true
-      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }, :required => true
-    - form.buttons do
-      = form.commit_button t(".register")
-      %li.cancel
-        %span
-          = t("or")
-          = link_to t("cancel"), dashboard_path
 }
 
-file "app/views/user_session/reset_password.html.haml", %q{- content_for :style do
-  div.login-form { width: 500px; margin: 0 auto; }
+file "app/views/admin/users/index.html.haml", %q{%h1= t(".title")
 
-.login-form
-  .header
-    %h1= t(".title")
-
-  - semantic_form_for @user, :url => reset_password_path(params[:id]), :html => {:class => "medium-form"} do |form|
-    - form.inputs do
-      = form.input :password, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
-      = form.input :password_confirmation, :as => :password, :input_html => { :autocomplete => "off" }, :required => true
-    - form.buttons do
-      = form.commit_button t(".reset")
-      %li.cancel
-        = t(:or)
-        = link_to t("cancel"), dashboard_path
+= user_table
+.pagination
+  = will_paginate(@users, :container => false)
+  &nbsp;&nbsp;
+  = page_entries_info(@users)
 }
 
-file "app/views/user_session/edit_profile.html.haml", %q{- content_for :style do
-  div.profile-form { width: 500px; margin: 0 auto; }
+file "app/views/admin/users/new.html.haml", %q{%h1= t(".title")
 
-.profile-form
-  %h1= t(".title")
+= render :partial => "form"}
 
-  - semantic_form_for @user, :url => edit_profile_path, :html => {:class => "medium-form"} do |form|
-    - form.inputs do
-      = form.input :email, :required => true
-      = form.input :first_name
-      = form.input :last_name
-      = form.input :password, :input_html => { :autocomplete => "off" }
-      = form.input :password_confirmation, :input_html => { :autocomplete => "off" }
-    - form.buttons do
-      = form.commit_button t(".change")
-      %li.cancel
-        = t("or")
-        = link_to t("cancel"), profile_path
+file "app/views/admin/users/edit.html.haml", %q{%h1= t(".title")
+
+= render :partial => "form"}
+
+file "app/views/admin/admin_dashboard/index.html.haml", %q{%h1= t(".title")}
+
+file "app/views/layouts/_main_navigation.html.haml", %q{.app-main-navigation.clearfix= render_navigation :context => :main}
+
+file "app/views/layouts/_user_navigation.html.haml", %q{.app-user-navigation.clearfix= render_navigation :context => :user}
+
+file "app/views/layouts/admin/_main_navigation.html.haml", %q{.app-main-navigation.clearfix
+  %span.app-main-navigation-prefix= t("layouts.user_navigation.administration") + " &raquo; "
+  = render_navigation :context => :admin_main}
+
+file "app/views/layouts/admin/application.html.haml", %q{!!! XML
+!!! Strict
+%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
+  %head
+    %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
+    %title= Admin::Application::TITLE
+    = javascript_include_tag :defaults, :cache => "all"
+    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
+    = yield :head
+    - if yield :style
+      %style{ :type => "text/css" }
+        = yield :style
+  %body
+    .app-container
+      .app-header
+        %h1
+          %a{ :href => "/" }= Admin::Application::TITLE
+        = render :partial => 'layouts/user_navigation'
+        = render :partial => "layouts/admin/main_navigation"
+      .app-wrapper.clearfix
+        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
+          - if flash.present?
+            .app-flash
+              - flash.each do |type, message|
+                %div{ :class => "flash-message #{type}" }
+                  %p= message
+            :javascript
+              Event.observe(window, "load", function() {
+                Effect.Shrink.delay(3, $$(".app-flash").first());
+              });
+          = yield
+        - if has_sidebar?
+          .app-sidebar
+            = render :partial => "sidebar"
+      .app-footer
+        %p
+          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 }
 
-file "app/views/user_session/login.html.haml", %q{- content_for :style do
-  div.login-form { width: 400px; margin: 0 auto; }
-  div.login-form .header { position: relative; }
-  div.login-form .header a { position: absolute; top: 0px; right: 10px; }
-
-.login-form
-  .header
-    %h1= t(".title")
-    - if ENABLE_REQUEST_RESET_PASSWORD
-      = link_to t(".reset_password"), request_reset_password_path
-
-  - semantic_form_for @user_session, :url => login_path, :html => {:class => "small-form"} do |form|
-    - form.inputs do
-      = form.error_messages :header_message => nil, :message => nil, :class => "errors"
-      = form.input :login
-      = form.input :password, :as => :password
-      %li
-        = form.label :remember_me
-        = form.check_box :remember_me
-    - form.buttons do
-      = form.commit_button t(".login")
-      %li.cancel
-        = t("or")
-        = link_to t("cancel"), dashboard_path
+file "app/views/layouts/application.html.haml", %q{!!! XML
+!!! Strict
+%html{ :xmlns => "http://www.w3.org/1999/xhtml" }
+  %head
+    %meta{ :"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8" } 
+    %title= ApplicationController::TITLE
+    = javascript_include_tag :defaults, :cache => "all"
+    = stylesheet_link_tag "reset", "clearfix", "application", :cache => "all"
+    = yield :head
+    - if yield :style
+      %style{ :type => "text/css" }
+        = yield :style
+  %body
+    .app-container
+      .app-header
+        %h1
+          %a{ :href => "/" }= ApplicationController::TITLE
+        = render :partial => 'layouts/user_navigation'
+        = render :partial => "layouts/main_navigation"
+      .app-wrapper.clearfix
+        .app-main{ :class => ("app-has-sidebar" if has_sidebar? ) }
+          - if flash.present?
+            .app-flash
+              - flash.each do |type, message|
+                %div{ :class => "flash-message #{type}" }
+                  %p= message
+            :javascript
+              Event.observe(window, "load", function() {
+                Effect.Shrink.delay(3, $$(".app-flash").first());
+              });
+          = yield
+        - if has_sidebar?
+          .app-sidebar
+            = render :partial => "sidebar"
+      .app-footer
+        %p
+          = "Copyright &copy; 2008 &ndash; #{Date.today.year} #{ApplicationController::TITLE}"
 }
 
-file "app/views/user_session/profile.html.haml", %q{- content_for :style do
-  div.user-profile { width: 600px; margin: 0 auto; position: relative; }
-  h1.user-name { float: left; }
-  a.edit-profile-link { float: left; padding-left: 1em }
+file "app/helpers/application_helper.rb", %q{# Methods added to this helper will be available to all templates in the application.
+module ApplicationHelper
 
-.user-profile
+end
+}
 
-  .clearfix
-    %h1.user-name= "#{@user.last_name} #{@user.first_name}"
-    = link_to t(".edit"), edit_profile_path, :class => "edit-profile-link clear"
+file "app/helpers/dashboard_helper.rb", %q{module DashboardHelper
+end
+}
 
-  %ul
-    %li
-      = t("activerecord.attributes.user.email") + ":"
-      = @user.email 
-    %li
-      = t("activerecord.attributes.user.created_at") + ":"
-      = l(@user.created_at.localtime, :format => "%e %B %Y")
-    -if @user.last_login_at.present?
-      %li
-        &nbsp;
-      %li
-        %h5= t(".connection_information")
-      %li
-        = t("activerecord.attributes.user.last_login_at") + ":"
-        = l(@user.last_login_at.localtime, :format => "%e %B %Y %H:%M")
-      %li
-        = t("activerecord.attributes.user.last_login_ip") + ":"
-        = @user.last_login_ip
-      %li
-        = t("activerecord.attributes.user.current_login_ip") + ":"
-        = @user.current_login_ip}
+file "app/helpers/user_session_helper.rb", %q{module UserSessionHelper
+end
+}
 
-file "app/views/user_session/request_reset_password.html.haml", %q{- content_for :style do
-  div.request-reset-password-form { width: 400px; margin: 0 auto; }
+file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
 
-.request-reset-password-form
-  %h1= t(".title")
-  %p= t(".description")
+  def user_table
+    collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
+      t.header.hide_when_empty = false
+      t.header.column :login, t('.login'), :class => "text"
+      t.header.column :name, t('.name'), :class => "text"
+      t.header.column :email, t('.email'), :class => "email"
+      t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
+      t.header.column :last_login_at, t('.last_login_at'), :class => "date"
+      t.header.column :created_at, t('.created_at'), :class => "date"
+      t.header.column :actions, ''
 
-  - semantic_form_for :request_reset_password, :html => {:class => "small-form"} do |form|
-    - form.inputs do
-      = form.input :email, :label => t(".email")
-    - form.buttons do
-      = form.commit_button t(".send_request")
-      %li.cancel
-        %span
-          = t("or")
-          = link_to t("cancel"), login_path}
+      t.rows.alternate = :odd
+      t.rows.empty_caption = t(".no_users")
+      t.rows.each do |row, item, index|
+        last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
+
+        row[:id] = "user-#{item.id}"
+        row.login item.login, :class => "text"
+        row.name  "#{item.last_name} #{item.first_name}"
+        row.email item.email, :class => "email"
+        row.last_login_ip item.last_login_ip || "-", :class => "right"
+        row.last_login_at last_login_at, :class => "date"
+        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "date"
+        row.actions user_table_actions(item), :class => "buttons"
+      end
+    end
+  end
+
+  def user_table_actions(item)
+    edit_url = edit_admin_user_path(item)
+    delete_url = admin_user_path(item)
+
+    parts = []
+    parts << link_to(image_tag("edit.png"), edit_url, :title => t(".edit_hint"))
+    parts << "&nbsp;"
+
+    if item.login == "admin"
+      parts << image_tag("delete.png", :style => "opacity: 0.3")
+    else
+      parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
+                       :title => t(".delete_hint"),
+                       :confirm => t(".confirm_for_delete", :login => item.login))
+    end
+
+    parts.join("\n")
+  end
+  
+end
+}
+
+file "app/models/user_session.rb", %q{class UserSession < Authlogic::Session::Base
+
+  generalize_credentials_error_messages I18n.t("invalid_login_or_password")
+
+end}
+
+file "app/models/role.rb", %q{class Role < ActiveRecord::Base
+  acts_as_authorization_role
+end
+}
+
+file "app/models/user.rb", %q{class User < ActiveRecord::Base
+  acts_as_authentic
+  acts_as_authorization_subject
+
+  validates_presence_of :first_name, :last_name
+
+  def deliver_password_reset_instructions!
+    reset_perishable_token!
+    Notifier.deliver_password_reset_instructions(self)  
+  end
+  
+end
+}
+
+file "app/models/notifier.rb", %q{class Notifier < ActionMailer::Base
+
+  def password_reset_instructions(user)
+    subject       I18n.t("title_of_reset_password_email")
+    from          FROM_EMAIL_ADDRESS
+    recipients    user.email
+    sent_on       Time.now
+    body          :reset_password_url => reset_password_url(user.perishable_token)
+  end
+
+end
+}
+
+file "app/controllers/dashboard_controller.rb", %q{class DashboardController < ApplicationController
+
+  navigation :dashboard
+  sidebar
+
+  access_control do
+    allow all
+  end
+
+  def index
+  end
+
+end
+}
+
+file "app/controllers/application_controller.rb", %q{class ApplicationController < ActionController::Base
+
+  TITLE = I18n.t(:application_title)
+
+  include SslRequirement
+  skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)
+  
+  rescue_from Acl9::AccessDenied, :with => :access_denied
+
+  helper :all # include all helpers, all the time
+  helper_method :current_user_session, :current_user  
+  protect_from_forgery # See ActionController::RequestForgeryProtection for details
+
+  filter_parameter_logging :password, :password_confirmation
+
+protected  
+
+  def current_user
+    return @current_user if defined?(@current_user)
+    @current_user = current_user_session && current_user_session.record
+  end
+  
+private
+
+  def current_user_session
+    return @current_user_session if defined?(@current_user_session)
+    @current_user_session = UserSession.find
+  end
+
+  def access_denied
+    if current_user
+      store_location
+      flash[:notice] = t("access_denied")
+      redirect_to root_url
+    else
+      store_location
+      flash[:notice] = t("access_denied_try_to_login") 
+      redirect_to login_url
+    end
+  end
+
+
+  def store_location
+    session[:return_to] = request.request_uri
+  end
+
+  def redirect_back_or_default(default)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
+  
+end
+}
+
+file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersController < Admin::Application
+
+  navigation :users
+  sidebar
+
+  before_filter :load_user, :only => [ :edit, :update, :destroy ]
+
+  def index
+    @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)
+  end
+
+  def new
+    @user = User.new
+  end
+
+  def create
+    @user = User.new(params[:user])
+    if @user.save
+      redirect_to admin_users_path
+    else
+      render :action => "new"
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @user.update_attributes(params[:user])
+      redirect_to admin_users_path
+    else
+      render :action => "edit"
+    end
+  end
+
+  def destroy
+    @user.destroy if @user.login != "admin"
+
+    redirect_to admin_users_path
+  end
+
+private
+
+  def load_user
+    @user = User.find(params[:id])
+  end
+
+end
+}
+
+file "app/controllers/admin/admin_dashboard_controller.rb", %q{class Admin::AdminDashboardController < Admin::Application
+
+  def index
+  end
+
+end
+}
+
+file "app/controllers/admin/application.rb", %q{class Admin::Application < ApplicationController
+
+  layout 'admin/application'
+
+  TITLE = ApplicationController::TITLE
+
+  access_control do
+    default :deny
+
+    allow :admin
+  end
+
+private
+
+  # Admin panel required SSL by default
+  def ssl_required?
+    true
+  end
+
+end
+}
 
 file "app/controllers/user_session_controller.rb", %q{class UserSessionController < ApplicationController
 
@@ -478,259 +731,6 @@ private
 end
 }
 
-file "app/controllers/admin/admin_dashboard_controller.rb", %q{class Admin::AdminDashboardController < Admin::Application
-
-  def index
-  end
-
-end
-}
-
-file "app/controllers/admin/users_controller.rb", %q{class Admin::UsersController < Admin::Application
-
-  navigation :users
-  sidebar
-
-  before_filter :load_user, :only => [ :edit, :update, :destroy ]
-
-  def index
-    @users = User.all(:order => "login ASC").paginate(:page => params[:page], :per_page => 10)
-  end
-
-  def new
-    @user = User.new
-  end
-
-  def create
-    @user = User.new(params[:user])
-    if @user.save
-      redirect_to admin_users_path
-    else
-      render :action => "new"
-    end
-  end
-
-  def edit
-  end
-
-  def update
-    if @user.update_attributes(params[:user])
-      redirect_to admin_users_path
-    else
-      render :action => "edit"
-    end
-  end
-
-  def destroy
-    @user.destroy if @user.login != "admin"
-
-    redirect_to admin_users_path
-  end
-
-private
-
-  def load_user
-    @user = User.find(params[:id])
-  end
-
-end
-}
-
-file "app/controllers/admin/application.rb", %q{class Admin::Application < ApplicationController
-
-  layout 'admin/application'
-
-  TITLE = ApplicationController::TITLE
-
-  access_control do
-    default :deny
-
-    allow :admin
-  end
-
-private
-
-  # Admin panel required SSL by default
-  def ssl_required?
-    true
-  end
-
-end
-}
-
-file "app/controllers/application_controller.rb", %q{class ApplicationController < ActionController::Base
-
-  TITLE = I18n.t(:application_title)
-
-  include SslRequirement
-  skip_before_filter :ensure_proper_protocol unless ["production"].include?(Rails.env)
-  
-  rescue_from Acl9::AccessDenied, :with => :access_denied
-
-  helper :all # include all helpers, all the time
-  helper_method :current_user_session, :current_user  
-  protect_from_forgery # See ActionController::RequestForgeryProtection for details
-
-  filter_parameter_logging :password, :password_confirmation
-
-protected  
-
-  def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = current_user_session && current_user_session.record
-  end
-  
-private
-
-  def current_user_session
-    return @current_user_session if defined?(@current_user_session)
-    @current_user_session = UserSession.find
-  end
-
-  def access_denied
-    if current_user
-      store_location
-      flash[:notice] = t("access_denied")
-      redirect_to root_url
-    else
-      store_location
-      flash[:notice] = t("access_denied_try_to_login") 
-      redirect_to login_url
-    end
-  end
-
-
-  def store_location
-    session[:return_to] = request.request_uri
-  end
-
-  def redirect_back_or_default(default)
-    redirect_to(session[:return_to] || default)
-    session[:return_to] = nil
-  end
-  
-end
-}
-
-file "app/controllers/dashboard_controller.rb", %q{class DashboardController < ApplicationController
-
-  navigation :dashboard
-  sidebar
-
-  access_control do
-    allow all
-  end
-
-  def index
-  end
-
-end
-}
-
-file "app/models/role.rb", %q{class Role < ActiveRecord::Base
-  acts_as_authorization_role
-end
-}
-
-file "app/models/user_session.rb", %q{class UserSession < Authlogic::Session::Base
-
-  generalize_credentials_error_messages I18n.t("invalid_login_or_password")
-
-end}
-
-file "app/models/notifier.rb", %q{class Notifier < ActionMailer::Base
-
-  def password_reset_instructions(user)
-    subject       I18n.t("title_of_reset_password_email")
-    from          FROM_EMAIL_ADDRESS
-    recipients    user.email
-    sent_on       Time.now
-    body          :reset_password_url => reset_password_url(user.perishable_token)
-  end
-
-end
-}
-
-file "app/models/user.rb", %q{class User < ActiveRecord::Base
-  acts_as_authentic
-  acts_as_authorization_subject
-
-  validates_presence_of :first_name, :last_name
-
-  def deliver_password_reset_instructions!
-    reset_perishable_token!
-    Notifier.deliver_password_reset_instructions(self)  
-  end
-  
-end
-}
-
-file "app/helpers/admin/users_helper.rb", %q{module Admin::UsersHelper
-
-  def user_table
-    collection_table(@users, :class => 'app-table app-admin-users-table') do |t|
-      t.header.hide_when_empty = false
-      t.header.column :login, t('.login'), :class => "text"
-      t.header.column :name, t('.name'), :class => "text"
-      t.header.column :email, t('.email'), :class => "email"
-      t.header.column :last_login_ip, t('.last_login_ip'), :class => "right"
-      t.header.column :last_login_at, t('.last_login_at'), :class => "date"
-      t.header.column :created_at, t('.created_at'), :class => "date"
-      t.header.column :actions, ''
-
-      t.rows.alternate = :odd
-      t.rows.empty_caption = t(".no_users")
-      t.rows.each do |row, item, index|
-        last_login_at = item.last_login_at ? I18n.l(item.last_login_at.localtime, :format => "%e %B %Y") : "-"
-
-        row[:id] = "user-#{item.id}"
-        row.login item.login, :class => "text"
-        row.name  "#{item.last_name} #{item.first_name}"
-        row.email item.email, :class => "email"
-        row.last_login_ip item.last_login_ip || "-", :class => "right"
-        row.last_login_at last_login_at, :class => "date"
-        row.created_at I18n.l(item.created_at.localtime, :format => "%e %B %Y"), :class => "date"
-        row.actions user_table_actions(item), :class => "buttons"
-      end
-    end
-  end
-
-  def user_table_actions(item)
-    edit_url = edit_admin_user_path(item)
-    delete_url = admin_user_path(item)
-
-    parts = []
-    parts << link_to(image_tag("edit.png"), edit_url, :title => t(".edit_hint"))
-    parts << "&nbsp;"
-
-    if item.login == "admin"
-      parts << image_tag("delete.png", :style => "opacity: 0.3")
-    else
-      parts << link_to(image_tag("delete.png"), delete_url, :method => "delete",
-                       :title => t(".delete_hint"),
-                       :confirm => t(".confirm_for_delete", :login => item.login))
-    end
-
-    parts.join("\n")
-  end
-  
-end
-}
-
-file "app/helpers/user_session_helper.rb", %q{module UserSessionHelper
-end
-}
-
-file "app/helpers/dashboard_helper.rb", %q{module DashboardHelper
-end
-}
-
-file "app/helpers/application_helper.rb", %q{# Methods added to this helper will be available to all templates in the application.
-module ApplicationHelper
-
-end
-}
-
 
 
 
@@ -757,15 +757,11 @@ config.action_controller.allow_forgery_protection    = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
-config.gem 'cucumber-rails',   :lib => false, :version => '>=0.2.3' unless File.directory?(File.join(Rails.root, 'vendor/plugins/cucumber-rails'))
-config.gem 'database_cleaner', :lib => false, :version => '>=0.2.3' unless File.directory?(File.join(Rails.root, 'vendor/plugins/database_cleaner'))
-config.gem 'webrat',           :lib => false, :version => '>=0.6.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/webrat'))
-config.gem 'rspec',            :lib => false, :version => '>=1.2.9' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec'))
-config.gem 'rspec-rails',      :lib => false, :version => '>=1.2.9' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
-
-config.gem 'spork',            :lib => false, :version => '>=0.7.4' unless File.directory?(File.join(Rails.root, 'vendor/plugins/spork'))
-
-config.gem 'email_spec',       :lib => false, :version => '>=0.4.0'  unless File.directory?(File.join(Rails.root, 'vendor/plugins/email_spec'))
+config.gem 'cucumber-rails',   :lib => false, :version => '>=0.3.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/cucumber-rails'))
+config.gem 'database_cleaner', :lib => false, :version => '>=0.5.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/database_cleaner'))
+config.gem 'webrat',           :lib => false, :version => '>=0.7.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/webrat'))
+config.gem 'rspec',            :lib => false, :version => '>=1.3.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec'))
+config.gem 'rspec-rails',      :lib => false, :version => '>=1.3.2' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
 
 config.action_mailer.default_url_options = { :host => "localhost:3000" }
 }
@@ -1104,6 +1100,17 @@ file "config/locales/ru.yml", %q{ru:
 }
 
 
+file "config/navigation/admin_users_sidebar_navigation.rb", %q{# Configures main navigation menu
+
+SimpleNavigation::Configuration.run do |navigation|
+  navigation.selected_class = "app-active-item"
+  navigation.items do |primary|
+
+    primary.item :new, t(".new"), new_admin_user_path
+
+  end
+end}
+
 file "config/navigation/user_navigation.rb", %q{# Configures user navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
@@ -1119,13 +1126,13 @@ SimpleNavigation::Configuration.run do |navigation|
   end
 end}
 
-file "config/navigation/admin_users_sidebar_navigation.rb", %q{# Configures main navigation menu
+file "config/navigation/main_navigation.rb", %q{# Configures main navigation menu
 
 SimpleNavigation::Configuration.run do |navigation|
   navigation.selected_class = "app-active-item"
   navigation.items do |primary|
 
-    primary.item :new, t(".new"), new_admin_user_path
+    primary.item :dashboard, t(".dashboard"), dashboard_path
 
   end
 end}
@@ -1138,17 +1145,6 @@ SimpleNavigation::Configuration.run do |navigation|
 
     primary.item :action1, "Action1", "#"
     primary.item :action2, "Action2", "#"
-
-  end
-end}
-
-file "config/navigation/main_navigation.rb", %q{# Configures main navigation menu
-
-SimpleNavigation::Configuration.run do |navigation|
-  navigation.selected_class = "app-active-item"
-  navigation.items do |primary|
-
-    primary.item :dashboard, t(".dashboard"), dashboard_path
 
   end
 end}
@@ -1171,8 +1167,8 @@ rerun = File.file?('rerun.txt') ? IO.read('rerun.txt') : ""
 rerun_opts = rerun.to_s.strip.empty? ? "--format progress features" : "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} #{rerun}"
 std_opts = "#{rerun_opts} --format rerun --out rerun.txt --strict --tags ~@wip"
 %>
-default: --drb <%= std_opts %>
-wip: --drb --tags @wip:3 --wip features
+default: <%= std_opts %>
+wip: --tags @wip:3 --wip features
 }
 
 
@@ -1242,34 +1238,6 @@ end
 
 
 
-
-file "db/migrate/20100127202616_create_roles.rb", %q{class CreateRoles < ActiveRecord::Migration
-  def self.up
-    create_table :roles do |t|
-      t.string :name,               :limit => 40
-      t.string :authorizable_type,  :limit => 40
-      t.integer :authorizable_id
-
-      t.timestamps
-    end
-  end
-
-  def self.down
-    drop_table :roles
-  end
-end
-}
-
-file "db/migrate/20100208201733_assign_roles.rb", %q{class AssignRoles < ActiveRecord::Migration
-  def self.up
-    User.find_by_login("admin").has_role!(:admin)
-  end
-
-  def self.down
-    User.find_by_login("admin").has_no_roles!
-  end
-end
-}
 
 file "db/migrate/20100114222613_create_sessions.rb", %q{class CreateSessions < ActiveRecord::Migration
   def self.up
@@ -1343,6 +1311,34 @@ file "db/migrate/20100127202741_create_roles_users.rb", %q{class CreateRolesUser
 end
 }
 
+file "db/migrate/20100127202616_create_roles.rb", %q{class CreateRoles < ActiveRecord::Migration
+  def self.up
+    create_table :roles do |t|
+      t.string :name,               :limit => 40
+      t.string :authorizable_type,  :limit => 40
+      t.integer :authorizable_id
+
+      t.timestamps
+    end
+  end
+
+  def self.down
+    drop_table :roles
+  end
+end
+}
+
+file "db/migrate/20100208201733_assign_roles.rb", %q{class AssignRoles < ActiveRecord::Migration
+  def self.up
+    User.find_by_login("admin").has_role!(:admin)
+  end
+
+  def self.down
+    User.find_by_login("admin").has_no_roles!
+  end
+end
+}
+
 
 file "db/seeds.rb", %q{# This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
@@ -1355,444 +1351,44 @@ file "db/seeds.rb", %q{# This file should contain all the record creation needed
 
 
 
-file "features/registration_enabled.feature", %q{@registration_enabled
-Feature: Registration in application feature enabled
-  In order to work with advanced features of application
-  As anonymous user
-  I want to register in application
+file "features/reset_password_enabled.feature", %q{@reset_password_enabled
+Feature: Reset password feature enabled
+  In order to restore forgotten password
+  A registered user
+  Should have ability to restore password
 
-  
-  Scenario: Anonymous user should see register link on dashboard page
+  Scenario: User select incorrect e-mail
     Given I am anonymous user
-    When I go to the dashboard page
-    Then I should see "/register" link
-
-
-  Scenario: Success registration in application
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should be registered in application
-
-
-  Scenario: Fail registration in application with empty fields
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 |                  |
-      | E-Mail                |                  |
-      | First name            |                  |
-      | Last name             |                  |
-      | Password              |                  |
-      | Password Confirmation |                  |
-    And press "Register"
-    Then I should see form validation for "Login" field
-    And should see form validation for "Password" field
-    And should see form validation for "Password confirmation" field
-    And should see form validation for "E-Mail" field
-    And should not be registered in application
-
-
-  Scenario: Fail registration in application with empty login
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 |                      |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should see form validation for "Login" field
-    And should not be registered in application
-
-
-  Scenario: Fail registration in application with empty password
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              |                      |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should see form validation for "Password" field
-    And should not be registered in application
-
-
-  Scenario: Fail registration in application with different password and confirmation password
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password2            |
-    And press "Register"
-    Then I should see form validation for "Password" field
-    And should not be registered in application
-
-
-  Scenario: Fail registration in application with empty e-mail
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                |                      |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should see form validation for "E-Mail" field
-    And should not be registered in application
-
-  Scenario: Fail registration in application with empty fist name
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            |                      |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should see form validation for "First Name" field
-    And should not be registered in application
-
-  Scenario: Fail registration in application with empty last name
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             |                      |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Register"
-    Then I should see form validation for "Last Name" field 
-    And should not be registered in application
-
-  Scenario: Fail registration in application with login which already registered
-    Given I am anonymous user
-    When I go to the registration page
-    And I fill in the following:
-      | Login                 | admin             |
-      | E-Mail                | admin@example.com |
-      | Password              | pass              |
-      | Password Confirmation | pass              |
-    And press "Register"
-    Then I should see form validation for "Login" field
-    And should not be registered in application
-
-
-  Scenario: Anonymous user can press Cancel link and return to dashboard page
-    Given I am anonymous user
-    When I go to the registration page
-    And follow "Cancel"
-    Then I should be on the dashboard page
-
-    }
-
-file "features/application_administrator/sucess_authorization.feature", %q{Feature: Application administrator should have access to all pages
-  In order to grant full access to private application functionality
-  A application administrator
-  Should have access to all pages
-
-  Scenario: Application administrator should have access to dashboard page
-    Given I am application administrator
-    When I go to the dashboard page
-    Then I should be on the dashboard page
-
-  Scenario: Application administrator should have access to profile page
-    Given I am application administrator
-    When I go to the profile page
-    Then I should be on the profile page
-
-  Scenario: Application administrator should have access to edit profile page
-    Given I am application administrator
-    When I go to the edit profile page
-    Then I should be on the edit profile page
-
-  Scenario: Application administrator should have access to admin dashboard page
-    Given I am application administrator
-    When I go to the admin dashboard page
-    Then I should be on the admin dashboard page
-
-  Scenario: Application administrator should have access to user list in admin panel
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then I should be on the user list in admin panel page
-}
-
-file "features/application_administrator/failed_authorization.feature", %q{Feature: Application administrator hasn't access to several application pages
-  In order to restrict access to several application pages for authenticated users
-  A application administrator
-  Haven't access to these pages
-
-  @allow-rescue
-  Scenario: Application administrator shouldn't have access to login page (because he login already)
-    Given I am application administrator
-    When I go to the login page
-    Then I should be on the dashboard page
-    And should see flash with "Access denied."
-
-  @allow-rescue
-  Scenario: Application administrator shouldn't have access to register page (because he registered already)
-    Given I am application administrator
-    When I go to the registration page
-    Then I should be on the dashboard page
-    And should see flash with "Access denied."
-
-  @allow-rescue
-  Scenario: Application administrator shouldn't have access to request reset password page (because he known password already)
-    Given I am application administrator
     When I go to the request reset password page
-    Then I should be on the dashboard page
-    And should see flash with "Access denied."
-}
+    And fill in "E-Mail" with "unknown@example.com"
+    And press "Send request"
+    Then I should see flash with "No user was found with that email address"
 
-file "features/application_administrator/user_list.feature", %q{Feature: The application administrator can manage registered user accounts
-  In order to manage registered user accounts
-  A application administrator
-  Should have ability to see/create/edit/delete registered user accounts
+  Scenario: User select correct email and reset password
+    Given I am request reset password for "admin@example.com" email
+    And open reset password page from "admin@example.com" email
+    When I fill in "Password" with "newpass"
+    And fill in "Password confirmation" with "newpass"
+    And press "Reset Password"
+    Then I should see flash with "Password successfully updated"
+    And should authenticated in application
+    And I should be able to log in with login "admin" and password "newpass"
 
-  Scenario: The application administrator should see registered user accounts
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then I should see 2 user accounts in table
+  Scenario: User select correct email and enter incorrect reset password
+    Given I am request reset password for "admin@example.com" email
+    And open reset password page from "admin@example.com" email
+    When I fill in "Password" with "newpass"
+    And fill in "Password confirmation" with "newpass2"
+    And press "Reset Password"
+    Then I should see form validation for "Password"
+    Then shouldn't authenticated in application
+    And I should be able to log in with login "admin" and password "admin"
 
-  Scenario: The application administrator can create new user account
-    Given I am application administrator
-    When I go to the new user in admin panel page
-    And I fill in the following:
-      | Login                 | maksimka             |
-      | E-Mail                | maksimka@example.com |
-      | First name            | Maksimka             |
-      | Last name             | Dobriakov            |
-      | Password              | password             |
-      | Password Confirmation | password             |
-    And press "Create Account"
-    Then I am on the user list in admin panel page
-    And I should see 3 user accounts in table
-    And I should see "maksimka" user account in table
+  Scenario: User open reset password with nonexistent perishable token
+    When I go to the reset password page with Id "unknown"
+    Then I should see flash with "we could not locate your account"
+    And shouldn't authenticated in application
 
-  Scenario: The application administrator can change email for user account
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then click edit account link for user with login "user"
-    When I fill in the following:
-      | E-Mail                | new_email@example.com |
-    And press "Update Account"
-    Then I am on the user list in admin panel page
-    And I should see 2 user accounts in table
-    And user with login "user" has email "new_email@example.com"
-
-  Scenario: The application administrator can change first and last name for user account
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then click edit account link for user with login "user"
-    When I fill in the following:
-      | First name            | Vini                  |
-      | Last name             | Pooh                  |
-    And press "Update Account"
-    Then I am on the user list in admin panel page
-    And I should see 2 user accounts in table
-    And user with login "user" has first name "Vini" and last name "Pooh"
-
-  Scenario: The application administrator can change password for user account
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then click edit account link for user with login "user"
-    When I fill in the following:
-      | Password                 | 12345 |
-      | Password Confirmation    | 12345 |
-    And press "Update Account"
-    Then I am on the user list in admin panel page
-    And I should see 2 user accounts in table
-    And user with login "user" has password "12345"
-
-  Scenario: The application administrator can delete user account
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then click delete account link for user with login "user"
-    Then I am on the user list in admin panel page
-    And I should see 1 user accounts in table
-
-  Scenario: The application administrator can't delete administrator account with login "admin"
-    Given I am application administrator
-    When I go to the user list in admin panel page
-    Then I shouldn't see delete link for user with login "admin"}
-
-file "features/support/paths.rb", %q{module NavigationHelpers
-  # Maps a name to a path. Used by the
-  #
-  #   When /^I go to (.+)$/ do |page_name|
-  #
-  # step definition in web_steps.rb
-  #
-  def path_to(page_name)
-    case page_name
-    
-    when /the home\s?page/
-      dashboard_path
-    when /the dashboard page/
-      dashboard_path
-    when /the login page/
-      login_path
-    when /the logout page/
-      logout_path
-    when /the registration page/
-      register_path
-    when /the request reset password page/
-      request_reset_password_path
-    when /the reset password page with Id "([^\"]*)"/
-      reset_password_path($1)
-    when /the profile page/
-      profile_path
-    when /the edit profile page/
-      edit_profile_path
-    when /the admin dashboard page/
-      admin_dashboard_path
-    when /the user list in admin panel page/
-      admin_users_path
-    when /the new user in admin panel page/
-      new_admin_user_path
-
-    # Add more mappings here.
-    # Here is an example that pulls values out of the Regexp:
-    #
-    #   when /^(.*)'s profile page$/i
-    #     user_profile_path(User.find_by_login($1))
-
-    else
-      raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
-        "Now, go and add a mapping in #{__FILE__}"
-    end
-  end
-end
-
-World(NavigationHelpers)
-}
-
-file "features/support/env.rb", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
-# It is recommended to regenerate this file in the future when you upgrade to a 
-# newer version of cucumber-rails. Consider adding your own code to a new file 
-# instead of editing this one. Cucumber will automatically load all features/**/*.rb
-# files.
-
-require 'rubygems'
-require 'spork'
- 
-Spork.prefork do
-  ENV["RAILS_ENV"] ||= "cucumber"
-  require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
-  
-  require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
-  require 'cucumber/rails/rspec'
-  require 'cucumber/rails/world'
-  require 'cucumber/rails/active_record'
-  require 'cucumber/web/tableish'
-
-  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_enabled") unless ENABLE_USER_REGISTRATION
-  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_disabled") if ENABLE_USER_REGISTRATION
-
-  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_enabled") unless ENABLE_REQUEST_RESET_PASSWORD
-  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_disabled") if ENABLE_REQUEST_RESET_PASSWORD
-
-  require 'webrat'
-  require 'webrat/core/matchers'
-#  require 'cucumber/webrat/element_locator' # Deprecated in favor of #tableish - remove this line if you don't use #element_at or #table_at
-  require 'webrat/integrations/rspec-rails'
-
-  Webrat.configure do |config|
-    config.mode = :rails
-    config.open_error_files = false # Set to true if you want error pages to pop up in the browser
-  end
-  
-  require "email_spec"
-  require 'email_spec/cucumber'
-
-end
- 
-Spork.each_run do
-  # If you set this to false, any error raised from within your app will bubble 
-  # up to your step definition and out to cucumber unless you catch it somewhere
-  # on the way. You can make Rails rescue errors and render error pages on a
-  # per-scenario basis by tagging a scenario or feature with the @allow-rescue tag.
-  #
-  # If you set this to true, Rails will rescue all errors and render error
-  # pages, more or less in the same way your application would behave in the
-  # default production environment. It's not recommended to do this for all
-  # of your scenarios, as this makes it hard to discover errors in your application.
-  ActionController::Base.allow_rescue = false
-  
-  # If you set this to true, each scenario will run in a database transaction.
-  # You can still turn off transactions on a per-scenario basis, simply tagging 
-  # a feature or scenario with the @no-txn tag. If you are using Capybara,
-  # tagging with @culerity or @javascript will also turn transactions off.
-  #
-  # If you set this to false, transactions will be off for all scenarios,
-  # regardless of whether you use @no-txn or not.
-  #
-  # Beware that turning transactions off will leave data in your database 
-  # after each scenario, which can lead to hard-to-debug failures in 
-  # subsequent scenarios. If you do this, we recommend you create a Before
-  # block that will explicitly put your database in a known state.
-  Cucumber::Rails::World.use_transactional_fixtures = true
-  
-  # How to clean your database when transactions are turned off. See
-  # http://github.com/bmabey/database_cleaner for more info.
-  require 'database_cleaner'
-  DatabaseCleaner.strategy = :truncation
-
-end
-}
-
-file "features/support/prerequisites.rb", %q{Before do
-
-  # Create user account without administration privileges
-  User.create! :login => "user",
-               :email => "user@example.com",
-               :first_name => "User",
-               :last_name => "User", 
-               :password => "user", :password_confirmation => "user"
-
-end}
-
-file "features/application_user/sucess_authorization.feature", %q{Feature: Application user should have access to dashboard, profile and profile editor pages
-  In order to partially restrict application users functionality in application
-  A application user
-  Should have access to dashboard, profile and profile editor page
-
-  Scenario: Application user should have access to dashboard page
-    Given I am application user
-    When I go to the dashboard page
-    Then I should be on the dashboard page
-
-  Scenario: Application user should have access to profile page
-    Given I am application user
-    When I go to the profile page
-    Then I should be on the profile page
-
-  Scenario: Application user should have access to edit profile page
-    Given I am application user
-    When I go to the edit profile page
-    Then I should be on the edit profile page
 }
 
 file "features/application_user/failed_authorization.feature", %q{Feature: Application user (not application Administrator) should has partial access to private application resource
@@ -1836,96 +1432,25 @@ file "features/application_user/failed_authorization.feature", %q{Feature: Appli
     And should see flash with "Access denied."
 }
 
-file "features/authentication.feature", %q{Feature: Authentication to application
-  In order to login to application
-  As registered user
-  Should have ability to login in application 
+file "features/application_user/sucess_authorization.feature", %q{Feature: Application user should have access to dashboard, profile and profile editor pages
+  In order to partially restrict application users functionality in application
+  A application user
+  Should have access to dashboard, profile and profile editor page
 
-  Scenario: Anonymous user should see login link on dashboard page
-    Given I am anonymous user
-    When I go to the dashboard page
-    Then I should see "/login" link
-
-  Scenario: Success login to application
-    Given I am anonymous user
-    When I go to the login page
-    And I fill in the following:
-      | Login                 | user            |
-      | Password              | user            |
-    And press "Login"
-    Then I should authenticated in application
-    And should see "/profile" link
-    And "/logout" link
-
-  Scenario: Fail login to application with invalid login
-    Given I am anonymous user
-    When I go to the login page
-    And I fill in the following:
-      | Login                 | adminko         |
-      | Password              | user            |
-    And press "Login"
-    Then I should see form validation for "Login" field
-    And shouldn't authenticated in application
-    And should see "/login" link
-
-  Scenario: Fail login to application with invalid password
-    Given I am anonymous user
-    When I go to the login page
-    And I fill in the following:
-      | Login                 | user            |
-      | Password              | adminko         |
-    And press "Login"
-    Then I should see form validation for "Password" field
-    And shouldn't authenticated in application
-    And should see "/login" link
-}
-
-file "features/dashboard.feature", %q{Feature: Show dashboard page
-  In order to show home/root page
-  A any user
-  Should be able to see dashboard page
-
-  Scenario: Show dashboard page for anonymous user
-    Given I am anonymous user
-    When I go to the dashboard page
-    Then I should see dashboard page
-
-  Scenario: Show dashboard page for application user
+  Scenario: Application user should have access to dashboard page
     Given I am application user
-    When I go to the dashboard page
-    Then I should see dashboard page
-
-  Scenario: Show dashboard page for application administrator
-    Given I am application administrator
-    When I go to the dashboard page
-    Then I should see dashboard page}
-
-file "features/anonymous_user/sucess_authorization.feature", %q{Feature: Anonymous user should have access to dashboard, register, reset password and login pages only
-  In order to restrict anonymous users functionality in application
-  A anonymous  user
-  Should have access to dashboard, register, reset password and login pages only
-
-  Scenario: Anonymous user should have access to dashboard page
-    Given I am anonymous user
     When I go to the dashboard page
     Then I should be on the dashboard page
 
-  Scenario: Anonymous user should have access to login page
-    Given I am anonymous user
-    When I go to the login page
-    Then I should be on the login page
+  Scenario: Application user should have access to profile page
+    Given I am application user
+    When I go to the profile page
+    Then I should be on the profile page
 
-  @registration_enabled
-  Scenario: Anonymous user should have access to register page if application developer allow access to it page
-    Given I am anonymous user
-    When I go to the registration page
-    Then I should be on the registration page
-
-  @reset_password_enabled
-  Scenario: Anonymous user should have access to request reset password page if application developer allow access to it page
-    Given I am anonymous user
-    When I go to the request reset password page
-    Then I should be on the request reset password page
+  Scenario: Application user should have access to edit profile page
+    Given I am application user
+    When I go to the edit profile page
+    Then I should be on the edit profile page
 }
 
 file "features/anonymous_user/failed_authorization.feature", %q{Feature: Anonymous user shouldn't have access to private application resources
@@ -1983,260 +1508,47 @@ file "features/anonymous_user/failed_authorization.feature", %q{Feature: Anonymo
     And should see flash with "Access denied."
     }
 
-file "features/reset_password_enabled.feature", %q{@reset_password_enabled
-Feature: Reset password feature enabled
-  In order to restore forgotten password
-  A registered user
-  Should have ability to restore password
+file "features/anonymous_user/sucess_authorization.feature", %q{Feature: Anonymous user should have access to dashboard, register, reset password and login pages only
+  In order to restrict anonymous users functionality in application
+  A anonymous  user
+  Should have access to dashboard, register, reset password and login pages only
 
-  Scenario: User select incorrect e-mail
+  Scenario: Anonymous user should have access to dashboard page
+    Given I am anonymous user
+    When I go to the dashboard page
+    Then I should be on the dashboard page
+
+  Scenario: Anonymous user should have access to login page
+    Given I am anonymous user
+    When I go to the login page
+    Then I should be on the login page
+
+  @registration_enabled
+  Scenario: Anonymous user should have access to register page if application developer allow access to it page
+    Given I am anonymous user
+    When I go to the registration page
+    Then I should be on the registration page
+
+  @reset_password_enabled
+  Scenario: Anonymous user should have access to request reset password page if application developer allow access to it page
     Given I am anonymous user
     When I go to the request reset password page
-    And fill in "E-Mail" with "unknown@example.com"
-    And press "Send request"
-    Then I should see flash with "No user was found with that email address"
-
-  Scenario: User select correct email and reset password
-    Given I am request reset password for "admin@example.com" email
-    And open reset password page from "admin@example.com" email
-    When I fill in "Password" with "newpass"
-    And fill in "Password confirmation" with "newpass"
-    And press "Reset Password"
-    Then I should see flash with "Password successfully updated"
-    And should authenticated in application
-    And I should be able to log in with login "admin" and password "newpass"
-
-  Scenario: User select correct email and enter incorrect reset password
-    Given I am request reset password for "admin@example.com" email
-    And open reset password page from "admin@example.com" email
-    When I fill in "Password" with "newpass"
-    And fill in "Password confirmation" with "newpass2"
-    And press "Reset Password"
-    Then I should see form validation for "Password"
-    Then shouldn't authenticated in application
-    And I should be able to log in with login "admin" and password "admin"
-
-  Scenario: User open reset password with nonexistent perishable token
-    When I go to the reset password page with Id "unknown"
-    Then I should see flash with "we could not locate your account"
-    And shouldn't authenticated in application
-
+    Then I should be on the request reset password page
 }
 
-file "features/step_definitions/email_steps.rb", %q{# Commonly used email steps
-#
-# To add your own steps make a custom_email_steps.rb
-# The provided methods are:
-#
-# last_email_address
-# reset_mailer
-# open_last_email
-# visit_in_email
-# unread_emails_for
-# mailbox_for
-# current_email
-# open_email
-# read_emails_for
-# find_email
-#
-# General form for email scenarios are:
-#   - clear the email queue (done automatically by email_spec)
-#   - execute steps that sends an email
-#   - check the user received an/no/[0-9] emails
-#   - open the email
-#   - inspect the email contents
-#   - interact with the email (e.g. click links)
-#
-# The Cucumber steps below are setup in this order.
+file "features/step_definitions/dashboard_steps.rb", %q{Then /^I should see dashboard page$/ do
+  response.should have_selector("div.app-container")
+end}
 
-module EmailHelpers
-  def current_email_address
-    # Replace with your a way to find your current email. e.g @current_user.email
-    # last_email_address will return the last email address used by email spec to find an email.
-    # Note that last_email_address will be reset after each Scenario.
-    last_email_address || "example@example.com"
-  end
+file "features/step_definitions/registration_steps.rb", %q{Then /^I should be registered in application$/ do
+  controller.send(:current_user).should_not be_nil
+  controller.send(:current_user).login.should == "maksimka"
+  controller.send(:current_user).email.should == "maksimka@example.com"
 end
 
-World(EmailHelpers)
-
-#
-# Reset the e-mail queue within a scenario.
-# This is done automatically before each scenario.
-#
-
-Given /^(?:a clear email queue|no emails have been sent)$/ do
-  reset_mailer
+Then /^(?:|I )should not be registered in application$/ do
+  controller.send(:current_user).should be_nil
 end
-
-#
-# Check how many emails have been sent/received
-#
-
-Then /^(?:I|they|"([^"]*?)") should receive (an|no|\d+) emails?$/ do |address, amount|
-  unread_emails_for(address).size.should == parse_email_count(amount)
-end
-
-Then /^(?:I|they|"([^"]*?)") should have (an|no|\d+) emails?$/ do |address, amount|
-  mailbox_for(address).size.should == parse_email_count(amount)
-end
-
-# DEPRECATED
-# The following methods are left in for backwards compatibility and
-# should be removed by version 0.4.0
-Then /^(?:I|they|"([^"]*?)") should not receive an email$/ do |address|
-  email_spec_deprecate "The step 'I/they/[email] should not receive an email' is no longer supported.
-                      Please use 'I/they/[email] should receive no emails' instead."
-  unread_emails_for(address).size.should == 0
-end
-
-#
-# Accessing emails
-#
-
-# Opens the most recently received email
-When /^(?:I|they|"([^"]*?)") opens? the email$/ do |address|
-  open_email(address)
-end
-
-When /^(?:I|they|"([^"]*?)") opens? the email with subject "([^"]*?)"$/ do |address, subject|
-  open_email(address, :with_subject => subject)
-end
-
-When /^(?:I|they|"([^"]*?)") opens? the email with text "([^"]*?)"$/ do |address, text|
-  open_email(address, :with_text => text)
-end
-
-#
-# Inspect the Email Contents
-#
-
-Then /^(?:I|they) should see "([^"]*?)" in the email subject$/ do |text|
-  current_email.should have_subject(text)
-end
-
-Then /^(?:I|they) should see \/([^"]*?)\/ in the email subject$/ do |text|
-  current_email.should have_subject(Regexp.new(text))
-end
-
-Then /^(?:I|they) should see "([^"]*?)" in the email body$/ do |text|
-  current_email.body.should include(text)
-end
-
-Then /^(?:I|they) should see \/([^"]*?)\/ in the email body$/ do |text|
-  current_email.body.should =~ Regexp.new(text)
-end
-
-Then /^(?:I|they) should see the email delivered from "([^"]*?)"$/ do |text|
-  current_email.should be_delivered_from(text)
-end
-
-Then /^(?:I|they) should see "([^\"]*)" in the email "([^"]*?)" header$/ do |text, name|
-  current_email.should have_header(name, text)
-end
-
-Then /^(?:I|they) should see \/([^\"]*)\/ in the email "([^"]*?)" header$/ do |text, name|
-  current_email.should have_header(name, Regexp.new(text))
-end
-
-
-# DEPRECATED
-# The following methods are left in for backwards compatibility and
-# should be removed by version 0.4.0.
-Then /^(?:I|they) should see "([^"]*?)" in the subject$/ do |text|
-  email_spec_deprecate "The step 'I/they should see [text] in the subject' is no longer supported.
-                      Please use 'I/they should see [text] in the email subject' instead."
-  current_email.should have_subject(Regexp.new(text))
-end
-Then /^(?:I|they) should see "([^"]*?)" in the email$/ do |text|
-  email_spec_deprecate "The step 'I/they should see [text] in the email' is no longer supported.
-                      Please use 'I/they should see [text] in the email body' instead."
-  current_email.body.should =~ Regexp.new(text)
-end
-
-#
-# Interact with Email Contents
-#
-
-When /^(?:I|they) follow "([^"]*?)" in the email$/ do |link|
-  visit_in_email(link)
-end
-
-When /^(?:I|they) click the first link in the email$/ do
-  click_first_link_in_email
-end
-
-}
-
-file "features/step_definitions/common_steps.rb", %q{Then /^(?:|I )should see "([^\"]*)" link$/ do |link|
-  response.should have_xpath("//a[@href='#{link}']")
-end
-
-Then /^"([^\"]*)" link$/ do |link|
-  response.should have_xpath("//a[@href='#{link}']")
-end
-
-Then /^(?:|I )should see form validation for "([^\"]*)"(?:| field)$/ do |field|
-  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")  
-end
-
-Then /^(?:|I )should see flash with "([^\"]*)"$/ do |text|
-  response.should have_xpath("//div[starts-with(@class, 'flash-message')]/p[contains(.,'#{text}')]")  
-end
-
-Then /^I should be able to log in with login "([^\"]*)" and password "([^\"]*)"$/ do |login, password|
-  UserSession.new(:login => login, :password => password).save.should == true
-end
-}
-
-file "features/step_definitions/user_list_steps.rb", %q{Then /I should see (\d+) user accounts in table/ do |number|
-  response.should have_selector("table.users td.user-login", :count => number)
-end
-
-Then /I should see "([^\"]*)" user account in table/ do |login|
-  response.should have_selector("table.users td.user-login") do |matched|
-    matched.any? {|item| item.text == login }
-  end
-end
-
-Then /click edit account link for user with login "([^\"]*)"/ do |login|
-  user = User.find_by_login(login)
-  within "#user-#{user.id}" do |scope|
-    scope.click_link "Edit"
-  end
-end
-
-When /^user with login "([^\"]*)" has email "([^\"]*)"$/ do |login, email|
-  user = User.find_by_login(login)
-  user.email.should eql(email)  
-end
-
-When /^user with login "([^\"]*)" has password "([^\"]*)"$/ do |login, password|
-  user = User.find_by_login(login)
-  user.valid_password?(password).should be_true  
-end
-
-When /^user with login "([^\"]*)" has first name "([^\"]*)" and last name "([^\"]*)"$/ do |login, first_name, last_name|
-  user = User.find_by_login(login)
-  user.first_name.should eql(first_name)
-  user.last_name.should eql(last_name)  
-end
-
-Then /^click delete account link for user with login "([^\"]*)"$/ do |login|
-  user = User.find_by_login(login)
-  within "#user-#{user.id}" do |scope|
-    scope.click_link "Delete"
-  end
-end
-
-Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
-  user = User.find_by_login(login)
-  within "#user-#{user.id}" do |scope|
-    scope.dom.should have_selector("td > img[@alt='Delete']")
-  end
-
-end
-
 }
 
 file "features/step_definitions/web_steps.rb", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
@@ -2393,7 +1705,8 @@ Then /^(?:|I )should see "([^\"]*)" within "([^\"]*)"$/ do |text, selector|
     if defined?(Spec::Rails::Matchers)
       content.should contain(text)
     else
-      assert content.include?(text)
+      hc = Webrat::Matchers::HasContent.new(text)
+      assert hc.matches?(content), hc.failure_message
     end
   end
 end
@@ -2403,7 +1716,7 @@ Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
   if defined?(Spec::Rails::Matchers)
     response.should contain(regexp)
   else
-    assert_contain regexp
+    assert_match(regexp, response_body)
   end
 end
 
@@ -2413,7 +1726,7 @@ Then /^(?:|I )should see \/([^\/]*)\/ within "([^\"]*)"$/ do |regexp, selector|
     if defined?(Spec::Rails::Matchers)
       content.should contain(regexp)
     else
-      assert content =~ regexp
+      assert_match(regexp, content)
     end
   end
 end
@@ -2422,16 +1735,17 @@ Then /^(?:|I )should not see "([^\"]*)"$/ do |text|
   if defined?(Spec::Rails::Matchers)
     response.should_not contain(text)
   else
-    assert_not_contain text
+    assert_not_contain(text)
   end
 end
 
 Then /^(?:|I )should not see "([^\"]*)" within "([^\"]*)"$/ do |text, selector|
   within(selector) do |content|
     if defined?(Spec::Rails::Matchers)
-        content.should_not contain(text)
+      content.should_not contain(text)
     else
-        assert !content.include?(text)
+      hc = Webrat::Matchers::HasContent.new(text)
+      assert !hc.matches?(content), hc.negative_failure_message
     end
   end
 end
@@ -2441,7 +1755,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   if defined?(Spec::Rails::Matchers)
     response.should_not contain(regexp)
   else
-    assert_not_contain regexp
+    assert_not_contain(regexp)
   end
 end
 
@@ -2451,7 +1765,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/ within "([^\"]*)"$/ do |regexp, select
     if defined?(Spec::Rails::Matchers)
       content.should_not contain(regexp)
     else
-      assert content !~ regexp
+      assert_no_match(regexp, content)
     end
   end
 end
@@ -2489,17 +1803,48 @@ Then /^the "([^\"]*)" checkbox should not be checked$/ do |label|
 end
 
 Then /^(?:|I )should be on (.+)$/ do |page_name|
-  current_path = URI.parse(current_url).select(:path, :query).compact.join('?')
   if defined?(Spec::Rails::Matchers)
-    current_path.should == path_to(page_name)
+    URI.parse(current_url).path.should == path_to(page_name)
   else
-    assert_equal path_to(page_name), current_path
+    assert_equal path_to(page_name), URI.parse(current_url).path
+  end
+end
+
+Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
+  actual_params   = CGI.parse(URI.parse(current_url).query)
+  expected_params = Hash[expected_pairs.rows_hash.map{|k,v| [k,[v]]}]
+ 
+  if defined?(Spec::Rails::Matchers)
+    actual_params.should == expected_params
+  else
+    assert_equal expected_params, actual_params
   end
 end
 
 Then /^show me the page$/ do
   save_and_open_page
 end}
+
+file "features/step_definitions/common_steps.rb", %q{Then /^(?:|I )should see "([^\"]*)" link$/ do |link|
+  response.should have_xpath("//a[@href='#{link}']")
+end
+
+Then /^"([^\"]*)" link$/ do |link|
+  response.should have_xpath("//a[@href='#{link}']")
+end
+
+Then /^(?:|I )should see form validation for "([^\"]*)"(?:| field)$/ do |field|
+  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")  
+end
+
+Then /^(?:|I )should see flash with "([^\"]*)"$/ do |text|
+  response.should have_xpath("//div[starts-with(@class, 'flash-message')]/p[contains(.,'#{text}')]")  
+end
+
+Then /^I should be able to log in with login "([^\"]*)" and password "([^\"]*)"$/ do |login, password|
+  UserSession.new(:login => login, :password => password).save.should == true
+end
+}
 
 file "features/step_definitions/reset_password_steps.rb", %q{Then /^I should be with user.perishable_token on the reset password page$/ do
   user = User.first(:conditions => { :email => "admin@example.com" })
@@ -2566,71 +1911,677 @@ end
 
 }
 
-file "features/step_definitions/registration_steps.rb", %q{Then /^I should be registered in application$/ do
-  controller.send(:current_user).should_not be_nil
-  controller.send(:current_user).login.should == "maksimka"
-  controller.send(:current_user).email.should == "maksimka@example.com"
+file "features/step_definitions/email_steps.rb", %q{# Commonly used email steps
+#
+# To add your own steps make a custom_email_steps.rb
+# The provided methods are:
+#
+# last_email_address
+# reset_mailer
+# open_last_email
+# visit_in_email
+# unread_emails_for
+# mailbox_for
+# current_email
+# open_email
+# read_emails_for
+# find_email
+#
+# General form for email scenarios are:
+#   - clear the email queue (done automatically by email_spec)
+#   - execute steps that sends an email
+#   - check the user received an/no/[0-9] emails
+#   - open the email
+#   - inspect the email contents
+#   - interact with the email (e.g. click links)
+#
+# The Cucumber steps below are setup in this order.
+
+module EmailHelpers
+  def current_email_address
+    # Replace with your a way to find your current email. e.g @current_user.email
+    # last_email_address will return the last email address used by email spec to find an email.
+    # Note that last_email_address will be reset after each Scenario.
+    last_email_address || "example@example.com"
+  end
 end
 
-Then /^(?:|I )should not be registered in application$/ do
-  controller.send(:current_user).should be_nil
+World(EmailHelpers)
+
+#
+# Reset the e-mail queue within a scenario.
+# This is done automatically before each scenario.
+#
+
+Given /^(?:a clear email queue|no emails have been sent)$/ do
+  reset_mailer
 end
+
+#
+# Check how many emails have been sent/received
+#
+
+Then /^(?:I|they|"([^"]*?)") should receive (an|no|\d+) emails?$/ do |address, amount|
+  unread_emails_for(address).size.should == parse_email_count(amount)
+end
+
+Then /^(?:I|they|"([^"]*?)") should have (an|no|\d+) emails?$/ do |address, amount|
+  mailbox_for(address).size.should == parse_email_count(amount)
+end
+
+# DEPRECATED
+# The following methods are left in for backwards compatibility and
+# should be removed by version 0.4.0
+Then /^(?:I|they|"([^"]*?)") should not receive an email$/ do |address|
+  email_spec_deprecate "The step 'I/they/[email] should not receive an email' is no longer supported.
+                      Please use 'I/they/[email] should receive no emails' instead."
+  unread_emails_for(address).size.should == 0
+end
+
+#
+# Accessing emails
+#
+
+# Opens the most recently received email
+When /^(?:I|they|"([^"]*?)") opens? the email$/ do |address|
+  open_email(address)
+end
+
+When /^(?:I|they|"([^"]*?)") opens? the email with subject "([^"]*?)"$/ do |address, subject|
+  open_email(address, :with_subject => subject)
+end
+
+When /^(?:I|they|"([^"]*?)") opens? the email with text "([^"]*?)"$/ do |address, text|
+  open_email(address, :with_text => text)
+end
+
+#
+# Inspect the Email Contents
+#
+
+Then /^(?:I|they) should see "([^"]*?)" in the email subject$/ do |text|
+  current_email.should have_subject(text)
+end
+
+Then /^(?:I|they) should see \/([^"]*?)\/ in the email subject$/ do |text|
+  current_email.should have_subject(Regexp.new(text))
+end
+
+Then /^(?:I|they) should see "([^"]*?)" in the email body$/ do |text|
+  current_email.body.should include(text)
+end
+
+Then /^(?:I|they) should see \/([^"]*?)\/ in the email body$/ do |text|
+  current_email.body.should =~ Regexp.new(text)
+end
+
+Then /^(?:I|they) should see the email delivered from "([^"]*?)"$/ do |text|
+  current_email.should be_delivered_from(text)
+end
+
+Then /^(?:I|they) should see "([^\"]*)" in the email "([^"]*?)" header$/ do |text, name|
+  current_email.should have_header(name, text)
+end
+
+Then /^(?:I|they) should see \/([^\"]*)\/ in the email "([^"]*?)" header$/ do |text, name|
+  current_email.should have_header(name, Regexp.new(text))
+end
+
+
+# DEPRECATED
+# The following methods are left in for backwards compatibility and
+# should be removed by version 0.4.0.
+Then /^(?:I|they) should see "([^"]*?)" in the subject$/ do |text|
+  email_spec_deprecate "The step 'I/they should see [text] in the subject' is no longer supported.
+                      Please use 'I/they should see [text] in the email subject' instead."
+  current_email.should have_subject(Regexp.new(text))
+end
+Then /^(?:I|they) should see "([^"]*?)" in the email$/ do |text|
+  email_spec_deprecate "The step 'I/they should see [text] in the email' is no longer supported.
+                      Please use 'I/they should see [text] in the email body' instead."
+  current_email.body.should =~ Regexp.new(text)
+end
+
+#
+# Interact with Email Contents
+#
+
+When /^(?:I|they) follow "([^"]*?)" in the email$/ do |link|
+  visit_in_email(link)
+end
+
+When /^(?:I|they) click the first link in the email$/ do
+  click_first_link_in_email
+end
+
 }
 
-file "features/step_definitions/dashboard_steps.rb", %q{Then /^I should see dashboard page$/ do
-  response.should have_selector("div.app-container")
+file "features/step_definitions/user_list_steps.rb", %q{Then /I should see (\d+) user accounts in table/ do |number|
+  response.should have_selector("table.users td.user-login", :count => number)
+end
+
+Then /I should see "([^\"]*)" user account in table/ do |login|
+  response.should have_selector("table.users td.user-login") do |matched|
+    matched.any? {|item| item.text == login }
+  end
+end
+
+Then /click edit account link for user with login "([^\"]*)"/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.click_link "Edit"
+  end
+end
+
+When /^user with login "([^\"]*)" has email "([^\"]*)"$/ do |login, email|
+  user = User.find_by_login(login)
+  user.email.should eql(email)  
+end
+
+When /^user with login "([^\"]*)" has password "([^\"]*)"$/ do |login, password|
+  user = User.find_by_login(login)
+  user.valid_password?(password).should be_true  
+end
+
+When /^user with login "([^\"]*)" has first name "([^\"]*)" and last name "([^\"]*)"$/ do |login, first_name, last_name|
+  user = User.find_by_login(login)
+  user.first_name.should eql(first_name)
+  user.last_name.should eql(last_name)  
+end
+
+Then /^click delete account link for user with login "([^\"]*)"$/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.click_link "Delete"
+  end
+end
+
+Then /^I shouldn't see delete link for user with login "([^\"]*)"$/ do |login|
+  user = User.find_by_login(login)
+  within "#user-#{user.id}" do |scope|
+    scope.dom.should have_selector("td > img[@alt='Delete']")
+  end
+
+end
+
+}
+
+file "features/dashboard.feature", %q{Feature: Show dashboard page
+  In order to show home/root page
+  A any user
+  Should be able to see dashboard page
+
+  Scenario: Show dashboard page for anonymous user
+    Given I am anonymous user
+    When I go to the dashboard page
+    Then I should see dashboard page
+
+  Scenario: Show dashboard page for application user
+    Given I am application user
+    When I go to the dashboard page
+    Then I should see dashboard page
+
+  Scenario: Show dashboard page for application administrator
+    Given I am application administrator
+    When I go to the dashboard page
+    Then I should see dashboard page}
+
+file "features/registration_enabled.feature", %q{@registration_enabled
+Feature: Registration in application feature enabled
+  In order to work with advanced features of application
+  As anonymous user
+  I want to register in application
+
+  
+  Scenario: Anonymous user should see register link on dashboard page
+    Given I am anonymous user
+    When I go to the dashboard page
+    Then I should see "/register" link
+
+
+  Scenario: Success registration in application
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should be registered in application
+
+
+  Scenario: Fail registration in application with empty fields
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 |                  |
+      | E-Mail                |                  |
+      | First name            |                  |
+      | Last name             |                  |
+      | Password              |                  |
+      | Password Confirmation |                  |
+    And press "Register"
+    Then I should see form validation for "Login" field
+    And should see form validation for "Password" field
+    And should see form validation for "Password confirmation" field
+    And should see form validation for "E-Mail" field
+    And should not be registered in application
+
+
+  Scenario: Fail registration in application with empty login
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 |                      |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "Login" field
+    And should not be registered in application
+
+
+  Scenario: Fail registration in application with empty password
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              |                      |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "Password" field
+    And should not be registered in application
+
+
+  Scenario: Fail registration in application with different password and confirmation password
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password2            |
+    And press "Register"
+    Then I should see form validation for "Password" field
+    And should not be registered in application
+
+
+  Scenario: Fail registration in application with empty e-mail
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                |                      |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "E-Mail" field
+    And should not be registered in application
+
+  Scenario: Fail registration in application with empty fist name
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            |                      |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "First Name" field
+    And should not be registered in application
+
+  Scenario: Fail registration in application with empty last name
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             |                      |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Register"
+    Then I should see form validation for "Last Name" field 
+    And should not be registered in application
+
+  Scenario: Fail registration in application with login which already registered
+    Given I am anonymous user
+    When I go to the registration page
+    And I fill in the following:
+      | Login                 | admin             |
+      | E-Mail                | admin@example.com |
+      | Password              | pass              |
+      | Password Confirmation | pass              |
+    And press "Register"
+    Then I should see form validation for "Login" field
+    And should not be registered in application
+
+
+  Scenario: Anonymous user can press Cancel link and return to dashboard page
+    Given I am anonymous user
+    When I go to the registration page
+    And follow "Cancel"
+    Then I should be on the dashboard page
+
+    }
+
+file "features/authentication.feature", %q{Feature: Authentication to application
+  In order to login to application
+  As registered user
+  Should have ability to login in application 
+
+  Scenario: Anonymous user should see login link on dashboard page
+    Given I am anonymous user
+    When I go to the dashboard page
+    Then I should see "/login" link
+
+  Scenario: Success login to application
+    Given I am anonymous user
+    When I go to the login page
+    And I fill in the following:
+      | Login                 | user            |
+      | Password              | user            |
+    And press "Login"
+    Then I should authenticated in application
+    And should see "/profile" link
+    And "/logout" link
+
+  Scenario: Fail login to application with invalid login
+    Given I am anonymous user
+    When I go to the login page
+    And I fill in the following:
+      | Login                 | adminko         |
+      | Password              | user            |
+    And press "Login"
+    Then I should see form validation for "Login" field
+    And shouldn't authenticated in application
+    And should see "/login" link
+
+  Scenario: Fail login to application with invalid password
+    Given I am anonymous user
+    When I go to the login page
+    And I fill in the following:
+      | Login                 | user            |
+      | Password              | adminko         |
+    And press "Login"
+    Then I should see form validation for "Password" field
+    And shouldn't authenticated in application
+    And should see "/login" link
+}
+
+file "features/support/prerequisites.rb", %q{Before do
+
+  # Create user account without administration privileges
+  User.create! :login => "user",
+               :email => "user@example.com",
+               :first_name => "User",
+               :last_name => "User", 
+               :password => "user", :password_confirmation => "user"
+
 end}
 
+file "features/support/paths.rb", %q{module NavigationHelpers
+  # Maps a name to a path. Used by the
+  #
+  #   When /^I go to (.+)$/ do |page_name|
+  #
+  # step definition in web_steps.rb
+  #
+  def path_to(page_name)
+    case page_name
+    
+    when /the home\s?page/
+      dashboard_path
+    when /the dashboard page/
+      dashboard_path
+    when /the login page/
+      login_path
+    when /the logout page/
+      logout_path
+    when /the registration page/
+      register_path
+    when /the request reset password page/
+      request_reset_password_path
+    when /the reset password page with Id "([^\"]*)"/
+      reset_password_path($1)
+    when /the profile page/
+      profile_path
+    when /the edit profile page/
+      edit_profile_path
+    when /the admin dashboard page/
+      admin_dashboard_path
+    when /the user list in admin panel page/
+      admin_users_path
+    when /the new user in admin panel page/
+      new_admin_user_path
 
+    # Add more mappings here.
+    # Here is an example that pulls values out of the Regexp:
+    #
+    #   when /^(.*)'s profile page$/i
+    #     user_profile_path(User.find_by_login($1))
 
-file "lib/tasks/cucumber.rake", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
+    else
+      raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
+        "Now, go and add a mapping in #{__FILE__}"
+    end
+  end
+end
+
+World(NavigationHelpers)
+}
+
+file "features/support/env.rb", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
 # It is recommended to regenerate this file in the future when you upgrade to a 
 # newer version of cucumber-rails. Consider adding your own code to a new file 
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
+ENV["RAILS_ENV"] ||= "cucumber"
+require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
 
-unless ARGV.any? {|a| a =~ /^gems/} # Don't load anything when running the gems:* tasks
+require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
+require 'cucumber/rails/rspec'
+require 'cucumber/rails/world'
+require 'cucumber/rails/active_record'
+require 'cucumber/web/tableish'
 
-vendored_cucumber_bin = Dir["#{RAILS_ROOT}/vendor/{gems,plugins}/cucumber*/bin/cucumber"].first
-$LOAD_PATH.unshift(File.dirname(vendored_cucumber_bin) + '/../lib') unless vendored_cucumber_bin.nil?
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_enabled") unless ENABLE_USER_REGISTRATION
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@registration_disabled") if ENABLE_USER_REGISTRATION
 
-begin
-  require 'cucumber/rake/task'
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_enabled") unless ENABLE_REQUEST_RESET_PASSWORD
+  Cucumber::Cli::Main.step_mother.options[:tag_expression].add("~@reset_password_disabled") if ENABLE_REQUEST_RESET_PASSWORD
 
-  namespace :cucumber do
-    Cucumber::Rake::Task.new({:ok => 'db:test:prepare'}, 'Run features that should pass') do |t|
-      t.binary = vendored_cucumber_bin # If nil, the gem's binary is used.
-      t.fork = true # You may get faster startup if you set this to false
-      t.profile = 'default'
-    end
+require 'webrat'
+require 'webrat/core/matchers'
 
-    Cucumber::Rake::Task.new({:wip => 'db:test:prepare'}, 'Run features that are being worked on') do |t|
-      t.binary = vendored_cucumber_bin
-      t.fork = true # You may get faster startup if you set this to false
-      t.profile = 'wip'
-    end
-
-    desc 'Run all features'
-    task :all => [:ok, :wip]
-  end
-  desc 'Alias for cucumber:ok'
-  task :cucumber => 'cucumber:ok'
-
-  task :default => :cucumber
-
-  task :features => :cucumber do
-    STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
-  end
-rescue LoadError
-  desc 'cucumber rake task not available (cucumber not installed)'
-  task :cucumber do
-    abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
-  end
+Webrat.configure do |config|
+  config.mode = :rails
+  config.open_error_files = false # Set to true if you want error pages to pop up in the browser
 end
 
+
+# If you set this to false, any error raised from within your app will bubble 
+# up to your step definition and out to cucumber unless you catch it somewhere
+# on the way. You can make Rails rescue errors and render error pages on a
+# per-scenario basis by tagging a scenario or feature with the @allow-rescue tag.
+#
+# If you set this to true, Rails will rescue all errors and render error
+# pages, more or less in the same way your application would behave in the
+# default production environment. It's not recommended to do this for all
+# of your scenarios, as this makes it hard to discover errors in your application.
+ActionController::Base.allow_rescue = false
+
+# If you set this to true, each scenario will run in a database transaction.
+# You can still turn off transactions on a per-scenario basis, simply tagging 
+# a feature or scenario with the @no-txn tag. If you are using Capybara,
+# tagging with @culerity or @javascript will also turn transactions off.
+#
+# If you set this to false, transactions will be off for all scenarios,
+# regardless of whether you use @no-txn or not.
+#
+# Beware that turning transactions off will leave data in your database 
+# after each scenario, which can lead to hard-to-debug failures in 
+# subsequent scenarios. If you do this, we recommend you create a Before
+# block that will explicitly put your database in a known state.
+Cucumber::Rails::World.use_transactional_fixtures = true
+
+# How to clean your database when transactions are turned off. See
+# http://github.com/bmabey/database_cleaner for more info.
+if defined?(ActiveRecord::Base)
+  begin
+    require 'database_cleaner'
+    DatabaseCleaner.strategy = :truncation
+  rescue LoadError => ignore_if_database_cleaner_not_present
+  end
 end
 }
+
+file "features/application_administrator/failed_authorization.feature", %q{Feature: Application administrator hasn't access to several application pages
+  In order to restrict access to several application pages for authenticated users
+  A application administrator
+  Haven't access to these pages
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to login page (because he login already)
+    Given I am application administrator
+    When I go to the login page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to register page (because he registered already)
+    Given I am application administrator
+    When I go to the registration page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+
+  @allow-rescue
+  Scenario: Application administrator shouldn't have access to request reset password page (because he known password already)
+    Given I am application administrator
+    When I go to the request reset password page
+    Then I should be on the dashboard page
+    And should see flash with "Access denied."
+}
+
+file "features/application_administrator/user_list.feature", %q{Feature: The application administrator can manage registered user accounts
+  In order to manage registered user accounts
+  A application administrator
+  Should have ability to see/create/edit/delete registered user accounts
+
+  Scenario: The application administrator should see registered user accounts
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I should see 2 user accounts in table
+
+  Scenario: The application administrator can create new user account
+    Given I am application administrator
+    When I go to the new user in admin panel page
+    And I fill in the following:
+      | Login                 | maksimka             |
+      | E-Mail                | maksimka@example.com |
+      | First name            | Maksimka             |
+      | Last name             | Dobriakov            |
+      | Password              | password             |
+      | Password Confirmation | password             |
+    And press "Create Account"
+    Then I am on the user list in admin panel page
+    And I should see 3 user accounts in table
+    And I should see "maksimka" user account in table
+
+  Scenario: The application administrator can change email for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | E-Mail                | new_email@example.com |
+    And press "Update Account"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has email "new_email@example.com"
+
+  Scenario: The application administrator can change first and last name for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | First name            | Vini                  |
+      | Last name             | Pooh                  |
+    And press "Update Account"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has first name "Vini" and last name "Pooh"
+
+  Scenario: The application administrator can change password for user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click edit account link for user with login "user"
+    When I fill in the following:
+      | Password                 | 12345 |
+      | Password Confirmation    | 12345 |
+    And press "Update Account"
+    Then I am on the user list in admin panel page
+    And I should see 2 user accounts in table
+    And user with login "user" has password "12345"
+
+  Scenario: The application administrator can delete user account
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then click delete account link for user with login "user"
+    Then I am on the user list in admin panel page
+    And I should see 1 user accounts in table
+
+  Scenario: The application administrator can't delete administrator account with login "admin"
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I shouldn't see delete link for user with login "admin"}
+
+file "features/application_administrator/sucess_authorization.feature", %q{Feature: Application administrator should have access to all pages
+  In order to grant full access to private application functionality
+  A application administrator
+  Should have access to all pages
+
+  Scenario: Application administrator should have access to dashboard page
+    Given I am application administrator
+    When I go to the dashboard page
+    Then I should be on the dashboard page
+
+  Scenario: Application administrator should have access to profile page
+    Given I am application administrator
+    When I go to the profile page
+    Then I should be on the profile page
+
+  Scenario: Application administrator should have access to edit profile page
+    Given I am application administrator
+    When I go to the edit profile page
+    Then I should be on the edit profile page
+
+  Scenario: Application administrator should have access to admin dashboard page
+    Given I am application administrator
+    When I go to the admin dashboard page
+    Then I should be on the admin dashboard page
+
+  Scenario: Application administrator should have access to user list in admin panel
+    Given I am application administrator
+    When I go to the user list in admin panel page
+    Then I should be on the user list in admin panel page
+}
+
+
 
 file "lib/tasks/rspec.rake", %q{gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9
 rspec_gem_dir = nil
@@ -2778,7 +2729,62 @@ end
 end
 }
 
+file "lib/tasks/cucumber.rake", %q{# IMPORTANT: This file is generated by cucumber-rails - edit at your own peril.
+# It is recommended to regenerate this file in the future when you upgrade to a 
+# newer version of cucumber-rails. Consider adding your own code to a new file 
+# instead of editing this one. Cucumber will automatically load all features/**/*.rb
+# files.
 
+
+unless ARGV.any? {|a| a =~ /^gems/} # Don't load anything when running the gems:* tasks
+
+vendored_cucumber_bin = Dir["#{Rails.root}/vendor/{gems,plugins}/cucumber*/bin/cucumber"].first
+$LOAD_PATH.unshift(File.dirname(vendored_cucumber_bin) + '/../lib') unless vendored_cucumber_bin.nil?
+
+begin
+  require 'cucumber/rake/task'
+
+  namespace :cucumber do
+    Cucumber::Rake::Task.new({:ok => 'db:test:prepare'}, 'Run features that should pass') do |t|
+      t.binary = vendored_cucumber_bin # If nil, the gem's binary is used.
+      t.fork = true # You may get faster startup if you set this to false
+      t.profile = 'default'
+    end
+
+    Cucumber::Rake::Task.new({:wip => 'db:test:prepare'}, 'Run features that are being worked on') do |t|
+      t.binary = vendored_cucumber_bin
+      t.fork = true # You may get faster startup if you set this to false
+      t.profile = 'wip'
+    end
+
+    desc 'Run all features'
+    task :all => [:ok, :wip]
+  end
+  desc 'Alias for cucumber:ok'
+  task :cucumber => 'cucumber:ok'
+
+  task :default => :cucumber
+
+  task :features => :cucumber do
+    STDERR.puts "*** The 'features' task is deprecated. See rake -T cucumber ***"
+  end
+rescue LoadError
+  desc 'cucumber rake task not available (cucumber not installed)'
+  task :cucumber do
+    abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
+  end
+end
+
+end
+}
+
+
+
+file "spec/spec.opts", %q{--colour
+--format progress
+--loadby mtime
+--reverse
+}
 
 file "spec/spec_helper.rb", %q{# This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
@@ -2836,16 +2842,85 @@ Spec::Runner.configure do |config|
 end
 }
 
-file "spec/spec.opts", %q{--colour
---format progress
---loadby mtime
---reverse
-}
-
 file "spec/rcov.opts", %q{--exclude "spec/*,gems/*"
 --rails}
 
 
+
+file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_color = #232C30
+!background_color = #EBEBEB
+!footer_background_color = #DDDDDD
+
+.app-container
+  :background-color = !background_color
+
+.app-header
+  :padding 5px 20px
+  :background-color = !header_background_color
+
+.app-header h1
+  :font-size 2.0em
+  :padding 5px 0
+  :margin 5px 0
+
+.app-header h1 a
+  &, &:link, &:active, &:hover, &:visited
+    :color = !light_text_color
+    :text-decoration none
+
+.app-footer
+  :background-color = !footer_background_color
+  :border-top 1px solid #BBB
+
+  p
+    :text-align right
+    :margin 15px 0
+    :padding 0 10px
+}
+
+file "public/stylesheets/sass/theme/_pagination.sass", %q{.pagination
+  :text-align center
+  :padding .3em
+  :margin-top 7px
+  a, span
+    :padding .2em .5em
+  span.disabled
+    :border 1px solid #AAA
+    :color #AAA
+  span.current
+    :font-weight bold
+    :background-color #EEE
+    :color #364B69
+    :border 1px solid #AAA
+  a
+    :border-top 1px solid #5C738A
+    :background #456
+    :color #EEE
+    :text-decoration none
+    &:hover, &:focus
+      :border-top 1px solid #7593B0
+      :background #576C82
+      :color #EEE
+  .page_info
+    :color #aaa
+    :padding-top .8em
+  .prev_page, .next_page
+  .prev_page
+    :margin-right 1em
+  .next_page
+    :margin-left 1em
+}
+
+file "public/stylesheets/sass/theme/core/_links.sass", %q{!link_color = #3399ff
+!selected_link_color = #CC3333
+
+a:link, a:visited
+  :color = !link_color
+  text-decoration: none
+
+a:hover, a:active
+  :color = !selected_link_color
+  text-decoration: underline}
 
 file "public/stylesheets/sass/theme/core/_headers.sass", %q{h1
   :font-size 2.2em
@@ -2881,17 +2956,6 @@ h1, h2, h3, h4, h5, h6
   :color = !text_color
 }
 
-file "public/stylesheets/sass/theme/core/_links.sass", %q{!link_color = #3399ff
-!selected_link_color = #CC3333
-
-a:link, a:visited
-  :color = !link_color
-  text-decoration: none
-
-a:hover, a:active
-  :color = !selected_link_color
-  text-decoration: underline}
-
 file "public/stylesheets/sass/theme/core/_core.sass", %q{html, body
   :font normal 13px/19px "Lucida Grande","Lucida Sans Unicode",Lucida,arial,sans-serif
   :color = !text_color
@@ -2906,6 +2970,39 @@ ul.square-list
 
 @import headers
 @import links}
+
+file "public/stylesheets/sass/theme/_block.sass", %q{.app-block
+  border: 1px solid gray
+  padding: 7px
+
+  & > h1:first-child, & > h2:first-child, & > h3:first-child, & > h4:first-child, & > h5:first-child, & > h6:first-child
+    border-bottom: 1px solid gray
+    padding-bottom: 2px}
+
+file "public/stylesheets/sass/theme/_flash.sass", %q{.app-flash
+  .flash-message
+    -moz-border-radius: 4px
+    -webkit-border-radius: 4px
+    text-align: center
+    margin: 0 auto 5px
+    width: 80%
+
+    p
+      margin: 8px
+
+  .error
+    border: 1px solid #fbb
+    background-color: #fdd
+
+  .warning
+    border: 1px solid #ffff66
+    background-color: #ffffcc
+
+  .notice
+    border: 1px solid #c6c6c6
+    background-color: #e6e6e6
+
+}
 
 file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !text_color
 !sidebar_background_color = white
@@ -2941,74 +3038,24 @@ file "public/stylesheets/sass/theme/_sidebar.sass", %q{!sidebar_header_color = !
 
 }
 
-file "public/stylesheets/sass/theme/_main_navigation.sass", %q{/* Main navigation */
+file "public/stylesheets/sass/theme/_admin.sass", %q{.app-admin-users-table
 
-.app-main-navigation
-  .app-main-navigation-prefix
-    :color = !light_text_color
-    :float left
-    :padding-top 4px
-    :margin-right 5px
-
-  ul
-    li
-      :background-color #445566
-      :color #EEEEEE
-      :border-top 1px solid #5C738A
-      :margin-right 5px
-      :float left
-
-      &:hover
-        :background-color #576C82
-        :border-top 1px solid #7593B0
-
-      a
-        :display block
-        :padding 3px 10px
-        :text-decoration none
-        :color #FFFFFF
-
-    li.app-active-item
-      :background-color #EEEEEE
-      :border-top 1px solid #FFFFFF
-      :color #364B69
-
-      a
-        :color #364B69
-}
-
-file "public/stylesheets/sass/theme/_pagination.sass", %q{.pagination
-  :text-align center
-  :padding .3em
-  :margin-top 7px
-  a, span
-    :padding .2em .5em
-  span.disabled
-    :border 1px solid #AAA
-    :color #AAA
-  span.current
-    :font-weight bold
-    :background-color #EEE
-    :color #364B69
-    :border 1px solid #AAA
-  a
-    :border-top 1px solid #5C738A
-    :background #456
-    :color #EEE
-    :text-decoration none
-    &:hover, &:focus
-      :border-top 1px solid #7593B0
-      :background #576C82
-      :color #EEE
-  .page_info
-    :color #aaa
-    :padding-top .8em
-  .prev_page, .next_page
-  .prev_page
-    :margin-right 1em
-  .next_page
-    :margin-left 1em
-}
+  th.user-login
+    width: auto
+  th.user-name
+    width: 280px    
+  th.user-email
+    width: 280px    
+  th.user-last_login_ip
+    width: 100px
+  th.user-last_login_at
+    width: 130px
+    min-width: 130px
+  th.user-created_at
+    width: 130px
+    min-width: 130px
+  th.user-actions
+    width: 50px}
 
 file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
   &.left
@@ -3074,105 +3121,6 @@ file "public/stylesheets/sass/theme/_table.sass", %q{=table-data-types-align
 
     &:hover
       background-color: #FBFBFB
-}
-
-file "public/stylesheets/sass/theme/_layout_styles.sass", %q{!header_background_color = #232C30
-!background_color = #EBEBEB
-!footer_background_color = #DDDDDD
-
-.app-container
-  :background-color = !background_color
-
-.app-header
-  :padding 5px 20px
-  :background-color = !header_background_color
-
-.app-header h1
-  :font-size 2.0em
-  :padding 5px 0
-  :margin 5px 0
-
-.app-header h1 a
-  &, &:link, &:active, &:hover, &:visited
-    :color = !light_text_color
-    :text-decoration none
-
-.app-footer
-  :background-color = !footer_background_color
-  :border-top 1px solid #BBB
-
-  p
-    :text-align right
-    :margin 15px 0
-    :padding 0 10px
-}
-
-file "public/stylesheets/sass/theme/_user_navigation.sass", %q{/* User navigation */
-
-.app-user-navigation
-  position: absolute
-  right: 20px
-  top: 0
-
-  & ul
-    margin: 0
-
-    & li
-      padding: 5px 10px
-      float: left
-
-      & a
-        text-decoration: none
-        &:visited, &:link
-          color: #CDE
-          border-bottom: 1px dotted #345
-        &:hover
-          border-bottom: 1px dotted #CDE
-          color: #FFF
-}
-
-file "public/stylesheets/sass/theme/_admin.sass", %q{.app-admin-users-table
-
-  th.user-login
-    width: auto
-  th.user-name
-    width: 280px    
-  th.user-email
-    width: 280px    
-  th.user-last_login_ip
-    width: 100px
-  th.user-last_login_at
-    width: 130px
-    min-width: 130px
-  th.user-created_at
-    width: 130px
-    min-width: 130px
-  th.user-actions
-    width: 50px}
-
-file "public/stylesheets/sass/theme/_flash.sass", %q{.app-flash
-  .flash-message
-    -moz-border-radius: 4px
-    -webkit-border-radius: 4px
-    text-align: center
-    margin: 0 auto 5px
-    width: 80%
-
-    p
-      margin: 8px
-
-  .error
-    border: 1px solid #fbb
-    background-color: #fdd
-
-  .warning
-    border: 1px solid #ffff66
-    background-color: #ffffcc
-
-  .notice
-    border: 1px solid #c6c6c6
-    background-color: #e6e6e6
-
 }
 
 file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
@@ -3303,13 +3251,65 @@ file "public/stylesheets/sass/theme/_skintastic.sass", %q{form.formtastic
     input
       :border 1px solid #999}
 
-file "public/stylesheets/sass/theme/_block.sass", %q{.app-block
-  border: 1px solid gray
-  padding: 7px
+file "public/stylesheets/sass/theme/_user_navigation.sass", %q{/* User navigation */
 
-  & > h1:first-child, & > h2:first-child, & > h3:first-child, & > h4:first-child, & > h5:first-child, & > h6:first-child
-    border-bottom: 1px solid gray
-    padding-bottom: 2px}
+.app-user-navigation
+  position: absolute
+  right: 20px
+  top: 0
+
+  & ul
+    margin: 0
+
+    & li
+      padding: 5px 10px
+      float: left
+
+      & a
+        text-decoration: none
+        &:visited, &:link
+          color: #CDE
+          border-bottom: 1px dotted #345
+        &:hover
+          border-bottom: 1px dotted #CDE
+          color: #FFF
+}
+
+file "public/stylesheets/sass/theme/_main_navigation.sass", %q{/* Main navigation */
+
+.app-main-navigation
+  .app-main-navigation-prefix
+    :color = !light_text_color
+    :float left
+    :padding-top 4px
+    :margin-right 5px
+
+  ul
+    li
+      :background-color #445566
+      :color #EEEEEE
+      :border-top 1px solid #5C738A
+      :margin-right 5px
+      :float left
+
+      &:hover
+        :background-color #576C82
+        :border-top 1px solid #7593B0
+
+      a
+        :display block
+        :padding 3px 10px
+        :text-decoration none
+        :color #FFFFFF
+
+    li.app-active-item
+      :background-color #EEEEEE
+      :border-top 1px solid #FFFFFF
+      :color #364B69
+
+      a
+        :color #364B69
+}
 
 file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 !light_text_color = #EAEAEA
@@ -3333,37 +3333,6 @@ file "public/stylesheets/sass/application.sass", %q{!text_color = #333
 /* User styles */
 
 /* Put or import your styles here*/}
-
-file "public/stylesheets/sass/layout/_layout.sass", %q{!footer_height = 50px
-
-html, body
-  :height 100%
-
-.app-container
-  :min-height 100%
-  :position relative
-  :min-width 1024px
-
-.app-header
-
-.app-wrapper
-  :padding 20px 20px 0 20px
-  :padding-bottom = !footer_height
-
-.app-main.app-has-sidebar
-  :float left
-  :width 73%
-
-.app-sidebar
-  :float right
-  :width 25%
-
-.app-footer
-  :position absolute
-  :bottom 0
-  :height = !footer_height
-  :width 100%
-}
 
 file "public/stylesheets/sass/layout/_formtastic_base.sass", %q{//
 // FORMTASTIC SASS
@@ -3990,6 +3959,37 @@ file "public/stylesheets/sass/layout/_formtastic_base.sass", %q{//
       :margin-top 0
       :padding-bottom 0}
 
+file "public/stylesheets/sass/layout/_layout.sass", %q{!footer_height = 50px
+
+html, body
+  :height 100%
+
+.app-container
+  :min-height 100%
+  :position relative
+  :min-width 1024px
+
+.app-header
+
+.app-wrapper
+  :padding 20px 20px 0 20px
+  :padding-bottom = !footer_height
+
+.app-main.app-has-sidebar
+  :float left
+  :width 73%
+
+.app-sidebar
+  :float right
+  :width 25%
+
+.app-footer
+  :position absolute
+  :bottom 0
+  :height = !footer_height
+  :width 100%
+}
+
 
 file "public/stylesheets/clearfix.css", %q{/* slightly enhanced, universal clearfix hack */
 .clearfix:after {
@@ -4111,6 +4111,8 @@ FILE_CONTENT
 
 
 
+file "vendor/plugins/sidebar/rails/init.rb", %q{ActionController::Base.send(:include, Sidebar::ControllerMethods)}
+
 file "vendor/plugins/sidebar/lib/sidebar.rb", %q{# Adds a method to management the display of the sidebar. To specify that the sidebar should be applied to
 # or excluded from given controller actions, use the :only and :except parameters.
 #
@@ -4164,8 +4166,6 @@ module Sidebar
 
   end
 end}
-
-file "vendor/plugins/sidebar/rails/init.rb", %q{ActionController::Base.send(:include, Sidebar::ControllerMethods)}
 
 
 
