@@ -21,6 +21,8 @@ require 'cucumber/web/tableish'
 
 require 'webrat'
 require 'webrat/core/matchers'
+require "email_spec"
+require "email_spec/cucumber"
 
 Webrat.configure do |config|
   config.mode = :rails

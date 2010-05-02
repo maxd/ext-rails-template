@@ -762,6 +762,7 @@ config.gem 'database_cleaner', :lib => false, :version => '>=0.5.0' unless File.
 config.gem 'webrat',           :lib => false, :version => '>=0.7.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/webrat'))
 config.gem 'rspec',            :lib => false, :version => '>=1.3.0' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec'))
 config.gem 'rspec-rails',      :lib => false, :version => '>=1.3.2' unless File.directory?(File.join(Rails.root, 'vendor/plugins/rspec-rails'))
+config.gem 'email_spec',       :lib => false, :version => '>=0.6.2' unless File.directory?(File.join(Rails.root, 'vendor/plugins/email_spec'))
 
 config.action_mailer.default_url_options = { :host => "localhost:3000" }
 }
@@ -1834,7 +1835,11 @@ Then /^"([^\"]*)" link$/ do |link|
 end
 
 Then /^(?:|I )should see form validation for "([^\"]*)"(?:| field)$/ do |field|
-  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")  
+  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")
+end
+
+Then /^(?:|I )should see message about invalid login or password$/ do
+  response.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(.,'Invalid login or password')]")
 end
 
 Then /^(?:|I )should see flash with "([^\"]*)"$/ do |text|
@@ -2307,7 +2312,7 @@ file "features/authentication.feature", %q{Feature: Authentication to applicatio
       | Login                 | adminko         |
       | Password              | user            |
     And press "Login"
-    Then I should see form validation for "Login" field
+    Then I should see message about invalid login or password
     And shouldn't authenticated in application
     And should see "/login" link
 
@@ -2318,7 +2323,7 @@ file "features/authentication.feature", %q{Feature: Authentication to applicatio
       | Login                 | user            |
       | Password              | adminko         |
     And press "Login"
-    Then I should see form validation for "Password" field
+    Then I should see message about invalid login or password
     And shouldn't authenticated in application
     And should see "/login" link
 }
@@ -2408,6 +2413,8 @@ require 'cucumber/web/tableish'
 
 require 'webrat'
 require 'webrat/core/matchers'
+require "email_spec"
+require "email_spec/cucumber"
 
 Webrat.configure do |config|
   config.mode = :rails

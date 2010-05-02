@@ -7,7 +7,11 @@ Then /^"([^\"]*)" link$/ do |link|
 end
 
 Then /^(?:|I )should see form validation for "([^\"]*)"(?:| field)$/ do |field|
-  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")  
+  response.should have_xpath("//p[@class='inline-errors']/parent::node()/label[contains(.,'#{field}')]")
+end
+
+Then /^(?:|I )should see message about invalid login or password$/ do
+  response.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(.,'Invalid login or password')]")
 end
 
 Then /^(?:|I )should see flash with "([^\"]*)"$/ do |text|

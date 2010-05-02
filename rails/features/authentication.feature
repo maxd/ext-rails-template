@@ -26,7 +26,7 @@ Feature: Authentication to application
       | Login                 | adminko         |
       | Password              | user            |
     And press "Login"
-    Then I should see form validation for "Login" field
+    Then I should see message about invalid login or password
     And shouldn't authenticated in application
     And should see "/login" link
 
@@ -37,6 +37,6 @@ Feature: Authentication to application
       | Login                 | user            |
       | Password              | adminko         |
     And press "Login"
-    Then I should see form validation for "Password" field
+    Then I should see message about invalid login or password
     And shouldn't authenticated in application
     And should see "/login" link
